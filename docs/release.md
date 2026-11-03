@@ -1,4 +1,8 @@
-# Release manifest and signature
+# Verify Anti-REA's Python package before distribution
+
+This page is for maintainers distributing **Anti-REA itself**. It creates a SHA-256 manifest for Anti-REA's Python wheel, optionally signs that manifest with Ed25519, and verifies that the wheel still matches. It does not sign, harden, or verify an application that Anti-REA analyzes. If you only use Anti-REA on your app, you can skip this page.
+
+The repository does not currently publish a trusted signing identity. Until maintainers configure one and consumers trust its public key, these commands do not establish an authenticated release; an unsigned manifest is only a checksum record.
 
 Create a detached manifest after building the exact wheel that will be distributed:
 

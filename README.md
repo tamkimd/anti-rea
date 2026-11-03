@@ -77,7 +77,7 @@ Start the MCP server with `anti-rea mcp serve`. Set `ANTI_REA_STATE_DIR` to keep
 - Keep state, raw reports, release artifacts, debug symbols, screenshots, caches, and secrets outside the source checkout.
 - BLA and obfuscation can increase analysis effort; neither encrypts client code or prevents determined reverse engineering.
 
-See [execution boundaries](docs/cli.md), the [release guide](docs/release.md), and the [acceptance audit](AUDIT.md).
+See [execution boundaries](docs/cli.md), [Anti-REA package signing](docs/release.md), and the [acceptance audit](AUDIT.md).
 
 ## Development
 
