@@ -1,0 +1,40 @@
+# Harness compatibility
+
+This file separates portable interface availability from verified harness support. A harness name in the matrix is a verification target, not a compatibility claim. Compatibility is recorded only after the Skill, CLI, or MCP path completes a real workflow in that harness with its product version and relevant environment recorded.
+
+## Current status
+
+| Harness | Skill install | Local MCP | CLI | End-to-end workflow | Status |
+|---|---|---|---|---|---|
+| Codex CLI 0.165.0-alpha.1.2 (macOS 26.7.1 arm64) | Tested in isolated project `.agents/skills/anti-rea` | Attempted; Codex rejected `inspect_project` before the tool ran because approval policy was `never` | 0.1.16 `anti-rea inspect`; 0.1.32 `doctor` and Flutter Android readiness probe | Partial: fixture inspection, readiness stop, and read-only TodoMVC and fresh synthetic-fixture plan reviews; MCP remains unverified | Partially verified; see `examples/codex-cli/evidence-summary.json` |
+| Claude Code | Not tested | Not tested | Not tested | Not tested | Unverified |
+| Gemini CLI | Not tested | Not tested | Not tested | Not tested | Unverified |
+| Cursor | Not tested | Not tested | Not tested | Not tested | Unverified |
+| GitHub Copilot | Not tested | Not tested | Not tested | Not tested | Unverified |
+| VS Code | Not tested | Not tested | Not tested | Not tested | Unverified |
+| Windsurf | Not tested | Not tested | Not tested | Not tested | Unverified |
+| Devin Desktop / Devin CLI | Not tested | Not tested | Not tested | Not tested | Unverified |
+| OpenCode | Not tested | Not tested | Not tested | Not tested | Unverified |
+
+The original Codex CLI smoke used a temporary project and external state directory, installed the packaged 0.1.16 Skill in project scope, verified the project Skill SHA-256 in the session, and asked Codex to run the explicit 0.1.16 CLI executable for `anti-rea inspect`; its report remains in `examples/codex-cli/evidence/codex-cli-inspect.json`. A current 0.1.32 check installed the wheel's Skill in temporary projects. Codex ran `doctor` and the Flutter Android probe; the doctor passed and the probe reported Android SDK and Java ready, Android licenses unaccepted, build blocked, and no connected device. Codex stopped before `recommend`, as required for blocked readiness. In a separate read-only Codex sandbox, the updated Skill reviewed a pending four-action plan for the synthetic MIT TodoMVC example and stopped before recording a decision or executing a candidate. A fresh owned CommonJS fixture was also reviewed through the Skill and CLI: Codex checked readiness, summarized the exact BLA action and saved BEFORE evidence, and stopped with the plan `awaiting_decision`; no decision or candidate execution was recorded. A local stdio MCP probe was configured through per-invocation CLI overrides, but Codex rejected `inspect_project` before the server tool ran because the host approval policy was `never`; the attempt did not enable automatic approval. Codex also reported that the session exceeded its Skill context budget. The sanitized blocker record is `examples/codex-cli/evidence/codex-cli-mcp-approval-blocker.json`. These results do not verify MCP through Codex. Raw transcripts remain outside the repository, and sanitized reports are bound by hashes in `examples/codex-cli/evidence-summary.json`. The TodoMVC baseline browser journey passed, but that source checkout was dirty; both plan reviews are not hardening or protection evidence. This verifies limited Skill and CLI interactions in this specific Codex CLI version and macOS environment. It does not verify MCP execution, approval, candidate execution, acceptance, REA analysis, hardening, or other Codex versions. Official documentation now confirms Skill and MCP setup mechanisms for Devin Desktop/CLI, but Anti-REA has not run a complete workflow there. The current Windsurf docs index lists Cascade Skill and MCP guides, while direct guide retrieval redirects to Devin documentation; setup details and compatibility for Windsurf remain unverified.
+
+## Available integration paths
+
+These are product interfaces, not claims that a particular host can discover or invoke them:
+
+- **Skill:** `skills/anti-rea/` contains the portable instructions and references. `anti-rea skill install/update/uninstall` manages the Skill tree at an explicit directory and refuses files outside its hash-checked manifest. It does not identify harness-specific paths or edit configuration; follow the selected harness's current official instructions and preserve the folder structure.
+- **CLI:** the installed package exposes `anti-rea` and `anti-rea-mcp` entry points. Use the CLI when the host can run terminal commands. A usable Python environment and the relevant pinned engine runtime are still required for the selected operation.
+- **MCP:** the server uses stdio. Use it only where the host documents support for a local stdio MCP server and can start the configured command. The MCP server shares the core workflow, but a client-transmitted decision does not prove a human approved it. `start_baseline_async` and `execute_plan` return run IDs that must be polled with `get_run`; synchronous `start_baseline` remains available. `cancel_run` stops active asynchronous work and can close a completed baseline run that is still awaiting plan submission, while retaining its immutable baseline evidence. Normal interpreter shutdown cancels active workers and cleans up command process trees (POSIX process groups; Windows Job Objects for baseline and REA runners, not yet runtime-tested on Windows); worker state remains process-local and does not survive a crash or forced termination.
+- **Manual handoff:** if the host cannot run the CLI or connect to MCP, provide a reviewable plan, exact commands, expected evidence, and rollback steps for an execution-capable environment. Do not report that the host ran checks it did not run.
+
+See [host-documented setup locations](harness-setup.md), [manual harness fallback](harness-fallback.md), and the [interfaces reference](../skills/anti-rea/references/interfaces.md) for current CLI and MCP boundaries. The Codex result does not change other unverified harness statuses. Anti-REA does not edit harness configuration automatically.
+
+## Portable interface integration check
+
+The SDK-backed stdio test exercises the MCP protocol without installing an external AI harness: `python -m unittest tests.test_mcp_interface.MCPInterfaceTests.test_inspect_project_saves_and_retrieves_same_manifest`. It starts the actual server process, initializes a client session, lists and calls tools, inspects a fixture, schedules a BEFORE baseline, polls its run ID, and confirms the saved baseline is bound to the discovered target. Run `python -m unittest tests.test_skill_install` for the explicit-destination Skill install/update/uninstall safety checks. These checks verify Anti-REA's portable interfaces and installer behavior; they do not change any host row above or establish that a harness loads the Skill, exposes the CLI, or registers MCP correctly.
+
+## Evidence required to change a matrix row
+
+Record the harness product and version, operating system, chosen interface, installation or registration method, permission behavior, and limitations. Then run and retain evidence for the supported path: load the Skill or connect MCP, inspect a fixture project, create and review a plan, transmit an explicit decision, execute a selected fixture action when execution is supported, retrieve its evidence, and confirm that the acceptance gate rejects tampered evidence. Mark steps that the harness cannot perform as unsupported and use the documented manual handoff. A smoke test or successful installation alone does not establish end-to-end compatibility.
+
+Recheck installation and configuration details against the harness's current official documentation when performing a verification. This document intentionally does not prescribe product-specific paths or configuration formats that have not been tested here.

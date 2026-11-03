@@ -1,0 +1,61 @@
+{
+  "schema_version": "anti-rea-codex-cli-current-1",
+  "harness": {
+    "name": "Codex CLI",
+    "version": "0.165.0-alpha.1.2",
+    "operating_system": "macOS 26.7.1 arm64"
+  },
+  "product": {
+    "version": "0.1.32",
+    "cli": "anti-rea doctor and anti-rea flutter-android-probe",
+    "doctor_exit_code": 0,
+    "probe_exit_code": 0
+  },
+  "skill": {
+    "scope": "project",
+    "path": ".agents/skills/anti-rea/SKILL.md",
+    "sha256": "3a7848043f216881d38d33bea91191fb15948ee9f9af6ef23d4a3947bb4484c9",
+    "read_by_harness": true
+  },
+  "execution": {
+    "project": "temporary empty project",
+    "anti_rea_cli": "explicit path to isolated 0.1.32 wheel install",
+    "external_state": true,
+    "flutter_config_home": "private temporary directory",
+    "source_project_modified": false,
+    "plan_created": false,
+    "recommendation_skipped": true,
+    "stop_reason": "Flutter Android readiness probe returned blocked"
+  },
+  "doctor": {
+    "status": "passed",
+    "checks": "CLI prerequisites and packaged runtime integrity"
+  },
+  "flutter_android_probe": {
+    "status": "blocked",
+    "flutter_version": "3.47.8",
+    "framework_revision": "737ba8f885dc774b53b442759999a312c9461e4e",
+    "android_sdk": "ready",
+    "android_java": "ready",
+    "android_licenses": "not_accepted",
+    "android_build": "blocked",
+    "android_device": "none_connected",
+    "doctor_observations": [
+      "Xcode installation incomplete (unrelated to Android readiness)",
+      "pub.dev network check failed (unrelated to local Android SDK readiness)"
+    ]
+  },
+  "harness_behavior": [
+    "Codex read the installed project Skill and the relevant workflow references.",
+    "Codex used the explicit current Anti-REA CLI path for doctor and readiness probe.",
+    "Codex stopped after blocked readiness and did not create a plan or run recommend, as required by the Skill."
+  ],
+  "not_verified": [
+    "Project discovery, plan review, decision, candidate execution, acceptance, or rollback",
+    "Android build or device behavior",
+    "REA analysis or application hardening",
+    "MCP registration or calls",
+    "Other Codex CLI versions, operating systems, and harnesses"
+  ],
+  "risk": "Android readiness is blocked until Flutter reports the Android licenses accepted; no application compatibility or protection was assessed."
+}

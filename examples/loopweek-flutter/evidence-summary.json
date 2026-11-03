@@ -1,0 +1,251 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_loopweek_flutter_example_evidence",
+  "source": {
+    "repository": "https://github.com/ZaryabKhan/Loopweek",
+    "license": "MIT",
+    "license_path": "LICENSE",
+    "release_tag": "v1.0.3",
+    "commit": "f07a75f0875c2b51a953c258c358fbfca957be89"
+  },
+  "release_artifact": {
+    "filename": "Loopweek-v1.0.3.apk",
+    "size": 61683933,
+    "sha256": "ac8e37299f2d62af5314c5f9953a3febda35ad66fb33c40e358ca01d8327c71a",
+    "github_release_asset_digest": "sha256:ac8e37299f2d62af5314c5f9953a3febda35ad66fb33c40e358ca01d8327c71a",
+    "stored_in_repository": false
+  },
+  "environment": {
+    "rea": "6.8.0",
+    "node": "v24.22.1",
+    "runtime_manifest_sha256": "2481fc7000f0363b27506c6679e9bc8b07915a2b9fe08b459ad5b453914f8b76"
+  },
+  "operations": {
+    "flutter_build_identification": {
+      "status": "passed",
+      "report": {
+        "file": "evidence/identify-flutter-build-001.json",
+        "raw_sha256": "5feb8dea5b313a5619494aab1472cba4ed0df3ae4d0de3ec2f8a6b8126954196",
+        "raw_bytes": 4252,
+        "sanitized_sha256": "ee29bfee5276d3aab3adcd72e78dacbc4a8a8eae648cab6daabb179271d24b33",
+        "sanitized_bytes": 5414,
+        "evidence_id": "ev_c926c888085048b79ac8dd0abb2072465ca12df8e6ed74171b922d693a7d9965",
+        "operation": "identify_flutter_build"
+      },
+      "flutter_detected": true,
+      "abi_count": 3,
+      "coverage": "complete",
+      "arm64_libapp_bytes": 6947728,
+      "arm64_libapp_sha256": "024e583f56aa82d132410a7d2a0eb66349b2aa1cc22f2e82ff7dd87b43156515",
+      "dart_snapshot_hash": "ace654289f5abc240509fc941453ebc5"
+    },
+    "dart_aot_inspection": {
+      "status": "passed_with_partial_string_pool",
+      "report": {
+        "file": "evidence/inspect-dart-aot-arm64-001.json",
+        "raw_sha256": "8a8bb6a1c7e79280ec7301b2efa2424b8932545bdf6fff8616171a11051beda3",
+        "raw_bytes": 71221,
+        "sanitized_sha256": "d380775d6ccd003de5e78eaff9b36c58b71dec6ba771d58f6da631e98e92dd95",
+        "sanitized_bytes": 96216,
+        "evidence_id": "ev_5e2f0bab9938eefdfe007aef050e96b90a504c41bada1837d33a3f4665f604a1",
+        "operation": "inspect_dart_aot"
+      },
+      "abi": "arm64-v8a",
+      "aot_snapshot_bytes": 6947728,
+      "aot_snapshot_sha256": "024e583f56aa82d132410a7d2a0eb66349b2aa1cc22f2e82ff7dd87b43156515",
+      "snapshot_section_coverage": "complete",
+      "snapshot_sections": 4,
+      "string_pool_coverage": "partial",
+      "package_uri_count_lower_bound": 682,
+      "package_uris_retained": 500,
+      "dart_uri_count_lower_bound": 195,
+      "class_like_token_count_lower_bound": 4000,
+      "class_like_tokens_retained": 2000
+    },
+    "android_package_inspection": {
+      "status": "passed",
+      "report": {
+        "file": "evidence/inspect-android-package-001.json",
+        "sanitized_sha256": "cd0ca761a07bcf8f5299c39b3b2aa1a93b8c77aa6db9ddd9629d9a134e6bae60",
+        "sanitized_bytes": 46728,
+        "evidence_id": "ev_1d50a8250391d9c1bcb22755b475afb17f916ad4d27080247f2c3f38f66cd4b1",
+        "operation": "inspect_android_package"
+      },
+      "provider": "JADX headless 0.7.1",
+      "package": "com.appcodecraft.loopweek",
+      "version": "1.0.3",
+      "class_count": 1688,
+      "resource_count": 561,
+      "signature_verification": "not_performed"
+    },
+    "apk_signature_verification": {
+      "status": "passed",
+      "report": {
+        "file": "evidence/apk-signature-verification-001.json",
+        "sha256": "84f28a9e75fa2024c53af1944d5ccd58214f5083dcc48605f98f8e18f4caa052",
+        "bytes": 1113
+      },
+      "tool": "apksigner 0.9 (Android SDK build-tools 36.0.0)",
+      "java": "Temurin JDK 17.0.20.1",
+      "result": "Verifies",
+      "scheme": "v2",
+      "signer_count": 1,
+      "certificate_sha256": "9e8253d4d9d174a225eaa5051db1901c892c65b86af2e5163b4692c610c49c64",
+      "public_key_sha256": "c941a5e2a612c7bf7a6f5bc6449d5e9fa53ab21d25a34370fa893c9c092073ea",
+      "publisher_identity_externally_trusted": false
+    }
+  },
+  "limitations": [
+    "This is static artifact inspection, not a vulnerability finding, behavior test, decompilation, or protection result.",
+    "Dart AOT snapshot section coverage is complete for the selected arm64 libapp.so; string-pool extraction is capped and partial.",
+    "Package URI and class-like token counts are lower bounds; class-like tokens include incidental identifier-shaped strings.",
+    "The APK and full raw REA outputs are not stored in this repository; sanitized REA records preserve output semantics and hashes.",
+    "No candidate was tested; no BEFORE/AFTER comparison or protection claim is made.",
+    "Android package inspection is static and does not establish runtime behavior; APK signature verification is recorded separately.",
+    "A single emulator journey confirms only the described add, complete, force-stop, and relaunch persistence check.",
+    "APK signature verification confirms cryptographic validity under the embedded certificate, not external trust in the publisher identity."
+  ],
+  "runtime_behavior": {
+    "status": "passed_single_emulator_journey",
+    "evidence_file": "evidence/behavior-check-001.json",
+    "limitations": [
+      "One emulator journey only; no broad behavior coverage or repeatability claim.",
+      "No BEFORE/AFTER transformation comparison, candidate, or protection claim."
+    ],
+    "report_sha256": "16406a388dd9a6b3d69f25582cd3a0655d131a01ec222e7f15fc955882434a5e",
+    "report_bytes": 1038
+  },
+  "local_anti_rea_baseline": {
+    "status": "captured_with_blocked_aot_inspection_and_local_journey_passed",
+    "baseline_id": "loopweek-before-001",
+    "artifact_sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b",
+    "report": "evidence/local-anti-rea-baseline-001.json",
+    "report_sha256": "55fee2fc95728686ea884a5b2b276a3264cdce9158fdf8f96f123d93aeea92e6",
+    "report_bytes": 5714,
+    "artifact_stored_in_repository": false,
+    "protection_claim": false
+  },
+  "local_baseline_behavior": {
+    "artifact_sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b",
+    "device": {
+      "abi": "arm64-v8a",
+      "android_version": "16",
+      "api_level": 36
+    },
+    "evidence_file": "evidence/local-baseline-emulator-behavior-001.json",
+    "launch_smoke_evidence_file": "evidence/local-baseline-emulator-launch-001.json",
+    "protection_claim": false,
+    "report_bytes": 1583,
+    "report_sha256": "aabce2fc57169855b302ff7cf1609ea03141195af4ea4a03cd467cd49b51e53f",
+    "status": "passed_single_emulator_journey",
+    "scope": "task creation, completion, force-stop/relaunch, and persistence on one emulator",
+    "launch_smoke_report_bytes": 1643,
+    "launch_smoke_report_sha256": "3ace226e1eb39ef8ca28bc8fbd87d759d730d06817306cf2667e0e744c2f3f98"
+  },
+  "local_aot_planning_readiness": {
+    "status": "blocked_unsupported_profile",
+    "record": "evidence/local-aot-readiness-blocked-001.json",
+    "record_sha256": "c9526f2ac951c1af02a72fc4f32b46d520caa61dacd83933d340963d61cd252e",
+    "record_bytes": 1715,
+    "baseline_id": "loopweek-before-001-aot",
+    "plan_id": "loopweek-aot-blocked-001",
+    "plan_sha256": "da127661aa19b263424fc9620d2d8d03ff2edc00371aab0d90bbd0d64e691607",
+    "candidate_built": false,
+    "protection_claim": false,
+    "plan_record_file_sha256": "3e2c21a880a3ccc266674cdcd4063582ec699cf9762f3d8cc59da86ad9befef9"
+  },
+  "upstream_candidate_aot_inspection": {
+    "report": "evidence/rea-pr3662-aot-candidate.json",
+    "report_sha256": "ef65dae48e1220d5ab5c423f15019f40cf562ddff3a3a4691c8ab85812888f4c",
+    "report_bytes": 4218,
+    "raw_report_sha256": "a273b49e70cf6861ccfab018aefa8031d7e3aeddc1896bbbeab43394f159ea78",
+    "apk_sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b",
+    "rea_candidate_commit": "e50d3f74ade8b21f43d0d4f6e9a1b31f44a09efe",
+    "release_status": "unmerged_upstream_candidate",
+    "candidate_artifact_built": false,
+    "protection_claim": false
+  },
+  "local_anti_rea_baseline_refresh": {
+    "status": "captured_with_blocked_aot_inspection",
+    "baseline_id": "loopweek-before-004",
+    "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "artifact_size": 62349581,
+    "report": "evidence/local-anti-rea-baseline-002.json",
+    "report_sha256": "06b21ed3c53286255a5cb2f515d8a195c25a16830242679740103c952c9ef1de",
+    "report_bytes": 5989,
+    "rea_report": "evidence/rea-inspect-dart-aot-local-baseline-002.json",
+    "rea_report_sha256": "59421939e94aafae5f34fe6f0d48ebc0c57c92e1fd4806a82e2a667a68ef5e48",
+    "signature_report": "evidence/apksigner-verification-local-baseline-002.json",
+    "signature_report_sha256": "87be91b093f40b82263a52d94cc353492f4e83b987b6a077e3c9c66279ba374a",
+    "artifact_stored_in_repository": false,
+    "protection_claim": false,
+    "android_package_inspection": {
+      "status": "passed",
+      "report": "evidence/inspect-android-package-local-baseline-002.json",
+      "report_sha256": "1bfb3095f62cd301e3ff7a1cf072ab8958c2843a6518e6032499a0627d4bf356",
+      "report_bytes": 46710,
+      "raw_report_sha256": "e83fe493d6923e15a1deddde61dc0c6138f2ed7c4573799857235b60e9336c49",
+      "evidence_id": "ev_1afe145df60058a7561af44d02a629f8c8598c4ba778ee7398f8b127f99e36ae",
+      "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+      "provider": "JADX headless 0.7.1",
+      "class_count": 1695,
+      "resource_count": 561,
+      "signature_verification": "not_performed",
+      "artifact_stored_in_repository": false
+    }
+  },
+  "upstream_candidate_aot_inspection_refresh": {
+    "report": "evidence/rea-pr3662-aot-clean-source-baseline-002.json",
+    "report_sha256": "4fb3a70a9fa59c411f79c4fb9f4cd42a4d32ba31479f4a85ed6917bd05bdcf47",
+    "report_bytes": 4223,
+    "raw_report_sha256": "c2967ac9915a04aebcb3a9b62b8b3c7f911515c7fffaa6f8aa5d2a0f2d132eee",
+    "apk_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "rea_candidate_commit": "e50d3f74ade8b21f43d0d4f6e9a1b31f44a09efe",
+    "release_status": "unmerged_upstream_candidate",
+    "candidate_artifact_built": false,
+    "protection_claim": false
+  },
+  "local_baseline_refresh_behavior": {
+    "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "baseline_id": "loopweek-before-004",
+    "device": {
+      "abi": "arm64-v8a",
+      "android_version": "16",
+      "api_level": 36
+    },
+    "evidence_file": "evidence/local-baseline-emulator-behavior-002.json",
+    "protection_claim": false,
+    "report_bytes": 1681,
+    "report_sha256": "e5e5b0f96d60d364fd0af6290e3688c3aad07a0a8d742885278b103620ed7196",
+    "status": "passed_single_emulator_journey",
+    "scope": "task creation, completion, force-stop/relaunch, and persistence on one emulator"
+  },
+  "local_baseline_refresh_behavior_second_journey": {
+    "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "baseline_id": "loopweek-before-004",
+    "device": {
+      "abi": "arm64-v8a",
+      "android_version": "16",
+      "api_level": 36
+    },
+    "evidence_file": "evidence/local-baseline-emulator-behavior-003.json",
+    "protection_claim": false,
+    "report_bytes": 1762,
+    "report_sha256": "64eeada42aeef92a9f204fb2b04f04c9b54d8248a6486a6a71759d0a2644f588",
+    "status": "passed_single_emulator_journey",
+    "scope": "task creation, completion, terminate/relaunch, and persistence on one emulator"
+  },
+  "current_main_aot_gate_check": {
+    "report": "evidence/rea-main-current-aot-blocker-baseline-004.json",
+    "report_sha256": "383d6b9ad25992b080b6267cd1670180f21790599a0ab433e18cc17800980a77",
+    "report_bytes": 2295,
+    "raw_report_sha256": "4dd7a5e2ad1046c97ebdcfef7423a516384d449b55ed0ae8f8c89997cc8527a2",
+    "apk_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "rea_main_commit": "26c3e9e4134971c79e822bbcb16fb42bb7dd8e8d",
+    "status": "unsupported_target",
+    "published_latest_release": "6.8.0",
+    "pull_request_3662_status": "open",
+    "candidate_artifact_built": false,
+    "protection_claim": false
+  }
+}

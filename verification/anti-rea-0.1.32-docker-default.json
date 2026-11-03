@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "status": "private_verification_only",
+  "artifact": "anti-rea-0.1.32-docker-default.whl",
+  "sha256": "22d2bfbe35e37d2870e5cf574104eefd086fb9b8ef8ee847ddd32dfe2f5ee271",
+  "bytes": 876844,
+  "built_at_utc": "2026-11-02T10:52:00Z",
+  "builder": "CPython 3.11; setuptools 75.9.1; wheel via pip --no-build-isolation",
+  "checks": {
+    "pip_check": "passed",
+    "installed_cli_help": "passed",
+    "packaged_rea_sandbox_default": "docker",
+    "packaged_node_image_digest": "sha256:d862bb5d082c5ae0210ac07e8c0344cb8cf7bef6d78e9b8c50c179da923108ea",
+    "packaged_docs_note_output_quota_limit": "passed"
+  },
+  "limitations": [
+    "Unsigned private verification artifact; not a release",
+    "No clean Linux or Windows installation check"
+  ]
+}

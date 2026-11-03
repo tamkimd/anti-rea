@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_private_source_wheel_verification",
+  "date": "2026-11-02",
+  "official_release_artifact": false,
+  "source": "clean copy of current workspace at build time; local root evidence and generated caches excluded",
+  "environment": {
+    "python": "3.11.18",
+    "platform": "macOS-26.7.1-arm64-arm-64bit"
+  },
+  "artifact": {
+    "filename": "anti_rea-0.1.32-py3-none-any.whl",
+    "stored_outside_repository": true,
+    "bytes": 926760,
+    "sha256": "2f5809b99429ae628f52aa9c354db30168bd441b02ffefc31e3bd56a77698a47"
+  },
+  "installation": {
+    "fresh_virtual_environment": true,
+    "direct_dependencies": {
+      "mcp": "2.3.0",
+      "jsonschema": "4.26.0",
+      "cryptography": "50.0.2"
+    },
+    "pip_check": "No broken requirements found.",
+    "cli_help_exit_code": 0,
+    "doctor_status": "ready"
+  },
+  "checks": {
+    "full_source_suite": {
+      "status": "passed",
+      "tests": 436,
+      "skipped": 28
+    },
+    "focused_workflow_execution_cli_mcp": {
+      "status": "passed",
+      "tests": 106,
+      "skipped": 7
+    },
+    "installed_wheel_mcp_stdio": {
+      "status": "passed",
+      "initialized": true,
+      "tool_count": 37,
+      "workflow_contract_schema_version": "2.0"
+    },
+    "source_tree_mcp_inspect_and_baseline_retrieval": {
+      "status": "passed",
+      "test": "test_inspect_project_saves_and_retrieves_same_manifest"
+    }
+  },
+  "payload": {
+    "file_count": 131,
+    "apk_aab_zip_build_and_python_cache_outputs_included": false,
+    "forbidden_payloads": []
+  },
+  "limitations": [
+    "Private same-version verification build, not an official release.",
+    "Transitive dependency versions were resolved during this installation; this check did not enforce the experimental pylock.toml hashes.",
+    "Unsigned; no trusted release identity is configured.",
+    "This verifies package and fixture workflows, not real-application protection."
+  ]
+}

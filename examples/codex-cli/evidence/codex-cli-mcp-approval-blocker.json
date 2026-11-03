@@ -1,0 +1,30 @@
+{
+  "schema_version": "anti-rea-harness-smoke-2",
+  "harness": {
+    "name": "Codex CLI",
+    "version": "0.165.0-alpha.1.2",
+    "operating_system": "macOS 26.7.1 arm64"
+  },
+  "interface": "Local stdio MCP configured with per-invocation CLI overrides",
+  "probe": {
+    "tool": "inspect_project",
+    "target": "fresh owned synthetic CommonJS fixture",
+    "requested_effect": "bounded read-only discovery; target manifest would be stored in external private state",
+    "codex_sandbox": "read-only",
+    "approval_policy": "never",
+    "result": "rejected before the Anti-REA MCP server tool ran",
+    "rejection": "MCP tool call requires approval, but approval policy is never",
+    "private_state_created": false,
+    "candidate_or_decision_created": false
+  },
+  "raw_transcript": {
+    "retained_outside_repository": true,
+    "sha256": "c7062f8fdb3723b95528d0ddda4c1f1bb34d327ea2c614c7a88f6115a1f76e37"
+  },
+  "additional_limitations": [
+    "The attempt also exceeded Codex's skill context budget, so it does not verify Skill loading through the MCP session.",
+    "No automatic approval or decision path was enabled.",
+    "Codex MCP compatibility remains unverified because the tool call did not run."
+  ],
+  "result": "blocked_by_host_approval_policy"
+}

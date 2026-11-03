@@ -1,0 +1,46 @@
+# Python bytecode, environments, and package/build output
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+wheelhouse/
+
+# JavaScript dependencies and generated output
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local credentials and environment files (keep shareable templates)
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Anti-REA local state and generated evidence (keep checked-in examples/verification)
+.anti-rea/
+.anti-rea-state/
+/evidence/
+
+# Flutter and Android local/generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/ephemeral/
+android/local.properties
+*.apk
+*.aab
+*.dill
+*.symbols
+
+# IDE and operating-system noise
+.DS_Store
+Thumbs.db
+.idea/

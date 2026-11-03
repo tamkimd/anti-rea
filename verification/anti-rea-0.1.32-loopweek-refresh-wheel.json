@@ -1,0 +1,132 @@
+{
+  "checks": {
+    "apk_aab_build_payload": "excluded",
+    "clean_install": {
+      "cli_help": "passed",
+      "doctor": "ready",
+      "mcp_stdio": {
+        "protocol_version": "2025-11-25",
+        "status": "passed",
+        "tool_count": 37,
+        "workflow_contract_schema": "2.0"
+      },
+      "packaging_tests": {
+        "failed": 0,
+        "passed": 21
+      },
+      "pip_check": "No broken requirements found."
+    },
+    "cli_help": "passed",
+    "dependency_cache_identity": {
+      "adapter_probes": {
+        "bla_npm": "11.19.1",
+        "e2e_npm": "11.17.0",
+        "host_npm": "11.17.0",
+        "rea_npm": "11.19.1"
+      },
+      "cache_key_uses_adapter_selected_version": true,
+      "cache_reuse_checks_manifest_version": true,
+      "dependency_tests": 18,
+      "host_path_npm_version": "11.17.0",
+      "legacy_bla_cache_without_npm_identity": "rejected_for_cache_reuse",
+      "legacy_explicit_bla_runtime_npm_version": "unknown_not_package_version",
+      "npm_version_by_selected_adapter": {
+        "bla": "11.19.1",
+        "e2e": "11.17.0",
+        "rea": "11.19.1"
+      },
+      "status": "passed"
+    },
+    "doctor": {
+      "optional_runtimes": [
+        "bla",
+        "e2e",
+        "rea"
+      ],
+      "required_checks": "passed",
+      "status": "ready"
+    },
+    "forbidden_payloads": {
+      "aab": "excluded",
+      "apk": "excluded",
+      "build_output": "excluded",
+      "screenshot": "excluded",
+      "zip": "excluded"
+    },
+    "fresh_venv_install": "passed_offline_from_local_wheelhouse",
+    "installed_flutter_blocker": {
+      "action_count": 0,
+      "profile": "balanced",
+      "reason": "Pinned REA AOT profile remains unsupported",
+      "status": "blocked"
+    },
+    "mcp_stdio": {
+      "create_plan_tool_present": true,
+      "protocol_version": "2025-11-25",
+      "status": "passed",
+      "tool_count": 37,
+      "workflow_contract_schema": "2.0"
+    },
+    "packaged_evidence": {
+      "apksigner-verification-local-baseline-002.json": {
+        "bytes": 668,
+        "sha256": "87be91b093f40b82263a52d94cc353492f4e83b987b6a077e3c9c66279ba374a"
+      },
+      "inspect-android-package-local-baseline-002.json": {
+        "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+        "bytes": 46710,
+        "class_count": 1695,
+        "host_paths_removed": true,
+        "provider": "JADX headless 0.7.1",
+        "raw_report_sha256": "e83fe493d6923e15a1deddde61dc0c6138f2ed7c4573799857235b60e9336c49",
+        "resource_count": 561,
+        "sha256": "1bfb3095f62cd301e3ff7a1cf072ab8958c2843a6518e6032499a0627d4bf356",
+        "verified_in_installed_wheel": true
+      },
+      "local-anti-rea-baseline-002.json": {
+        "bytes": 5281,
+        "sha256": "8e263866e7422b81a0d01dc30cecf4566bfcf3060b3106d22d87360939278e9a"
+      },
+      "local-baseline-emulator-behavior-002.json": {
+        "bytes": 1681,
+        "sha256": "e5e5b0f96d60d364fd0af6290e3688c3aad07a0a8d742885278b103620ed7196"
+      },
+      "rea-inspect-dart-aot-local-baseline-002.json": {
+        "bytes": 1562,
+        "sha256": "59421939e94aafae5f34fe6f0d48ebc0c57c92e1fd4806a82e2a667a68ef5e48"
+      },
+      "rea-pr3662-aot-clean-source-baseline-002.json": {
+        "bytes": 4223,
+        "sha256": "4fb3a70a9fa59c411f79c4fb9f4cd42a4d32ba31479f4a85ed6917bd05bdcf47"
+      },
+      "workflow-v2.schema.json": {
+        "bytes": 60561,
+        "sha256": "f449582a06eda48691b8b4229ffef941bb161e7f505f8a8074aa36c29390fe8e"
+      }
+    },
+    "pip_check": "passed",
+    "screenshot_payload": "excluded"
+  },
+  "environment": {
+    "platform": "macOS 26.7.1 arm64",
+    "python": "3.11.18"
+  },
+  "official_r122_modified": false,
+  "record_type": "anti_rea_private_wheel_verification",
+  "release_signature": "not supplied; this is a private same-version verification wheel",
+  "schema_version": "1.0",
+  "source_suite": {
+    "environment": "CPython 3.11.18 macOS ARM64",
+    "result": "passed",
+    "skipped": 27,
+    "tests": 429
+  },
+  "verified_at": "2026-11-02",
+  "version": "0.1.32",
+  "wheel": {
+    "official_release_artifact": false,
+    "sha256": "ff0e71a07ebc59cf09ba64592c8211a30ea183f07935003952cfe9c5ebc38cc0",
+    "size_bytes": 920572,
+    "stored_in_repository": false
+  }
+}

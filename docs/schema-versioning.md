@@ -1,0 +1,17 @@
+# Workflow schema versioning
+
+The current workflow record contract is `2.0`. Version 2.0 adds evidence-bound acceptance requirements, hashed execution outputs, passing verification evidence references bound to absolute paths and SHA-256 digests, terminal `blocked`/`rejected` records bound to execution and verification identities, optional run resume lineage (`resume_of` plus the verified input identity hash), and decision selections that may be empty only when the plan is explicitly rejected. It intentionally rejects version 1.0 records until an explicit migration tool exists. Readers reject a missing or unknown `schema_version`; they do not guess, rewrite, or silently upgrade records.
+
+Baseline artifact identities may optionally include `kind: "directory"` for Apple `.app` and `.framework` packages. Their SHA-256 covers the bounded `anti-rea-tree-v1` manifest of relative entry paths, types, modes, regular-file sizes and contents, plus symlink target strings. Links are never followed; this is package identity evidence, not signing or runtime validation.
+
+Immutable target, baseline, plan, decision, execution, verification, acceptance, and rollback records are never migrated in place. A future migration tool must read and validate the original, write a new record to a separate destination, validate it against the destination schema, and report both input and output IDs and hashes. The original remains available for audit and rollback. Run state is mutable through compare-and-swap, but schema conversion still requires an explicit migration and a validated expected-current identity.
+
+No migration from version 1.0 or earlier formats is currently supported. Export or retain the source data, then create a new versioned record explicitly. The versioned JSON Schema is `schemas/workflow-v2.schema.json`.
+
+Behavior snapshot fields added to baseline v2 are optional when reading older v2 evidence. Recommendations do not attach legacy behavior commands that lack a bound private snapshot, and resuming a behavior-enabled legacy run requires a fresh baseline capture.
+
+Baseline build snapshot identity is optional for reading older v2 records. New BLA recommendations and resume require a retained private build snapshot; legacy baselines remain readable for review and manual source-map guidance.
+
+Acceptance `claim_ids` is additive in v2. Legacy `claims` values remain readable, but are not sufficient to pass current semantic acceptance; the current gate also rejects non-empty free-form `claims` on a new accepted record. Replaying a legacy accepted record without registered `claim_ids` is rejected by the current gate; immutable history is preserved and is not silently upgraded. A new run and new evidence are required for current acceptance. The additive field was introduced in product release 0.1.7.
+
+Baseline `build_duration_ms` remains the first build's elapsed time for compatibility. To measure variability, a new capture may include `build_timing` with two to five fresh-copy trials, each bound to its elapsed time, selected-artifact hashes, and retained output report; its min/median/max summary and artifact determinism flag are recomputed by validation. The CLI defaults to one trial because repeating a build may trigger side effects or cost. Trial copies beyond the canonical baseline snapshot are removed after each successful or failed attempt; the raw bounded reports remain.

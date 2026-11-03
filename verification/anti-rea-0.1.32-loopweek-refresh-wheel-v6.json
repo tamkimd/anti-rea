@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_private_wheel_verification",
+  "date": "2026-11-02",
+  "product_version": "0.1.32",
+  "artifact": {
+    "stored_outside_repository": true,
+    "external_path": "<PRIVATE_WHEEL>",
+    "bytes": 923904,
+    "sha256": "3ff7259457933b6168e6f68b7707788afedf48b8ad66596662feb361a88fac9c"
+  },
+  "environment": {
+    "python": "3.11.18",
+    "platform": "macOS ARM64"
+  },
+  "checks": {
+    "full_source_suite": {
+      "status": "passed",
+      "tests": 433,
+      "skipped": 27
+    },
+    "focused_flutter_android_execution_mcp": {
+      "status": "passed",
+      "tests": 83,
+      "skipped": 2
+    },
+    "flutter_signature_acceptance_regression": {
+      "status": "passed",
+      "tests": 1,
+      "forged_report": "rejected",
+      "matching_report": "accepted"
+    },
+    "fresh_venv_install": "passed",
+    "pip_check": "passed",
+    "cli_help": "passed",
+    "doctor": "ready",
+    "mcp_stdio": {
+      "status": "passed",
+      "protocol_version": "2025-11-25",
+      "tool_count": 37,
+      "workflow_contract": "present"
+    },
+    "live_apksigner": {
+      "status": "passed",
+      "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+      "result": "Verifies",
+      "signer_count": 1,
+      "certificate_sha256": "841acd06bcdca601e950d5d1819339fd9a28871cf1189ff8257e9cf8727a6089",
+      "apksigner_jar_sha256": "3716d9311e55d2b0918a2fd9d54ba9e406c5f6abeea700b287f11259bc163dec"
+    },
+    "packaged_behavior_report": {
+      "status": "passed",
+      "report_sha256": "64eeada42aeef92a9f204fb2b04f04c9b54d8248a6486a6a71759d0a2644f588",
+      "screenshot_sha256": "57791919e3b02c626e961af82751891f444bbf6042666570a57c050e644e32e7"
+    },
+    "forbidden_payloads": {
+      "apk": "excluded",
+      "aab": "excluded",
+      "build_output": "excluded",
+      "screenshot": "excluded",
+      "zip": "excluded"
+    },
+    "flutter_aot_gate": {
+      "status": "blocked",
+      "reason": "Pinned REA 6.8.0 cannot inspect unified Dart snapshot",
+      "candidate_built": false
+    }
+  }
+}

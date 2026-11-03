@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_loopweek_clean_source_flutter_emulator_behavior_check",
+  "evidence_id": "loopweek-before-004-emulator-behavior-002",
+  "status": "passed_single_emulator_journey",
+  "baseline_id": "loopweek-before-004",
+  "artifact": {
+    "package": "com.appcodecraft.loopweek",
+    "sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "stored_in_repository": false
+  },
+  "device": {
+    "android_version": "16",
+    "api_level": 36,
+    "abi": "arm64-v8a",
+    "emulator": true,
+    "disposable": true
+  },
+  "steps": [
+    "Installed the exact clean-source baseline APK on the Android 16/API 36 emulator.",
+    "Launched the app and dismissed onboarding with Skip.",
+    "Created a task named Anti-REA acceptance follow-up task for Monday, November 2, 2026.",
+    "Marked the task complete.",
+    "Terminated and relaunched the app without clearing its data."
+  ],
+  "observed_after_relaunch": "Anti-REA acceptance follow-up task remained visible and checked under Monday, November 2, 2026.",
+  "app_process_log_check": {
+    "status": "passed",
+    "scope": "Relaunched app process logcat, filtered to the application PID.",
+    "matched_errors": []
+  },
+  "screenshot": {
+    "stored_in_repository": false,
+    "external_path": "<PRIVATE_SCREENSHOT>",
+    "sha256": "57791919e3b02c626e961af82751891f444bbf6042666570a57c050e644e32e7"
+  },
+  "limitations": [
+    "This is one additional task-completion and relaunch-persistence journey on one emulator; it does not establish broad behavior coverage or reproducibility across devices.",
+    "No transformed candidate or comparable BEFORE/AFTER REA result was produced, so this is not a protection claim."
+  ],
+  "protection_claim": false
+}

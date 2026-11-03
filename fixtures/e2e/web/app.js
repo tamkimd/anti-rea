@@ -1,0 +1,1 @@
+document.querySelector('#greet').onclick=()=>{const name=document.querySelector('#name').value.trim();document.querySelector('[role=status]').textContent=name?'Hello, '+name+'!':'Name is required.';};

@@ -1,0 +1,23 @@
+{
+  "artifact_kind": "private_source_verification_build",
+  "official_release_artifact": false,
+  "platform": "macOS-26.7.1-arm64-arm-64bit",
+  "python": "3.11.18",
+  "wheel": {
+    "filename": "anti_rea-0.1.32-py3-none-any.whl",
+    "bytes": 903676,
+    "sha256": "2a4a2d960f2f05b071f9ac4a2481064c279d2ed8cc97114ec5714bf4b759842b"
+  },
+  "install": {
+    "fresh_virtual_environment": true,
+    "dependency_install": "offline wheelhouse",
+    "skill_install": "passed via installed anti-rea skill install --yes",
+    "skill_destination": "temporary consumer project, outside repository",
+    "all_relative_markdown_links_resolve_inside_installed_skill": true,
+    "pip_check": "passed"
+  },
+  "limitations": [
+    "Private same-version verification build; not an official release.",
+    "No host other than Codex has been verified for Skill loading."
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_private_source_wheel_verification",
+  "date": "2026-11-02",
+  "official_release_artifact": false,
+  "source": "clean copy of current workspace at build time; local root evidence and generated caches excluded",
+  "environment": {
+    "python": "3.11.18",
+    "platform": "macOS-26.7.1-arm64-arm-64bit"
+  },
+  "artifact": {
+    "filename": "anti_rea-0.1.32-py3-none-any.whl",
+    "stored_outside_repository": true,
+    "bytes": 926953,
+    "sha256": "63b265cb2ce8da704acad12a3fab9dff71661b8d832036c8d4dc1eb761bb76d7"
+  },
+  "installation": {
+    "fresh_virtual_environment": true,
+    "direct_dependencies": {
+      "mcp": "2.3.0",
+      "jsonschema": "4.26.0",
+      "cryptography": "50.0.2"
+    },
+    "pip_check": "No broken requirements found.",
+    "cli_help_exit_code": 0,
+    "doctor_status": "ready"
+  },
+  "checks": {
+    "full_source_suite": {
+      "status": "passed",
+      "tests": 436,
+      "skipped": 28
+    },
+    "focused_workflow_execution_cli_mcp": {
+      "status": "passed",
+      "tests": 106,
+      "skipped": 7
+    },
+    "composite_resume_and_tamper_rejection": "passed",
+    "installed_wheel_mcp_stdio": {
+      "status": "passed",
+      "initialized": true,
+      "tool_count": 37,
+      "workflow_contract_schema_version": "2.0"
+    },
+    "source_tree_mcp_inspect_and_baseline_retrieval": {
+      "status": "passed",
+      "test": "test_inspect_project_saves_and_retrieves_same_manifest"
+    },
+    "installed_wheel_composite_cli_workflow": {
+      "status": "passed",
+      "test": "test_composite_accepted_report_replays_after_candidate_rollback",
+      "candidate_runtime": "fixture stub",
+      "optimizer_proofs_required": false,
+      "covers": [
+        "comma-separated explicit selection",
+        "execution",
+        "acceptance",
+        "rollback/report replay",
+        "tampered retained tree rejected during resume",
+        "verified fresh-run resume"
+      ]
+    }
+  },
+  "payload": {
+    "file_count": 131,
+    "apk_aab_zip_build_and_python_cache_outputs_included": false,
+    "forbidden_payloads": []
+  },
+  "limitations": [
+    "Private same-version verification build, not an official release.",
+    "Transitive dependency versions were resolved during this installation; the experimental pylock.toml hashes were not enforced.",
+    "Unsigned; no trusted release identity is configured.",
+    "Fixture workflow evidence does not establish protection for a real application."
+  ]
+}

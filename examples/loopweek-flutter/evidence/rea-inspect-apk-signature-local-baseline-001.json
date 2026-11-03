@@ -1,0 +1,142 @@
+{
+  "analysis_profile": null,
+  "authority": "shipped-artifact",
+  "confidence": "derived",
+  "environment": null,
+  "evidence_id": "ev_35055bbd06f1be452f39bdd57d417ac9c48db7c6e30aed3816628380e5a7389a",
+  "evidence_links": [
+    "ev_fb808272a13682e63709bbee843dd867e6951db9839bdbd09061bd7ab4aad992"
+  ],
+  "limitations": [
+    "4 bytes outside known signing fields were not interpreted; suffixes do not by themselves establish malformed signing.",
+    "No signature is verified: signer, rotation-lineage and source-stamp signatures are NOT cryptographically checked, and certificate chains, revocation and authenticity are NOT evaluated. Certificates and lineages are what the APK declares.",
+    "Not read: v4 .apk.idsig, verity digests (matches_apk null), and the v1 X-Android-APK-Signed marker, so v1_only cannot distinguish a v1-only APK from one whose v2/v3 block was removed.",
+    "Static structural inspection only. No Android code executes, no device or adb is involved, and odex/vdex/oat/cdex are not read.",
+    "matches_apk and self_consistent only show that the declared content digest equals the digest of the current bytes. This is not a signature verification: anyone who changes the bytes can recompute the digest and write it into the signed data. SHA-256 identifies the exact bytes, not the producer.",
+    "v1 signers are what each signature block's PKCS#7 SignedData declares: its signatures, the .SF and MANIFEST.MF digests and entry coverage are NOT verified."
+  ],
+  "locations": [
+    {
+      "kind": "artifact-path",
+      "path": "<PRIVATE_BASELINE_APK>"
+    }
+  ],
+  "normalized_result": {
+    "artifact": {
+      "path": "<PRIVATE_BASELINE_APK>",
+      "sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b"
+    },
+    "coverage": {
+      "examined": 1,
+      "exhausted": true,
+      "next_offset": null,
+      "status": "complete-within-view",
+      "total": 1
+    },
+    "kind": "summary",
+    "limitations": [
+      "4 bytes outside known signing fields were not interpreted; suffixes do not by themselves establish malformed signing.",
+      "No signature is verified: signer, rotation-lineage and source-stamp signatures are NOT cryptographically checked, and certificate chains, revocation and authenticity are NOT evaluated. Certificates and lineages are what the APK declares.",
+      "Not read: v4 .apk.idsig, verity digests (matches_apk null), and the v1 X-Android-APK-Signed marker, so v1_only cannot distinguish a v1-only APK from one whose v2/v3 block was removed.",
+      "Static structural inspection only. No Android code executes, no device or adb is involved, and odex/vdex/oat/cdex are not read.",
+      "matches_apk and self_consistent only show that the declared content digest equals the digest of the current bytes. This is not a signature verification: anyone who changes the bytes can recompute the digest and write it into the signed data. SHA-256 identifies the exact bytes, not the producer.",
+      "v1 signers are what each signature block's PKCS#7 SignedData declares: its signatures, the .SF and MANIFEST.MF digests and entry coverage are NOT verified."
+    ],
+    "parent_digest": "fb808272a13682e63709bbee843dd867e6951db9839bdbd09061bd7ab4aad992",
+    "parent_evidence_id": "ev_fb808272a13682e63709bbee843dd867e6951db9839bdbd09061bd7ab4aad992",
+    "parent_operation": "inspect_apk_signature",
+    "summary": {
+      "artifact": {
+        "bytes": 62349581,
+        "path": "<PRIVATE_BASELINE_APK>",
+        "sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b"
+      },
+      "counts": {
+        "digests": 1,
+        "lineage": 0,
+        "signers": 1
+      },
+      "posture": {
+        "rotation_present": false,
+        "schemes_agree_on_signer": true,
+        "self_consistent": true,
+        "signer_change_declared_by_rotation": false,
+        "source_stamp_present": false,
+        "strongest_scheme": "v2",
+        "v1_only": false,
+        "v1_signers_match_block_signers": null
+      },
+      "schemes": {
+        "v1": {
+          "present": false,
+          "signers": 0
+        },
+        "v2": {
+          "present": true,
+          "signers": 1
+        },
+        "v3": {
+          "present": false,
+          "signers": 0
+        },
+        "v3.1": {
+          "present": false,
+          "signers": 0
+        }
+      },
+      "signers": [
+        {
+          "certificate_sha256": "841acd06bcdca601e950d5d1819339fd9a28871cf1189ff8257e9cf8727a6089",
+          "id": "apk:9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b:v2:signer:0",
+          "index": 0,
+          "scheme": "v2"
+        }
+      ],
+      "source_coverage": {
+        "authenticity": "unknown",
+        "lineage_decoding": "complete-within-records",
+        "scope": "declared-signing-records",
+        "signature_verification": "not-performed",
+        "signer_identity": "complete-within-records",
+        "uninterpreted_bytes": 4,
+        "v1_entry_coverage": "unknown"
+      },
+      "source_stamp": {
+        "certificate_sha256": null,
+        "decode_error": null,
+        "present": false
+      }
+    },
+    "unknowns": [
+      "Declared signer and rotation identities are unverified; authenticity and v1 entry coverage remain unknown."
+    ],
+    "view": {
+      "kind": "summary"
+    },
+    "view_digest": "87fbd71ba56cd4ea0e8419ba78ff17a47f3b3ef4939c96d170e961cf665cad67"
+  },
+  "operation": "inspect_analysis_view",
+  "parameters": {
+    "parent_evidence_id": "ev_fb808272a13682e63709bbee843dd867e6951db9839bdbd09061bd7ab4aad992",
+    "view": {
+      "kind": "summary"
+    }
+  },
+  "predicate_type": "rea.analysis-view",
+  "provider": {
+    "id": "rea-analysis-view",
+    "name": "REA analysis view projection",
+    "version": "1"
+  },
+  "raw_result": null,
+  "relationship_coverage": null,
+  "subject": {
+    "architecture": null,
+    "digest": {
+      "sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b"
+    },
+    "format": "apk",
+    "local_path": "<PRIVATE_BASELINE_APK>",
+    "name": "app-release.apk"
+  }
+}

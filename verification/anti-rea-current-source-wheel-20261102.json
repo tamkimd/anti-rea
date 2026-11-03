@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_private_source_wheel_verification",
+  "date": "2026-11-02",
+  "source_copy": "/private/tmp/anti-rea-current-source-package-20261102/source",
+  "artifact": {
+    "path": "/private/tmp/anti-rea-current-source-package-20261102/wheels/anti_rea-0.1.32-py3-none-any.whl",
+    "bytes": 929534,
+    "sha256": "081d3a12ee03374a9868d4de7cc73a762f0de1f1ba5915718c015b06faaa2439",
+    "wheel_entries": 162
+  },
+  "environment": {
+    "python": "3.11.18",
+    "environment": "private external venv; current wheel force-installed outside repository"
+  },
+  "checks": {
+    "pip_check": "passed",
+    "cli_help": "passed",
+    "doctor": "ready",
+    "installed_recommendation_text": "verified current multi-action rollback wording",
+    "apk_aab_zip_wheel_payload": "no application archives found"
+  },
+  "limitations": [
+    "Private same-version verification only; official release manifest/signature was not changed.",
+    "This packaging check does not establish real application protection or optional engine readiness."
+  ]
+}

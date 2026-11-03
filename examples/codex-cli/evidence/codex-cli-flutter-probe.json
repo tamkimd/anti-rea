@@ -1,0 +1,31 @@
+{
+  "schema_version": "anti-rea-codex-flutter-probe-1",
+  "harness_version": "0.165.0-alpha.1.2",
+  "anti_rea_version": "0.1.32",
+  "skill_sha256": "3a7848043f216881d38d33bea91191fb15948ee9f9af6ef23d4a3947bb4484c9",
+  "probe": {
+    "scope": "flutter_android_toolchain_only",
+    "status": "blocked",
+    "flutter": {
+      "version": "3.47.8",
+      "framework_revision": "737ba8f885dc774b53b442759999a312c9461e4e"
+    },
+    "android_sdk": "ready",
+    "android_java": "ready",
+    "android_licenses": "not_accepted",
+    "android_build": "blocked",
+    "android_device": {
+      "status": "none_connected",
+      "count": 0
+    }
+  },
+  "harness_stop": {
+    "recommendation_skipped": true,
+    "reason": "The required workflow stops when a readiness probe is blocked."
+  },
+  "limitations": [
+    "No app was built, signed, installed, or run.",
+    "The probe does not establish app compatibility or protection.",
+    "Flutter doctor also reported incomplete Xcode and a pub.dev network check failure; neither is an Android SDK license status."
+  ]
+}

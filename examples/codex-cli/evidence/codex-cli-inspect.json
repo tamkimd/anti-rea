@@ -1,0 +1,89 @@
+{
+  "schema_version": "anti-rea-codex-cli-inspect-1",
+  "harness": {
+    "name": "Codex CLI",
+    "version": "0.165.0-alpha.1.2",
+    "operating_system": "macOS 25.6.0 arm64"
+  },
+  "product": {
+    "version": "0.1.16",
+    "cli": "anti-rea inspect",
+    "cli_exit_code": 0
+  },
+  "skill": {
+    "scope": "project",
+    "path": ".agents/skills/anti-rea/SKILL.md",
+    "sha256": "2c738ee88451e48b7952c44c42e0493553f83ea2e3a18159c75d7b9e0fb0df2b",
+    "sha256_checked_in_harness_session": true,
+    "skill_read_command_exit_code": 0
+  },
+  "fixture": {
+    "description": "Temporary JavaScript project with README.md, package.json, and src/main.js; packaged Anti-REA Skill installed under .agents/skills/anti-rea",
+    "target_id": "target-c3fc9d14afb434ec5f10",
+    "file_count": 11,
+    "component_count": 1,
+    "component_kind": "javascript_or_typescript",
+    "source_file_sha256": {
+      "README.md": "b2aefc48c4ce2b99ccabf3ba7d263d14e491fa1cb3f9deb7b5a93536a8da9556",
+      "package.json": "cff7d17a711a60474381be706e2250ec677bee9cad35325b8b703f1250667821",
+      "src/main.js": "76f26bd292166033d02e77bdb8fe6aec01e915ccb8cb3f93b8971f9dcd78250e"
+    },
+    "source_files_unchanged_after_run": true
+  },
+  "command": {
+    "argv": [
+      "<anti-rea-0.1.16-venv>/bin/anti-rea",
+      "inspect",
+      "<temporary-project>",
+      "--store",
+      "<private-state-outside-project>"
+    ],
+    "status": "discovered",
+    "manifest_saved_outside_project": true,
+    "sanitized_stdout": {
+      "components": [
+        {
+          "artifacts": ["src/main.js"],
+          "id": "root",
+          "kind": "javascript_or_typescript",
+          "manifests": ["package.json"],
+          "root": ".",
+          "runtimes": ["javascript_or_typescript"]
+        }
+      ],
+      "file_count": 11,
+      "id": "target-c3fc9d14afb434ec5f10",
+      "record": "<private-state>/records/target-target-c3fc9d14afb434ec5f10.json",
+      "status": "discovered",
+      "unknowns": [
+        "Worker reference scanning finds only bounded literal regex matches; comments, strings, computed references, and runtime reachability are not resolved."
+      ]
+    }
+  },
+  "harness_observations": [
+    {
+      "operation": "Read and hash the project Skill",
+      "exit_code": 0
+    },
+    {
+      "operation": "Run anti-rea inspect --help",
+      "exit_code": 0
+    },
+    {
+      "operation": "Run anti-rea inspect using the explicit 0.1.16 virtual-environment executable",
+      "exit_code": 0
+    },
+    {
+      "operation": "Compare source file paths and SHA-256 hashes before and after inspection",
+      "exit_code": 0,
+      "result": "identical"
+    }
+  ],
+  "not_verified": [
+    "MCP registration or calls",
+    "Plan review, explicit approval, candidate execution, acceptance, or rollback",
+    "REA analysis or application hardening",
+    "Other Codex CLI versions, operating systems, and harnesses"
+  ],
+  "risk": "This inspection is a bounded inventory. It does not establish build behavior, runtime reachability, trust boundaries, or protection."
+}

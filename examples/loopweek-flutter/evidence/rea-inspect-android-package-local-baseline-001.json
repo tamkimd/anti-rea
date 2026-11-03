@@ -1,0 +1,28 @@
+{
+  "artifact_sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b",
+  "error": {
+    "category": "unsupported_provider",
+    "code": "capability_unavailable",
+    "details": {
+      "diagnostics": {
+        "failure_code": "not_configured",
+        "failure_kind": "jar",
+        "jar_configured": false
+      },
+      "operation": "inspect_android_package",
+      "provider_id": "jadx",
+      "reason": "Set REA_JADX_MCP_JAR to the absolute path of a caller-supplied jadx-headless-mcp 0.7.1 JAR. REA does not download or install it."
+    },
+    "message": "Set REA_JADX_MCP_JAR to the absolute path of a caller-supplied jadx-headless-mcp 0.7.1 JAR. REA does not download or install it.",
+    "remediation": {
+      "action": "Set REA_JADX_MCP_JAR to the absolute path of a caller-supplied jadx-headless-mcp 0.7.1 JAR. REA does not download or install it."
+    },
+    "retryable": false
+  },
+  "operation": "inspect_android_package",
+  "record_type": "anti_rea_upstream_operation_result",
+  "runtime": "rea-agents 6.8.0",
+  "schema_version": "1.0",
+  "status": "blocked",
+  "upstream_output_sha256": "96bf94adb7768b00953a7d85f4fcd64be5db44732e93fe444220744b3d7c2327"
+}

@@ -1,0 +1,217 @@
+{
+  "id": "rea-6.8.0-mcp-prompts",
+  "limitations": [
+    "Runtime MCP prompts describe guided workflows; they do not establish end-to-end harness execution or capability readiness."
+  ],
+  "prompt_count": 6,
+  "prompts": [
+    {
+      "arguments": [
+        {
+          "description": "Decision, risk, or investigation scope the unknown audit must support",
+          "name": "audit_scope",
+          "required": true,
+          "title": null
+        },
+        {
+          "description": "Active residual unknown to audit; omit to review every active head",
+          "name": "unknown_id",
+          "required": false,
+          "title": null
+        },
+        {
+          "description": "Retained Evidence record relevant to the audit",
+          "name": "evidence_id",
+          "required": false,
+          "title": null
+        }
+      ],
+      "description": "Review current residual-unknown heads against retained evidence, revision integrity, and declared authority without silently closing unanswered questions.",
+      "name": "audit_residual_unknowns",
+      "title": "Audit residual unknowns"
+    },
+    {
+      "arguments": [
+        {
+          "description": "Absolute path to the earlier or baseline target",
+          "name": "left_target_path",
+          "required": true,
+          "title": null
+        },
+        {
+          "description": "Absolute path to the later or candidate target",
+          "name": "right_target_path",
+          "required": true,
+          "title": null
+        },
+        {
+          "description": "Retained baseline artifact graph manifest to reuse or validate",
+          "name": "left_manifest_id",
+          "required": false,
+          "title": null
+        },
+        {
+          "description": "Retained candidate artifact graph manifest to reuse or validate",
+          "name": "right_manifest_id",
+          "required": false,
+          "title": null
+        },
+        {
+          "description": "Retained artifact occurrence to prioritize without authorizing extraction",
+          "name": "focus_occurrence_id",
+          "required": false,
+          "title": null
+        }
+      ],
+      "description": "Compare two shipped application artifacts through complete inventory and optional static or runtime evidence without equating missing data with unchanged behavior.",
+      "name": "compare_application_versions",
+      "title": "Compare application versions"
+    },
+    {
+      "arguments": [
+        {
+          "description": "Feature, behavior, string, or symbol to investigate",
+          "name": "feature",
+          "required": true,
+          "title": null
+        },
+        {
+          "description": "Absolute target path; omit when the intended target is already open",
+          "name": "target_path",
+          "required": false,
+          "title": null
+        },
+        {
+          "description": "Active target's provider document name",
+          "name": "document",
+          "required": false,
+          "title": null
+        },
+        {
+          "description": "Known procedure name or address to prioritize",
+          "name": "procedure",
+          "required": false,
+          "title": null
+        },
+        {
+          "description": "Configured provider identity to prefer when its capability is available",
+          "name": "provider_id",
+          "required": false,
+          "title": null
+        }
+      ],
+      "description": "Trace a feature through relevant artifact, symbol, and function evidence while distinguishing observations, inferences, and residual unknowns.",
+      "name": "investigate_feature",
+      "title": "Investigate a feature"
+    },
+    {
+      "arguments": [
+        {
+          "description": "Behavioral question the capture must answer and stopping condition",
+          "name": "behavior_question",
+          "required": true,
+          "title": null
+        },
+        {
+          "description": "Command name or executable path requested for the scenario",
+          "name": "executable",
+          "required": true,
+          "title": null
+        },
+        {
+          "description": "Working directory requested for the scenario",
+          "name": "working_directory",
+          "required": true,
+          "title": null
+        },
+        {
+          "description": "Retained process capture Evidence to compare or refine",
+          "name": "prior_capture_evidence_id",
+          "required": false,
+          "title": null
+        }
+      ],
+      "description": "Choose a command, inputs, observations, and stopping conditions for a process capture that answers the behavioral question.",
+      "name": "prepare_bounded_process_capture",
+      "title": "Prepare a bounded process capture"
+    },
+    {
+      "arguments": [
+        {
+          "description": "Crash message, exception, signal, address, or reproducible symptom",
+          "name": "crash_signal",
+          "required": true,
+          "title": null
+        },
+        {
+          "description": "Absolute target path; omit when the intended target is already open",
+          "name": "target_path",
+          "required": false,
+          "title": null
+        },
+        {
+          "description": "Active target's provider document name",
+          "name": "document",
+          "required": false,
+          "title": null
+        },
+        {
+          "description": "Known crash-adjacent procedure name or address",
+          "name": "procedure",
+          "required": false,
+          "title": null
+        },
+        {
+          "description": "Retained process capture Evidence for the crash",
+          "name": "capture_evidence_id",
+          "required": false,
+          "title": null
+        }
+      ],
+      "description": "Correlate a crash symptom with static call and reference evidence plus optional process capture observations.",
+      "name": "trace_crash",
+      "title": "Trace a crash"
+    },
+    {
+      "arguments": [
+        {
+          "description": "Finite behavior or structure the reconstruction is expected to satisfy",
+          "name": "reconstruction_goal",
+          "required": true,
+          "title": null
+        },
+        {
+          "description": "Retained comparison Evidence to use in a declared claim",
+          "name": "comparison_evidence_id",
+          "required": false,
+          "title": null
+        },
+        {
+          "description": "Provider identity whose Evidence is relevant to the reconstruction",
+          "name": "provider_id",
+          "required": false,
+          "title": null
+        }
+      ],
+      "description": "Evaluate a finite reconstruction specification against retained Evidence comparisons without broadening pass results into global equivalence claims.",
+      "name": "verify_reconstruction",
+      "title": "Verify a reconstruction"
+    }
+  ],
+  "record_type": "upstream_runtime_prompt_contracts",
+  "schema_version": "1.0",
+  "server": {
+    "name": "rea",
+    "version": "6.8.0"
+  },
+  "upstream": {
+    "node_version": "v24.22.1",
+    "npm_integrity": "sha512-9QDeRnGqEDzABZyr04eLnBXBv/c6I9/TWu/6M0MD4pEfkySI/BIgwTODIbAReX3C1x6hjw9+Jlx4A2yUSPZ9ww==",
+    "package": "rea-agents",
+    "package_lock_sha256": "b6cb714948a7ec224fa6f676f0e9b6f570bbabf3518a1a187be571ac8ddfe232",
+    "repository": "https://github.com/morluto/rea.git",
+    "runtime_manifest_sha256": "8494f80f5d0b7f4bd7f9a5e71731f810ae5f79d8faa71188fb7bb0ea3a045fdb",
+    "source_commit": "160d821ac9a0310afcb8d1fc427862dd6508add5",
+    "version": "6.8.0"
+  }
+}

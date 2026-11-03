@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_flutter_example_evidence",
+  "source": {
+    "repository": "https://github.com/Gaygysyz05/flutter-todo-app",
+    "commit": "9df0dc821ff020b42a5ac459c0f2e1ba09d3f9a8",
+    "license": "MIT",
+    "license_path": "LICENSE",
+    "pubspec_lock_sha256": "24e05eb08680d7d1512cf7f9c435141009e0761015efb0827194168eac2db1e3",
+    "test_widget_file_bytes": 0
+  },
+  "environment": {
+    "flutter": "3.47.8",
+    "dart": "3.13.7",
+    "web_build_command": [
+      "flutter",
+      "build",
+      "web",
+      "--release",
+      "--output=build-out/web"
+    ],
+    "dependency_resolution": "PUB_HOSTED_URL=https://pub.dev flutter pub get; upstream lockfile retained but --enforce-lockfile failed"
+  },
+  "web_build": {
+    "status": "passed",
+    "artifact": "build-out/web/main.dart.js",
+    "size": 2683181,
+    "sha256": "02b3b1195e1c063c076469d8780bbe379de9abb58f15a63a9eaff60270ee142e",
+    "anti_rea_candidate_status": "unsupported_over_1_mib_bla_javascript_limit"
+  },
+  "anti_rea_baseline": {
+    "status": "captured",
+    "id": "flutter-todo-before-007",
+    "manifest_sha256": "e9e95da2660be9edc8fe7872f1ec391bc977357a6536dc243da6e309bfc49fd7",
+    "manifest_report": "evidence/baseline-manifest.sanitized.json",
+    "build_output_report": "evidence/baseline-build-output.json",
+    "build_output_report_sha256": "610daecb3615a0753688e1da7f220d9bfffdbeea4f23e6ce584020648afff7a1",
+    "build_duration_ms": 15355,
+    "artifact_count": 39,
+    "artifact_root": "build-out/web",
+    "artifacts": {
+      "build-out/web/main.dart.js": "02b3b1195e1c063c076469d8780bbe379de9abb58f15a63a9eaff60270ee142e",
+      "build-out/web/index.html": "6d10ebe6d963b7851c0cd2375de53d687a126d3f4f771e243aec119c3c4a7b7c"
+    },
+    "e2e": {
+      "status": "passed",
+      "report": "evidence/browser-e2e.report1.json",
+      "report_sha256": "897d03a255509b4a565598f2f853aa6746623aad3e40401d661b8385d492bdcd",
+      "run_id": "01a19a8e-f551-7e7b-9608-59cd7c2dfb53",
+      "runner": "e2e 0.22.0 with web engine 0.15.4",
+      "passed": 1,
+      "failed": 0,
+      "primary_artifact": "build-out/web/main.dart.js",
+      "snapshot_tree_sha256": "e476680912cf70cb06425f19993e0efc555722e2606ef3be863c221c63722147",
+      "cleanup": "loopback app port closed",
+      "journey": "add a task and mark it complete"
+    }
+  },
+  "tests": {
+    "upstream_flutter_test": "failed_no_main_function_in_empty_test_widget_file"
+  },
+  "rea_analysis": {
+    "status": "blocked",
+    "record": "evidence/rea-attempt-result.json",
+    "record_sha256": "ca9159152df6e3c7fdf6c59ff652e5692d6d94165443bdb1ea165a88d0cd03ab",
+    "runtime": "REA 6.8.0 on Node 24.22.1",
+    "attempt_count": 6,
+    "latest_full_target_result": "provider_timeout_at_300000ms_per_source",
+    "primary_artifact_result": "0_parsed_1_skipped_after_1024MiB_worker_oom",
+    "bounded_retry_result": "provider_timeout_at_900000ms_with_4096MiB_heap",
+    "raw_rea_report": false,
+    "protection_claim": false,
+    "diagnostic_outputs": "sanitized upstream failure/partial-evidence JSON; none is a valid REA analysis report",
+    "latest_attempt": "provider_timeout_at_600000ms_with_4096MiB_heap_on_unminified_release_bundle",
+    "latest_diagnostic": {
+      "record": "evidence/rea-attempt-005-unminified-timeout.json",
+      "record_sha256": "8ba309633b84f1fc0e917d31f0d6135fcd8fa7fa43dd1c0b164095f346a11f11",
+      "raw_output_sha256": "443a29e54e8d301f4ddb6c0dc00c3de379b8832c121631dac62084dd0b2f02e4",
+      "partial_observation_id": "ev_19bbb95c35bbcb621f5ce3e763eb34eb19025ab5181b462717884f712febd9ff",
+      "artifact_sha256": "2d0c9d82ff6fab055dd1fce2f554ec852295f0158484a3485038cb8c451f1825",
+      "artifact_size": 8204126,
+      "analysis_timeout_ms": 600000,
+      "max_heap_mb": 4096,
+      "parsed_file_count": 0,
+      "skipped_file_count": 1,
+      "findings": 0
+    },
+    "bootstrap_report": {
+      "record": "evidence/rea-bootstrap-report-001.json",
+      "record_sha256": "0f75f65b74b73b700797a67d405085247ad30838366bf6345cc1f8d8ad653c97",
+      "status": "passed_with_limited_scope",
+      "selected_artifact": "build-out/web/flutter_bootstrap.js",
+      "artifact_sha256": "d1efa9256397f63a22c573a118092250f6e797b0d2a1ec9d403463d590df8578",
+      "parsed_javascript_files": 1,
+      "skipped_javascript_files": 0,
+      "parse_failures": 0,
+      "findings": 9,
+      "summary_coverage": "complete-within-view",
+      "main_dart_js_app_bundle_included": false
+    }
+  },
+  "android": {
+    "anti_rea_probe": "blocked",
+    "sdk": "ready",
+    "licenses": "not_accepted",
+    "connected_devices": 0,
+    "candidate_adapter": "not_implemented"
+  },
+  "limitations": [
+    "No Flutter Android candidate transformation or behavior acceptance adapter exists in Anti-REA.",
+    "The web JavaScript output exceeds the supported BLA file size.",
+    "The pinned upstream lockfile did not satisfy flutter pub get --enforce-lockfile in this environment.",
+    "No candidate was executed and no hardening result is claimed."
+  ]
+}

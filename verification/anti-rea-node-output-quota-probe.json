@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "status": "limit_not_enforced",
+  "observed_at_utc": "2026-11-02T10:54:00Z",
+  "docker_server": "29.8.2",
+  "storage_driver": "overlayfs",
+  "image_digest": "sha256:d862bb5d082c5ae0210ac07e8c0344cb8cf7bef6d78e9b8c50c179da923108ea",
+  "attempted_storage_option": "size=256m",
+  "test_write_bytes": 269484032,
+  "engine_exit_code": 0,
+  "anti_rea_result": "post-run rejection after staged output exceeded 256 MiB",
+  "interpretation": "The Docker daemon accepted --storage-opt but did not enforce a writable-layer quota for this container. It is not safe to claim live disk isolation on this host.",
+  "artifact_retained": false
+}

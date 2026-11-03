@@ -1,0 +1,174 @@
+{
+  "schema_version": "anti-rea-codex-cli-plan-review-1",
+  "harness": {
+    "name": "Codex CLI",
+    "version": "0.165.0-alpha.1.2",
+    "operating_system": "macOS 26.7.1 arm64",
+    "product_version": "0.1.32",
+    "interface": "project Skill invoking explicit Anti-REA CLI",
+    "sandbox": "read-only"
+  },
+  "skill": {
+    "path": ".agents/skills/anti-rea",
+    "update_source": "private 0.1.32 wheel payload",
+    "sha256": {
+      "SKILL.md": "3a7848043f216881d38d33bea91191fb15948ee9f9af6ef23d4a3947bb4484c9",
+      "references/recommendations.md": "2da93427c154187e238eec9d4e326cb8b652c4642ddbcf9c7f69a5693ad2675c",
+      "references/workflow.md": "4a9faa0d0e0dfefeaa5896080a0149084e75ea62967240baf2db64e7b5b5eae8",
+      "references/acceptance.md": "ce2ee56e86ce73b6930d2d22494717bd7172aa0eec142baa688815e139e5a106",
+      "references/interfaces.md": "aac88139fea6eabdb795604617f093a57457315c806694a598c7bdd910302ce7",
+      "references/troubleshooting.md": "721ff176631430384fa10110474b092fa8ff86df9e193138367ee0d74d1ff6c8",
+      "examples/inspect-before-planning.md": "fb425f6b6b2541cc144fc26a2ff96ebb10f67a26410ee14576d7cd1240062db0"
+    }
+  },
+  "commands": {
+    "allowed": [
+      "anti-rea doctor",
+      "anti-rea status todomvc-example-review-001",
+      "anti-rea report todomvc-example-review-001"
+    ],
+    "combined_exit_code": 0,
+    "source_checkout_inspected_by_harness": false,
+    "build_or_decision_or_execution_attempted": false,
+    "event_stream_sha256": "20f451c4bb4b660e9bd307371950e97704a6b4d5fd504b96a1341037604a09bc"
+  },
+  "doctor_status": "ready",
+  "target": {
+    "name": "TodoMVC React synthetic example",
+    "license": "MIT",
+    "commit": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+    "source_dirty": true,
+    "dirty_status_sha256": "90eb2995a9d53c27df6786de7a555159e278afdeb3734455780aea61fbbbc1b4",
+    "dirty_status_summary": "Generated dist artifacts are absent; Anti-REA e2e fixture/config files are present. This is not represented as a clean checkout."
+  },
+  "run": {
+    "id": "todomvc-example-review-001",
+    "state": "awaiting_decision",
+    "target_id": "target-e676176533da60035f51",
+    "baseline_id": "todomvc-before-001",
+    "plan_id": "todomvc-example-plan-001",
+    "plan_sha256": "84613e88bdc16e0161d00758b138eb383065c564e064b7a9194d88346ceace91",
+    "decision_id": null,
+    "decision_recorded": false,
+    "candidate_executed": false
+  },
+  "baseline": {
+    "build_duration_ms": 3415,
+    "e2e_runner": "0.22.0",
+    "e2e_test": "Reject blank input, add a todo, toggle it complete, and filter it",
+    "e2e_report_sha256": "3019c460a58b972dda719dfaddeb92f52e1e495b612f414268a0c31406b27987",
+    "artifacts": {
+      "dist/app.bundle.js": {
+        "size": 236914,
+        "sha256": "6197ad9358985fb3f745aef3fca9abbe2fc7f0cd35cd4525cb8570107ae6b78a"
+      },
+      "dist/app.bundle.js.LICENSE.txt": {
+        "size": 1332,
+        "sha256": "2fde10fedaa9ebac195ff484ddb08969f5d04ab284ba65000b3cbf0992703640"
+      },
+      "dist/app.bundle.js.map": {
+        "size": 1361509,
+        "sha256": "cb7affe8ae39349410fbc771d400d7cdd291d7f3f20611941a497811d10c3619"
+      },
+      "dist/app.css": {
+        "size": 7400,
+        "sha256": "a0ccea8c39f22bcad35a2821b1e1009a05e028e51884649d0cd1552776b0fdef"
+      },
+      "dist/app.css.map": {
+        "size": 14375,
+        "sha256": "486a28c197a62733ccec8a1167086b13f27c950a4bd76369d08b2e06822bfea8"
+      },
+      "dist/base.js": {
+        "size": 3752,
+        "sha256": "8cfbaa8d2bc03e2e52a8b7788e041efda231a17e2a25c8bc4bfe2659adc5bb90"
+      },
+      "dist/index.html": {
+        "size": 645,
+        "sha256": "23b40a8b71f26e44f3e72e682188a3ab238d17fd375ff0ec06295af9971fa959"
+      }
+    }
+  },
+  "plan_profile": {
+    "saved_field": "absent; this is a legacy plan",
+    "observed_bla_intensity": "balanced",
+    "current_reference": {
+      "low-impact": "stealth",
+      "balanced": "balanced",
+      "deep-protection": "maximum",
+      "custom": "explicit BLA intensity required"
+    }
+  },
+  "actions": [
+    {
+      "id": "bla-js-acba3710b570",
+      "asset": "dist/app.bundle.js",
+      "engine": "bla",
+      "adapter": "bla-js",
+      "intensity": "balanced",
+      "performance_budget": {
+        "trials": 3,
+        "max_elapsed_ms": 30000,
+        "max_candidate_bytes": 67108864,
+        "max_journey_regression_pct": 25
+      },
+      "verification": [
+        "bla_invariants",
+        "rea_comparison",
+        "performance"
+      ]
+    },
+    {
+      "id": "source-map-4494addd3ecb",
+      "asset": "dist/app.bundle.js.map",
+      "engine": "release packaging candidate",
+      "adapter": "source-map-candidate",
+      "verification": [
+        "public_source_map_absent"
+      ],
+      "limitation": "Private candidate-tree omission does not prove the deployed release omits the map."
+    },
+    {
+      "id": "source-map-e39edf55e15b",
+      "asset": "dist/app.css.map",
+      "engine": "release packaging candidate",
+      "adapter": "source-map-candidate",
+      "verification": [
+        "public_source_map_absent"
+      ],
+      "limitation": "Private candidate-tree omission does not prove the deployed release omits the map."
+    },
+    {
+      "id": "bla-js-dd8dbf41abf6",
+      "asset": "dist/base.js",
+      "engine": "bla",
+      "adapter": "bla-js",
+      "intensity": "balanced",
+      "performance_budget": {
+        "trials": 3,
+        "max_elapsed_ms": 30000,
+        "max_candidate_bytes": 67108864,
+        "max_journey_regression_pct": 25
+      },
+      "verification": [
+        "bla_invariants",
+        "rea_comparison",
+        "performance"
+      ]
+    }
+  ],
+  "limits": [
+    "This is a synthetic TodoMVC sample, not a user production application.",
+    "The saved source state is dirty and the harness deliberately stopped before a user choice.",
+    "No candidate behavior, performance, packaging, or REA comparison was captured.",
+    "No result establishes application protection."
+  ],
+  "result": "plan_reviewed_then_kept_review_only",
+  "user_follow_up": {
+    "recorded_at_utc": "2026-11-02T09:32:47Z",
+    "selection": "review_only",
+    "meaning": "Keep the example review-only; no action was selected.",
+    "anti_rea_decision_recorded": false,
+    "run_state_after_choice": "awaiting_decision",
+    "candidate_executed": false
+  }
+}

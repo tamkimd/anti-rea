@@ -1,0 +1,35 @@
+{
+  "artifact_kind": "private_source_verification_build",
+  "official_release_artifact": false,
+  "source": "current workspace copied to private temporary directory before build",
+  "platform": "macOS-26.7.1-arm64-arm-64bit",
+  "python": "3.11.18",
+  "wheel": {
+    "filename": "anti_rea-0.1.32-py3-none-any.whl",
+    "bytes": 902740,
+    "sha256": "8c7de800ec70f3e27c1075e7de9a2ea6bb5a4817958f84620bcc95958261b4d5"
+  },
+  "payload": {
+    "file_count": 123,
+    "core_workflow_included": true,
+    "cli_entrypoint_included": true,
+    "apk_aab_zip_and_build_outputs_included": false
+  },
+  "install": {
+    "fresh_virtual_environment": true,
+    "dependency_resolution": "offline from wheelhouse generated during this verification",
+    "pip_check": "No broken requirements found.",
+    "cli_help_exit_code": 0,
+    "mcp_help_exit_code": 0,
+    "doctor_status": "ready (Python 3.11, MCP, jsonschema, cryptography, and safe relative filesystem opens passed; optional runtimes not configured)"
+  },
+  "storage": {
+    "wheel_and_build_copy_outside_repository": true,
+    "official_release_unchanged": true
+  },
+  "limitations": [
+    "Private same-version verification build, not an official release.",
+    "Unsigned; no trusted release identity or CI signing integration is configured.",
+    "Build dependency resolution used the configured package index; project dependencies were installed offline from the generated wheelhouse."
+  ]
+}

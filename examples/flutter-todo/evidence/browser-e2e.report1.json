@@ -1,0 +1,432 @@
+{
+  "schemaVersion": "report-1",
+  "run": {
+    "id": "01a19a8e-f551-7e7b-9608-59cd7c2dfb53",
+    "specVersion": "0.1",
+    "runner": {
+      "name": "e2e",
+      "version": "0.22.0"
+    },
+    "status": "passed",
+    "exitCode": 0,
+    "startedAt": "2026-11-02T04:40:22.780Z",
+    "finishedAt": "2026-11-02T04:40:26.361Z",
+    "project": {
+      "id": "unportable-10a58fc697290381e8878d468e4db670",
+      "configDigest": "b68c7012dffafc408b818dabcc6441c5e6e8b62d0d2c298c0582e1ecf86b6cc5"
+    },
+    "environment": {
+      "ci": false,
+      "trustNoticeShown": false,
+      "os": "darwin 25.6.0",
+      "arch": "arm64",
+      "runtime": "node v24.22.1"
+    },
+    "targets": [
+      {
+        "id": "flutter-todo-web",
+        "index": 0,
+        "platform": "web",
+        "baseOrigin": "http://127.0.0.1:52284",
+        "environment": "test",
+        "engine": {
+          "name": "web",
+          "version": "0.15.4",
+          "spiVersion": 1
+        },
+        "capabilities": [
+          "actions",
+          "artifacts",
+          "browser",
+          "keyboard",
+          "location",
+          "observation",
+          "pointer",
+          "state"
+        ],
+        "artifactCapabilities": [
+          "screenshot",
+          "video"
+        ],
+        "stateCapability": true
+      }
+    ],
+    "serialGroups": [],
+    "results": [
+      {
+        "id": "b9b80471c44eb0bcd651028af3e8e4af15a4dbeb9c255a46dc514d3a6056c7c3",
+        "testId": "tests/behavior.e2e.ts::Flutter%20Todo%20adds%20a%20task%20and%20marks%20it%20complete",
+        "kind": "test",
+        "declarationIndex": 0,
+        "titlePath": [
+          "Flutter Todo adds a task and marks it complete"
+        ],
+        "file": "tests/behavior.e2e.ts",
+        "source": {
+          "file": "tests/behavior.e2e.ts",
+          "line": 7,
+          "column": 1
+        },
+        "targetId": "flutter-todo-web",
+        "platform": "web",
+        "agent": "default",
+        "repeat": 0,
+        "tags": [],
+        "selected": true,
+        "status": "passed",
+        "attempts": [
+          {
+            "id": "01a19a8e-f712-770a-bb88-750b12976c76",
+            "index": 0,
+            "status": "passed",
+            "startedAt": "2026-11-02T04:40:23.058Z",
+            "durationMs": 3274,
+            "artifacts": [],
+            "secondaryErrors": [],
+            "cleanup": "complete",
+            "environment": {
+              "browser": "chromium 156.0.8078.4",
+              "user agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+            },
+            "steps": [
+              {
+                "id": "01a19a8e-f712-770a-bb88-750b12976c76:0",
+                "index": 0,
+                "kind": "app",
+                "api": "app.open",
+                "label": "/",
+                "status": "passed",
+                "startedAt": "2026-11-02T04:40:23.294Z",
+                "durationMs": 155,
+                "events": [],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:52284/",
+                  "nodes": 1,
+                  "changes": []
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 8,
+                  "column": 13
+                }
+              },
+              {
+                "id": "01a19a8e-f712-770a-bb88-750b12976c76:1",
+                "index": 1,
+                "kind": "resource",
+                "api": "browser.evaluate",
+                "label": "",
+                "status": "passed",
+                "startedAt": "2026-11-02T04:40:23.449Z",
+                "durationMs": 506,
+                "events": [],
+                "artifacts": [],
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 9,
+                  "column": 17
+                }
+              },
+              {
+                "id": "01a19a8e-f712-770a-bb88-750b12976c76:2",
+                "index": 2,
+                "kind": "locator",
+                "api": "locator.click",
+                "label": "getByRole(\"button\").last()",
+                "status": "passed",
+                "startedAt": "2026-11-02T04:40:23.956Z",
+                "durationMs": 1829,
+                "events": [
+                  {
+                    "kind": "navigation",
+                    "startedAt": "2026-11-02T04:40:24.732Z",
+                    "durationMs": 0,
+                    "status": "passed",
+                    "detail": "navigated to http://127.0.0.1:52284/"
+                  },
+                  {
+                    "kind": "navigation",
+                    "startedAt": "2026-11-02T04:40:24.747Z",
+                    "durationMs": 0,
+                    "status": "passed",
+                    "detail": "navigated to http://127.0.0.1:52284/"
+                  },
+                  {
+                    "kind": "navigation",
+                    "startedAt": "2026-11-02T04:40:24.748Z",
+                    "durationMs": 0,
+                    "status": "passed",
+                    "detail": "navigated to http://127.0.0.1:52284/"
+                  },
+                  {
+                    "kind": "navigation",
+                    "startedAt": "2026-11-02T04:40:24.748Z",
+                    "durationMs": 0,
+                    "status": "passed",
+                    "detail": "navigated to http://127.0.0.1:52284/"
+                  },
+                  {
+                    "kind": "navigation",
+                    "startedAt": "2026-11-02T04:40:24.753Z",
+                    "durationMs": 0,
+                    "status": "passed",
+                    "detail": "navigated to http://127.0.0.1:52284/"
+                  },
+                  {
+                    "kind": "engine",
+                    "name": "tap",
+                    "startedAt": "2026-11-02T04:40:23.956Z",
+                    "durationMs": 1829,
+                    "status": "passed",
+                    "detail": "tap button (appeared after 1160ms)"
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:52284/",
+                  "nodes": 6,
+                  "since": 0,
+                  "changes": [
+                    "changed document \"TODO App\" (was: document \"todo\")",
+                    "added heading \"TODO\"",
+                    "added group",
+                    "added checkbox \"Write your task here.\"",
+                    "added checkbox \"Let's enjoy!\"",
+                    "added button"
+                  ]
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 17,
+                  "column": 43
+                }
+              },
+              {
+                "id": "01a19a8e-f712-770a-bb88-750b12976c76:3",
+                "index": 3,
+                "kind": "locator",
+                "api": "locator.pressSequentially",
+                "label": "getByRole(\"textbox\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T04:40:25.785Z",
+                "durationMs": 91,
+                "events": [
+                  {
+                    "kind": "engine",
+                    "name": "focus",
+                    "startedAt": "2026-11-02T04:40:25.785Z",
+                    "durationMs": 41,
+                    "status": "passed",
+                    "detail": "focus textbox \"Enter task title...\""
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:52284/",
+                  "nodes": 9,
+                  "since": 2,
+                  "changes": [
+                    "added alertdialog",
+                    "added text=\"Add New Task\"",
+                    "added textbox \"Enter task title...\" value=\"Anti-REA example task\"",
+                    "added text=\"182 characters remaining\"",
+                    "added button \"Cancel\"",
+                    "added button \"Save\"",
+                    "added text=\"200 characters remaining\"",
+                    "added button \"Dismiss\"",
+                    "removed heading \"TODO\"",
+                    "removed group",
+                    "removed checkbox \"Write your task here.\"",
+                    "removed checkbox \"Let's enjoy!\""
+                  ],
+                  "more": 1
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 18,
+                  "column": 37
+                }
+              },
+              {
+                "id": "01a19a8e-f712-770a-bb88-750b12976c76:4",
+                "index": 4,
+                "kind": "locator",
+                "api": "locator.click",
+                "label": "getByText(\"Save\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T04:40:25.876Z",
+                "durationMs": 64,
+                "events": [
+                  {
+                    "kind": "engine",
+                    "name": "tap",
+                    "startedAt": "2026-11-02T04:40:25.876Z",
+                    "durationMs": 64,
+                    "status": "passed",
+                    "detail": "tap button \"Save\""
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:52284/",
+                  "nodes": 9,
+                  "since": 3,
+                  "changes": [
+                    "changed text=\"179 characters remaining\" (was: text=\"182 characters remaining\")",
+                    "changed text=\"179 characters remaining\" (was: text=\"200 characters remaining\")"
+                  ]
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 19,
+                  "column": 34
+                }
+              },
+              {
+                "id": "01a19a8e-f712-770a-bb88-750b12976c76:5",
+                "index": 5,
+                "kind": "locator",
+                "api": "locator.click",
+                "label": "getByRole(\"checkbox\", name: \"Anti-REA example task\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T04:40:25.940Z",
+                "durationMs": 281,
+                "events": [
+                  {
+                    "kind": "engine",
+                    "name": "tap",
+                    "startedAt": "2026-11-02T04:40:25.940Z",
+                    "durationMs": 281,
+                    "status": "passed",
+                    "detail": "tap checkbox \"Anti-REA example task\" (appeared after 249ms)"
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:52284/",
+                  "nodes": 7,
+                  "since": 4,
+                  "changes": [
+                    "added heading \"TODO\"",
+                    "added group",
+                    "added checkbox \"Write your task here.\"",
+                    "added checkbox \"Let's enjoy!\"",
+                    "added checkbox \"Anti-REA example task\"",
+                    "added button",
+                    "removed alertdialog",
+                    "removed text=\"Add New Task\"",
+                    "removed textbox \"Enter task title...\" value=\"Anti-REA example task\"",
+                    "removed text=\"179 characters remaining\"",
+                    "removed button \"Cancel\"",
+                    "removed button \"Save\""
+                  ],
+                  "more": 2
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 22,
+                  "column": 18
+                }
+              },
+              {
+                "id": "01a19a8e-f712-770a-bb88-750b12976c76:6",
+                "index": 6,
+                "kind": "assertion",
+                "api": "expect.toBeChecked",
+                "label": "getByRole(\"checkbox\", name: \"Anti-REA example task\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T04:40:26.222Z",
+                "durationMs": 106,
+                "events": [
+                  {
+                    "kind": "poll",
+                    "name": "expect",
+                    "startedAt": "2026-11-02T04:40:26.222Z",
+                    "durationMs": 106,
+                    "status": "passed",
+                    "count": 2,
+                    "detail": "states: focused (1 match) -> at 106ms states: checked (1 match)"
+                  }
+                ],
+                "artifacts": [],
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 23,
+                  "column": 26
+                }
+              }
+            ],
+            "appLog": [
+              {
+                "source": "console",
+                "level": "warning",
+                "text": "[.WebGL-0x1140044c200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://127.0.0.1:52284/:1)",
+                "at": "2026-11-02T04:40:25.109Z",
+                "step": 2
+              },
+              {
+                "source": "console",
+                "level": "warning",
+                "text": "[.WebGL-0x1140044c200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://127.0.0.1:52284/:1)",
+                "at": "2026-11-02T04:40:25.117Z",
+                "step": 2
+              },
+              {
+                "source": "console",
+                "level": "info",
+                "text": "Got object store box in database todo_box. (at http://127.0.0.1:52284/main.dart.js:26009)",
+                "at": "2026-11-02T04:40:25.121Z",
+                "step": 2
+              },
+              {
+                "source": "console",
+                "level": "warning",
+                "text": "[.WebGL-0x1140044c200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (at http://127.0.0.1:52284/:1)",
+                "at": "2026-11-02T04:40:25.123Z",
+                "step": 2
+              },
+              {
+                "source": "console",
+                "level": "warning",
+                "text": "[.WebGL-0x1140044c200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat) (at http://127.0.0.1:52284/:1)",
+                "at": "2026-11-02T04:40:25.368Z",
+                "step": 2
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "summary": {
+      "discovered": 1,
+      "selected": 1,
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "interrupted": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "limits": {
+      "maxAgentContextBytes": 16384,
+      "maxLedgerBytes": 8192,
+      "maxObservationBytes": 262144,
+      "maxEventsPerStep": 1000,
+      "maxModelTokensPerCall": 64000
+    },
+    "usage": {
+      "discoveredResults": 1,
+      "maxAgentContextBytes": 0,
+      "maxLedgerBytes": 0,
+      "maxObservationBytes": 0,
+      "artifactBytes": 0,
+      "downloads": 0,
+      "events": 10,
+      "modelTokens": 0,
+      "maxModelCallsInStep": 0,
+      "maxActionStepsInStep": 0
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": "anti-rea-codex-cli-plan-review-2",
+  "harness": {
+    "name": "Codex CLI",
+    "version": "0.165.0-alpha.1.2",
+    "operating_system": "macOS 26.7.1 arm64",
+    "session_id": "01a19ced-33b5-73b3-85c6-4241c1eea805"
+  },
+  "product": {
+    "version": "0.1.32 private wheel",
+    "wheel_sha256": "e28c83365f5998fb237009ed8be97f27972ec8f8da89e787b507227d0e21efa7",
+    "skill_scope": "project",
+    "skill_path": ".agents/skills/anti-rea/SKILL.md",
+    "skill_sha256": "8f59707a154958b65902dd7e8653853009fa68c0fee9914efc36b7b13d5a40bc"
+  },
+  "fixture": {
+    "description": "Fresh owned two-file CommonJS fixture with a deterministic build and small add-function behavior check.",
+    "path": "<private temporary directory>/project",
+    "state_path": "<private temporary directory>/state",
+    "target_id": "target-b4ac9b95401ffa5293f2",
+    "baseline_id": "codex-before-001",
+    "plan_id": "codex-review-plan-001",
+    "plan_sha256": "b79e0c21b7354d1fa96d13ee2d71a66f69a367635b5bb22d0e06f02a75389720",
+    "run_id": "codex-review-run-001",
+    "source_revision": "unknown; fixture is not a Git repository",
+    "artifact": {
+      "path": "dist/app.cjs",
+      "size": 77,
+      "sha256": "aa29e160ba5c338c87e22e77acfe6f2d00f993dfe695ca2bde00c982a43c716d"
+    },
+    "baseline": {
+      "build_command": ["node", "build.cjs"],
+      "behavior_command": ["node", "check.cjs", "{artifact}"],
+      "behavior_exit_code": 0,
+      "build_duration_ms": 1913
+    }
+  },
+  "codex_invocation": {
+    "command": "codex exec --json --ephemeral --skip-git-repo-check -C <fixture>/project -s read-only <plan-review-only prompt>",
+    "sandbox": "read-only",
+    "raw_transcript": "<private temporary directory>/codex-raw.jsonl",
+    "raw_transcript_sha256": "abdb7bef9cb6cde8129d67c0f3aebe6c4868e438f55ab1967d8877268fcad90c",
+    "initial_attempt": "Exited before launch because the temporary directory was not in a trusted Git repository; retried with --skip-git-repo-check while keeping read-only sandboxing.",
+    "completed": true
+  },
+  "review": {
+    "doctor": "ready",
+    "plan_status": "recommendations_ready",
+    "proposed_action": "Balanced BLA transform of dist/app.cjs into an isolated candidate.",
+    "proposed_checks": [
+      "bla_invariants",
+      "rea_comparison",
+      "performance (3 trials; max 30 seconds; max 25% journey regression)",
+      "application_behavior (node check.cjs {artifact})"
+    ],
+    "observed_saved_behavior_result": "passed on BEFORE artifact; candidate behavior was not run",
+    "tradeoffs_reported": [
+      "Output may be larger or slower.",
+      "Debugging and stack traces may be less readable.",
+      "Transformation does not prevent runtime inspection or determined reverse engineering."
+    ],
+    "runtime_readiness": "BLA, E2E, and REA runtimes were not configured in doctor; BLA is a plan dependency.",
+    "rollback_note": "Action-level rollback correctly says discard the isolated candidate. Plan-level generic rollback says restore release publication configuration and redeploy; that language is not applicable to this disposable fixture.",
+    "final_response": "Codex summarized the plan and stopped with the run awaiting a user decision."
+  },
+  "decision_and_execution": {
+    "run_state": "awaiting_decision",
+    "decision_id": null,
+    "decision_recorded": false,
+    "candidate_executed": false,
+    "candidate_directory_empty_or_absent": true,
+    "project_or_state_modified_by_codex": false
+  },
+  "result": "fresh_fixture_skill_and_cli_plan_review_only",
+  "limitations": [
+    "This verifies Skill loading and read-only CLI plan review through this Codex CLI version only.",
+    "It is not a decision, candidate execution, acceptance, or full end-to-end harness workflow.",
+    "No claim about protection or candidate behavior is made.",
+    "The Codex raw transcript and detailed private state remain outside the repository."
+  ]
+}

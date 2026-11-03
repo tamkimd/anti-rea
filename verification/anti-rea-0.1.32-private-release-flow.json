@@ -1,0 +1,28 @@
+{
+  "artifact_kind": "private_release_flow_verification",
+  "official_release_artifact": false,
+  "wheel": {
+    "filename": "anti_rea-0.1.32-py3-none-any.whl",
+    "bytes": 903676,
+    "sha256": "2a4a2d960f2f05b071f9ac4a2481064c279d2ed8cc97114ec5714bf4b759842b"
+  },
+  "manifest_sha256": "d46a0764f47a203d132f7afc1ae4291a01f61bd1531d2ba5bd8b0462b9514c9c",
+  "checks": {
+    "cli_manifest_create": "passed",
+    "ephemeral_ed25519_sign": "passed",
+    "exact_wheel_verify": "passed",
+    "tampered_wheel_rejected": true,
+    "altered_manifest_rejected": true
+  },
+  "manifest_artifact_identity": {
+    "filename": "anti_rea-0.1.32-py3-none-any.whl",
+    "bytes": 903676,
+    "sha256": "2a4a2d960f2f05b071f9ac4a2481064c279d2ed8cc97114ec5714bf4b759842b",
+    "lock_sha256": {
+      "pylock.toml": "c048a893555c7d0a86a3864eb1f1c6705f01eb0f5d2ae4935e9913bac70e7482",
+      "upstreams.json": "fa9ba5fb3c1f4029c804cd4923b6329342616803af087bc2e4c437cce318c66d"
+    }
+  },
+  "signing_identity": "ephemeral untrusted test key generated outside repository; not a release trust anchor",
+  "official_release_unchanged": true
+}

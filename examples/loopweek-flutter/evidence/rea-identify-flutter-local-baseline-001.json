@@ -1,0 +1,144 @@
+{
+  "analysis_profile": null,
+  "authority": "shipped-artifact",
+  "confidence": "observed",
+  "environment": null,
+  "evidence_id": "ev_ae470e11e58cb322de8ec5c9c6ca2fde02fc910b0dc83cf2a325f1af5daa1130",
+  "evidence_links": [],
+  "limitations": [
+    "The APK is read through an owned read-only snapshot; concurrent changes to the original cannot mix into this observation",
+    "The snapshot hash identifies a Dart SDK build only against an external mapping dataset; REA performs no lookup",
+    "Release engine builds often carry no labeled Dart version string; absence is reported, not guessed",
+    "Engine build IDs come only from ELF-declared PT_NOTE/SHT_NOTE records; conflicting or incompletely examined notes preserve candidates and report partial coverage",
+    "The snapshot hash sits 20 bytes after each snapshot magic in the AOT payload; findings are observations of that layout",
+    "ELF header validity checks the supported header layout and declared table extents; identification does not resolve symbols or validate table contents",
+    "lib/arm64-v8a/libapp.so carries 1 observed snapshot header(s); complete coverage of the supported legacy split VM/isolate profile requires two independent sources. Unified and other layouts remain unverified",
+    "lib/armeabi-v7a/libapp.so carries 1 observed snapshot header(s); complete coverage of the supported legacy split VM/isolate profile requires two independent sources. Unified and other layouts remain unverified",
+    "lib/x86_64/libapp.so carries 1 observed snapshot header(s); complete coverage of the supported legacy split VM/isolate profile requires two independent sources. Unified and other layouts remain unverified"
+  ],
+  "locations": [
+    {
+      "kind": "artifact-path",
+      "path": "<PRIVATE_BASELINE_APK>"
+    }
+  ],
+  "normalized_result": {
+    "abis": [
+      {
+        "abi": "arm64-v8a",
+        "libapp": {
+          "bytes": 6947720,
+          "elf_header_valid": true,
+          "present": true,
+          "sha256": "a65630234c7f8fc713f8485ac8e89e11b5e5a81b1988951f2785b0913679f2e0",
+          "snapshot_hash": "0451907c2eaa8467e848c0067bfe8ed4",
+          "snapshot_hash_candidates": [
+            "0451907c2eaa8467e848c0067bfe8ed4"
+          ],
+          "snapshot_hash_sources": 1
+        },
+        "libflutter": {
+          "build_id": "098e04d6daaf320c80f3f9de5e686dab7165ba8a",
+          "build_id_candidates": [
+            "098e04d6daaf320c80f3f9de5e686dab7165ba8a"
+          ],
+          "bytes": 11763360,
+          "dart_version": null,
+          "dart_version_capped": false,
+          "present": true,
+          "sha256": "30aafee9297a7cd3547449efdc72dd0e55d177d82a54c85f473919e20f2a760b",
+          "toolchain_capped": false,
+          "toolchain_lines": [
+            "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)"
+          ]
+        }
+      },
+      {
+        "abi": "armeabi-v7a",
+        "libapp": {
+          "bytes": 7569992,
+          "elf_header_valid": true,
+          "present": true,
+          "sha256": "d27b79e2e208d049a604b72b0a864334e56ea64b541a646e251086e0d2bbbdcc",
+          "snapshot_hash": "0451907c2eaa8467e848c0067bfe8ed4",
+          "snapshot_hash_candidates": [
+            "0451907c2eaa8467e848c0067bfe8ed4"
+          ],
+          "snapshot_hash_sources": 1
+        },
+        "libflutter": {
+          "build_id": "f7cb49be5c9d07cb8634eca1ba37ae02a019bc71",
+          "build_id_candidates": [
+            "f7cb49be5c9d07cb8634eca1ba37ae02a019bc71"
+          ],
+          "bytes": 8625652,
+          "dart_version": null,
+          "dart_version_capped": false,
+          "present": true,
+          "sha256": "8894d811f896ea4cd5d9eb18a169badea8954f76f5988b05e7172eec1991814a",
+          "toolchain_capped": false,
+          "toolchain_lines": [
+            "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)"
+          ]
+        }
+      },
+      {
+        "abi": "x86_64",
+        "libapp": {
+          "bytes": 7144328,
+          "elf_header_valid": true,
+          "present": true,
+          "sha256": "2f8ba7096c6f6a375f36bbefecf22019c0d974e9cf8d0cda7b9a516cc756f772",
+          "snapshot_hash": "0451907c2eaa8467e848c0067bfe8ed4",
+          "snapshot_hash_candidates": [
+            "0451907c2eaa8467e848c0067bfe8ed4"
+          ],
+          "snapshot_hash_sources": 1
+        },
+        "libflutter": {
+          "build_id": "40d8e7661bed9e889ce4869a2bb9a97b9a5f572f",
+          "build_id_candidates": [
+            "40d8e7661bed9e889ce4869a2bb9a97b9a5f572f"
+          ],
+          "bytes": 13074608,
+          "dart_version": null,
+          "dart_version_capped": false,
+          "present": true,
+          "sha256": "e6beeeec001ce089cdec4c5758d146660f720afdc255e58f68d54c9652bdfdab",
+          "toolchain_capped": false,
+          "toolchain_lines": [
+            "Android (13624864, +pgo, +bolt, +lto, +mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)"
+          ]
+        }
+      }
+    ],
+    "coverage": "partial",
+    "flutter_detected": true,
+    "target": {
+      "bytes": 62349581,
+      "path": "<PRIVATE_BASELINE_APK>",
+      "sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b"
+    }
+  },
+  "operation": "identify_flutter_build",
+  "parameters": {
+    "path": "<PRIVATE_BASELINE_APK>"
+  },
+  "predicate_type": "rea.analysis",
+  "provider": {
+    "id": "flutter",
+    "name": "Flutter build identification",
+    "version": null
+  },
+  "raw_result": null,
+  "relationship_coverage": null,
+  "subject": {
+    "architecture": null,
+    "digest": {
+      "sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b"
+    },
+    "format": "apk",
+    "local_path": "<PRIVATE_BASELINE_APK>",
+    "name": "app-release.apk"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+  "error": {
+    "category": "unsupported_target",
+    "code": "unsupported_target",
+    "details": {
+      "diagnostics": {
+        "abi": "arm64-v8a",
+        "libapp_bytes": 6947720,
+        "libapp_sha256": "8618681e842db345fb1ebe016ba23413867fd07eb6136db2f155654bd8c2d392",
+        "observed_exports": [
+          {
+            "name": "_kDartSnapshotText",
+            "offset": 2949120,
+            "size": 3965760
+          },
+          {
+            "name": "_kDartSnapshotData",
+            "offset": 704,
+            "size": 2899168
+          }
+        ],
+        "supported_profile": "dart-2.14-split-full-aot"
+      },
+      "operation": "inspect_dart_aot",
+      "path": "<PRIVATE_BASELINE_APK>",
+      "reason": "Observed unified Dart snapshot exports; this reader supports the legacy split VM/isolate profile (Dart 2.14 FullAOT kind 3). The unified profile is unsupported, not missing legacy data"
+    },
+    "message": "Pinned REA 6.8.0 does not support the unified Dart snapshot observed in this APK.",
+    "remediation": {
+      "action": "Select a target supported by this operation or choose an operation supporting the reported target format."
+    },
+    "retryable": false
+  },
+  "operation": "inspect_dart_aot",
+  "record_type": "anti_rea_upstream_operation_result",
+  "runtime": "rea-agents 6.8.0",
+  "schema_version": "1.0",
+  "status": "blocked",
+  "upstream_output_sha256": "0252f71088f919c7e7e8a8255ad5d7374b6e7970b9bb0e18245fc0c6f08d97d4"
+}

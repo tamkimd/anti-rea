@@ -1,0 +1,56 @@
+# Loopweek Flutter REA example
+
+This example records REA inspection of the published Android release for [ZaryabKhan/Loopweek](https://github.com/ZaryabKhan/Loopweek), pinned to tag `v1.0.3` and source commit `f07a75f0875c2b51a953c258c358fbfca957be89`. GitHub reports the repository as MIT-licensed and the project includes its [`LICENSE`](https://github.com/ZaryabKhan/Loopweek/blob/main/LICENSE). The release publishes [`Loopweek-v1.0.3.apk`](https://github.com/ZaryabKhan/Loopweek/releases/tag/v1.0.3) with SHA-256 `ac8e37299f2d62af5314c5f9953a3febda35ad66fb33c40e358ca01d8327c71a`. The APK is kept outside this repo; no app binary or build output is vendored.
+
+## REA result
+
+Pinned REA 6.8.0 identified Flutter payloads in all three APK ABIs. Its `arm64-v8a` `libapp.so` AOT snapshot is 6,947,728 bytes (`024e583f56aa82d132410a7d2a0eb66349b2aa1cc22f2e82ff7dd87b43156515`) with snapshot hash `ace654289f5abc240509fc941453ebc5`. REA's AOT inspector reported complete coverage of the four AOT snapshot sections and found 4 Dart snapshot sections.
+
+The string-pool projection is partial: it retained 500 package URIs out of at least 682, 195 Dart URIs, and 2000 class-like tokens out of at least 4000. The analyzer documents that these strings are byte-pattern observations; they are not deserialized Dart classes or recovered methods. See the detailed limitations in the [hash-bound REA report](evidence/inspect-dart-aot-arm64-001.json). The separate [Flutter build identification report](evidence/identify-flutter-build-001.json) records the three ABI payload hashes and coverage.
+
+The pinned Android package inspection report is [available here](evidence/inspect-android-package-001.json); it records JADX metadata for package `com.appcodecraft.loopweek` version `1.0.3`. It is static decompiler output, does not establish runtime behavior, and did not verify the APK signature.
+
+The separate [APK signature verification report](evidence/apk-signature-verification-001.json) records Android `apksigner` returning `Verifies` for the pinned APK digest with v2 signature scheme and one RSA-2048 signer. This establishes cryptographic validity under the embedded certificate. The certificate identity was not checked against an external publisher trust anchor.
+
+## Unmerged REA AOT fix check
+
+REA upstream PR [#3662](https://github.com/morluto/rea/pull/3662) adds support for Dart's renamed single-snapshot exports. I built its exact source revision `e50d3f74ade8b21f43d0d4f6e9a1b31f44a09efe` outside this repository and ran only `inspect_dart_aot` against the private local baseline APK above. The raw report is retained privately and hash-bound; the sanitized [candidate-runtime result](evidence/rea-pr3662-aot-candidate.json) records the report digest and the exact APK identity.
+
+That candidate run reported complete structural coverage for `arm64-v8a`, recognized `_kDartSnapshotData` with FullAOT kind 2, and matched the APK digest. String-pool coverage remains partial (500 of at least 684 package URIs, 214 Dart URIs, and 2,000 of at least 4,000 class-like tokens); these are bounded byte-pattern observations, not decoded Dart semantics. An external build-and-pack of the exact source commit produced a 9.3 MiB tarball with SHA-256 `8ceb743bd90226b5c28353316841f6a420fbaefc347a86a1b45eb831155f0377`; installation with lifecycle scripts disabled and CLI/worker startup checks passed. This is reproducible candidate-package evidence, not an Anti-REA pin. PR #3662 is unmerged and is not the pinned REA 6.8.0 runtime, so Anti-REA's production AOT planning gate remains blocked pending an upstream release and pinned-runtime re-verification. No obfuscated candidate was built and no protection claim is made.
+
+## Emulator behavior check
+
+On one Android 16/API 36 arm64 emulator, the published APK was installed, a task named `Anti-REA behavior check` was created and marked complete, then the app was force-stopped and relaunched. The task remained visible and checked afterward. The structured [behavior evidence](evidence-summary.json) records the APK digest and the external screenshot digest; the screenshot itself is kept outside this repository.
+
+This single journey is limited behavior evidence, not broad app coverage. No transformation candidate or BEFORE/AFTER comparison was run, and this example makes no protection claim.
+
+## Fresh Anti-REA baseline build
+
+Anti-REA 0.1.29 also built the pinned source commit `f07a75f0875c2b51a953c258c358fbfca957be89` privately with Flutter 3.47.8. The 94.6-second APK build produced a 62,349,581-byte artifact with SHA-256 `9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b`; the APK and build tree remain outside this repository. The hash-bound [baseline summary](evidence/local-anti-rea-baseline-001.json) links the detailed REA reports and tool identities.
+
+REA 6.8.0 identified Flutter payloads in all three ABIs, with overall partial coverage. Its AOT inspector could not analyze this build: it observed unified Dart snapshot exports, while the pinned reader supports the legacy Dart 2.14 split VM/isolate profile. The [blocked inspection result](evidence/rea-inspect-dart-aot-local-baseline-001.json) records that limitation. Android package inspection was also blocked because no JADX provider was configured ([result](evidence/rea-inspect-android-package-local-baseline-001.json)).
+
+Anti-REA attached the raw AOT result and verified pinned REA runtime to a new immutable baseline record for this APK. Planning then returned zero actions and a blocker because the unified profile is unsupported. The [hash-bound readiness record](evidence/local-aot-readiness-blocked-001.json) includes the exact APK, raw report, runtime manifest, baseline, and canonical plan hashes. No candidate was built.
+
+Flutter resolved four transitive dependencies to versions newer than the upstream lock (`matcher`, `meta`, `test_api`, and `vector_math`); both lock hashes are recorded in the summary. `apksigner` verified this local APK's v2 signature, which uses the Android Debug certificate. That signer differs from the published release signer and does not establish production signing. REA's separate signature view is structural only and explicitly does not verify signatures ([REA signature report](evidence/rea-inspect-apk-signature-local-baseline-001.json), [apksigner result](evidence/apksigner-verification-local-baseline-001.json)).
+
+The private local APK was installed on a disposable Android 16/API 36 arm64 emulator. A task named `Anti-REA basic check` was created for Monday, marked complete, and remained checked after a force-stop and relaunch. The [hash-bound local baseline behavior report](evidence/local-baseline-emulator-behavior-001.json) records the APK digest, device, journey, app-process log check, and external screenshot digest; the screenshot remains outside the repo. The separate [launch smoke report](evidence/local-baseline-emulator-launch-001.json) records the onboarding render check.
+
+This is one local behavior journey, not broad coverage. The build is a private local baseline, not the published release artifact. No transformed candidate or comparable BEFORE/AFTER behavior or REA result was produced. The reports make no protection claim.
+
+## Clean-source baseline refresh (2026-11-02)
+
+With Android SDK licenses accepted, Anti-REA captured another release APK from a fresh detached clone of the same MIT commit, `f07a75f0875c2b51a953c258c358fbfca957be89`. The private capture took 34.6 seconds and produced a 62,349,581-byte APK with SHA-256 `05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7`. The APK and build snapshot remain outside this repository. The hash-bound [baseline summary](evidence/local-anti-rea-baseline-002.json) records the exact source commit and license digest, clean inventory, private snapshot identities, Flutter/Android toolchain, and resolved dependency lock.
+
+The installed Flutter 3.47.8/Dart 3.13.7 toolchain could not enforce the upstream `pubspec.lock`; the private build snapshot updated four transitive packages. The resolved lock hash is recorded and differs from the source lock, so this build is not byte-for-byte dependency-equivalent to the upstream lock. `apksigner` verified the APK's v2 signature under the Android Debug certificate; that does not verify publisher identity. The exact APK's pinned REA 6.8.0 AOT inspection is [hash-bound](evidence/rea-inspect-dart-aot-local-baseline-002.json) and reports the unified Dart snapshot as unsupported. Anti-REA attached that result and returned a blocked plan with zero actions.
+
+
+An external build of the unmerged REA PR #3662 also ran `inspect_dart_aot` against this exact latest APK. Its [sanitized diagnostic](evidence/rea-pr3662-aot-clean-source-baseline-002.json) is hash-bound to the APK and raw report: arm64 structural coverage is complete for the renamed kind-2 snapshot; the bounded string pool remains partial (500 of at least 684 package URIs, 214 Dart URIs, 2,000 of at least 4,000 class-like tokens). This candidate result does not satisfy the pinned REA 6.8.0 gate and does not authorize obfuscation planning. It is not decoded Dart semantics.
+
+## Current upstream gate check
+
+On 2026-11-02, a fresh checkout of REA `main` at `26c3e9e4134971c79e822bbcb16fb42bb7dd8e8d` was built with Node 24.22.1, and all 108 Flutter provider tests passed. That checkout still returned `unsupported_target` for the exact `loopweek-before-004` arm64 APK: it recognizes `_kDartSnapshotData` and `_kDartSnapshotText` but still declares the unified layout unsupported. The [hash-bound result](evidence/rea-main-current-aot-blocker-baseline-004.json) binds the APK and raw REA report. GitHub lists [PR #3662](https://github.com/morluto/rea/pull/3662) as open and [6.8.0](https://github.com/morluto/rea/releases) as the latest published release; the support seen in the separate PR-source build is therefore still not available in current `main` or Anti-REA's pinned runtime. The AOT gate remains blocked, and no candidate or protection claim exists.
+
+The exact clean-source APK also has a successful pinned REA 6.8.0 Android package inspection using JADX headless 0.7.1. The [sanitized report](evidence/inspect-android-package-local-baseline-002.json) is bound to APK SHA-256 `05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7` and records package `com.appcodecraft.loopweek` version `1.0.3`, 1,695 classes, and 561 resources. This is static manifest/package metadata; it does not analyze Dart AOT semantics or runtime behavior, and REA reports signature verification as `not_performed` (the separate `apksigner` report covers cryptographic validity only).
+
+The exact clean-source APK passed two individually recorded task-completion and relaunch-persistence journeys on the Android 16/API 36 arm64 emulator. The [first hash-bound behavior report](evidence/local-baseline-emulator-behavior-002.json) and [second report](evidence/local-baseline-emulator-behavior-003.json) each bind the APK hash and an external screenshot digest; both observed a completed task after relaunch. These are two journeys on one emulator, not broad device coverage or a reproducibility study. No transformed candidate or protection claim exists.

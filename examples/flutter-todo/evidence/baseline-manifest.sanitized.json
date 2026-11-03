@@ -1,0 +1,219 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_sanitized_baseline_manifest",
+  "raw_record_sha256": "e9e95da2660be9edc8fe7872f1ec391bc977357a6536dc243da6e309bfc49fd7",
+  "redactions": [
+    "local temporary filesystem paths"
+  ],
+  "record": {
+    "schema_version": "2.0",
+    "record_type": "baseline",
+    "id": "flutter-todo-before-007",
+    "target_id": "target-d66c3e8f1a861aeff2eb",
+    "identity": {
+      "source": {
+        "repository_root": "<redacted temporary path>",
+        "commit": "9df0dc821ff020b42a5ac459c0f2e1ba09d3f9a8",
+        "dirty": true,
+        "dirty_status_sha256": "1148ef66af691a72cc363c56d612da91d3c2395dfcfa4b32ffa4a6498c0276ea"
+      },
+      "inventory_sha256": "dbb764e3f47a39f6342f0ad7e3983a37eff34913f9f6c7a234fa33454c7f2baf",
+      "command": [
+        "/bin/sh",
+        "<redacted temporary path>"
+      ],
+      "artifacts": {
+        "build-out/web/main.dart.js": {
+          "size": 2683181,
+          "sha256": "02b3b1195e1c063c076469d8780bbe379de9abb58f15a63a9eaff60270ee142e"
+        },
+        "build-out/web/.last_build_id": {
+          "size": 32,
+          "sha256": "0e62853f196baac33ac69430acbd8698de1eb70c09d117c6cb51916a4a86c1d1"
+        },
+        "build-out/web/assets/AssetManifest.bin": {
+          "size": 117,
+          "sha256": "00af55ad3d6f21898fe77e0ff092d1a1cda52c941b6860e9928d45c8af8c095d"
+        },
+        "build-out/web/assets/AssetManifest.bin.json": {
+          "size": 158,
+          "sha256": "8460b5f4299ca1ed677c5a54c8038ae9cf1f26f6e91966b1b767ca6cb6d2e5d2"
+        },
+        "build-out/web/assets/FontManifest.json": {
+          "size": 208,
+          "sha256": "cd7e03645bc44b2dd47b7cb626f51c4ecbf55a197ab77241628b47ac165fbe21"
+        },
+        "build-out/web/assets/NOTICES": {
+          "size": 1356468,
+          "sha256": "62b4e066807f4c1357a9631989971a18f033f5334cea2060d13880a6d0511180"
+        },
+        "build-out/web/assets/fonts/MaterialIcons-Regular.otf": {
+          "size": 8008,
+          "sha256": "898cabb2d4a047c8c9f1962935852eed1f3c1fe17b25538be4ce8ca2100726aa"
+        },
+        "build-out/web/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": {
+          "size": 1472,
+          "sha256": "3d90c370aa4cf00dc57ee2b902f6652147c0f81e03e483df584a9c08b1687c9d"
+        },
+        "build-out/web/assets/shaders/ink_sparkle.frag": {
+          "size": 8890,
+          "sha256": "2dca5ab93d4ec29e963f996f3916320ba60825e9537dfb149a68008c7a16b026"
+        },
+        "build-out/web/assets/shaders/stretch_effect.frag": {
+          "size": 6737,
+          "sha256": "ab412f07a5b9b50b67a885b24dbe16929738ae28630407d6490c924caf0a3220"
+        },
+        "build-out/web/canvaskit/canvaskit.js": {
+          "size": 86987,
+          "sha256": "bb559f6080c7d312ac2a912b4abec9f68ff3d3022d4a603c7796b9b31460642b"
+        },
+        "build-out/web/canvaskit/canvaskit.js.symbols": {
+          "size": 1356926,
+          "sha256": "384f80b392972c83fd4f262527e3d06215a297d33ed59732c726721e9d9311bd"
+        },
+        "build-out/web/canvaskit/canvaskit.wasm": {
+          "size": 7284602,
+          "sha256": "fbed517a43e82452404446683f00f2e876d835aed84410695759e67b6bb01cd3"
+        },
+        "build-out/web/canvaskit/chromium/canvaskit.js": {
+          "size": 86226,
+          "sha256": "6018b12bd8ed37e6952eee72d59c1cf7ad707ccdb74a0a45190010f77edd9068"
+        },
+        "build-out/web/canvaskit/chromium/canvaskit.js.symbols": {
+          "size": 1235870,
+          "sha256": "31c86fac6042dd8b756150832c1d15495d0d07742e2718f75dbdde5a5a91455e"
+        },
+        "build-out/web/canvaskit/chromium/canvaskit.wasm": {
+          "size": 5428806,
+          "sha256": "ae8ff1d858140f7b1300ced3fa89fb8c9dce0a400a0f4f1e11f6dcfb3315fdcf"
+        },
+        "build-out/web/canvaskit/skwasm.js": {
+          "size": 63537,
+          "sha256": "71d7d3e34bf71b52bdba3b588b103bba8148ba28de5754083e01b3398e7a6e1c"
+        },
+        "build-out/web/canvaskit/skwasm.js.symbols": {
+          "size": 1540006,
+          "sha256": "9137f1a3ae744dea575043abfc6e063a047e910e6dab1ee53e496c975d1c033e"
+        },
+        "build-out/web/canvaskit/skwasm.wasm": {
+          "size": 3593715,
+          "sha256": "e540fd5e8303b7b68ec2718cb49e9c421f8ade3075b15e02a7059a62654df9a1"
+        },
+        "build-out/web/canvaskit/skwasm_heavy.js": {
+          "size": 63650,
+          "sha256": "cec554b46ddcf4c0e63d799e0556d546f42d2c3f69316fb4f67ed776f6104558"
+        },
+        "build-out/web/canvaskit/skwasm_heavy.js.symbols": {
+          "size": 1672152,
+          "sha256": "b6b79ed497e11d4cd13cc46724f9e289eacc744d2d185e31c72d595cdf62772b"
+        },
+        "build-out/web/canvaskit/skwasm_heavy.wasm": {
+          "size": 5216217,
+          "sha256": "565f5cc1cca6ab120f11934b105f01fec4b58b480c82e0889dca93af8e6f8635"
+        },
+        "build-out/web/canvaskit/webparagraph/canvaskit.js": {
+          "size": 76114,
+          "sha256": "3110e3e4d9b7b5657d336f253aaca8acca5777cde9319fb69ac302d6ff5a8b23"
+        },
+        "build-out/web/canvaskit/webparagraph/canvaskit.js.symbols": {
+          "size": 963641,
+          "sha256": "44d6c47919106235cf32252252490cdf798d907ee874ba343ab53dc94bc2a9dc"
+        },
+        "build-out/web/canvaskit/webparagraph/canvaskit.wasm": {
+          "size": 3729129,
+          "sha256": "0ce1b05082efdc8529550e8a01f6ff0593972d55525035010e26f5600aa9f254"
+        },
+        "build-out/web/canvaskit/wimp.js": {
+          "size": 59127,
+          "sha256": "8fd8a47480c6eb0a374d159912d0b3fb15661b41f5c113ecdd39c2f01f2bee46"
+        },
+        "build-out/web/canvaskit/wimp.js.symbols": {
+          "size": 1813030,
+          "sha256": "b4907ebd33131302a8cd99f7c55f52357bdfde04f421b605a616ba8764ae1de4"
+        },
+        "build-out/web/canvaskit/wimp.wasm": {
+          "size": 3581677,
+          "sha256": "e924eaafd801d41e017d178f3fd5cf8a417f641fe35c9ed34a4e1d7582283e0c"
+        },
+        "build-out/web/favicon.png": {
+          "size": 917,
+          "sha256": "7ab2525f4b86b65d3e4c70358a17e5a1aaf6f437f99cbcc046dad73d59bb9015"
+        },
+        "build-out/web/flutter.js": {
+          "size": 12136,
+          "sha256": "2beb1ce6b159c71540aa66030af1d7964b6a92377cc78473745e02f97b74effe"
+        },
+        "build-out/web/flutter_bootstrap.js": {
+          "size": 13094,
+          "sha256": "d1efa9256397f63a22c573a118092250f6e797b0d2a1ec9d403463d590df8578"
+        },
+        "build-out/web/flutter_service_worker.js": {
+          "size": 784,
+          "sha256": "a131df5ca46154cc4eb79044f7f5a14029c2f8bfccf8cef34e3ec3b5a9f5a88c"
+        },
+        "build-out/web/icons/Icon-192.png": {
+          "size": 5292,
+          "sha256": "3dce99077602f70421c1c6b2a240bc9b83d64d86681d45f2154143310c980be3"
+        },
+        "build-out/web/icons/Icon-512.png": {
+          "size": 8252,
+          "sha256": "baccb205ae45f0b421be1657259b4943ac40c95094ab877f3bcbe12cd544dcbe"
+        },
+        "build-out/web/icons/Icon-maskable-192.png": {
+          "size": 5594,
+          "sha256": "d2c842e22a9f4ec9d996b23373a905c88d9a203b220c5c151885ad621f974b5c"
+        },
+        "build-out/web/icons/Icon-maskable-512.png": {
+          "size": 20998,
+          "sha256": "6aee06cdcab6b2aef74b1734c4778f4421d2da100b0ff9e52b21b55240202929"
+        },
+        "build-out/web/index.html": {
+          "size": 1189,
+          "sha256": "6d10ebe6d963b7851c0cd2375de53d687a126d3f4f771e243aec119c3c4a7b7c"
+        },
+        "build-out/web/manifest.json": {
+          "size": 904,
+          "sha256": "d845c1e1db1162643e7c0e957586450678fee905474ff273486b867a9d64d339"
+        },
+        "build-out/web/version.json": {
+          "size": 78,
+          "sha256": "fd3ef0c4aa3946b05a21a2855bf595905fac4e8d3bbdf9f1b195ed411ff78e41"
+        }
+      },
+      "build_duration_ms": 15355,
+      "build_snapshot": {
+        "path": "<redacted temporary path>",
+        "source_tree_sha256": "e7ad3f18ac6fb58e6e792907f0fe61de760503dc121da9470e96a21e17d36c8d",
+        "tree_sha256": "e476680912cf70cb06425f19993e0efc555722e2606ef3be863c221c63722147",
+        "file_scope_sha256": "a18a9ac48e77bec47bcb320958291807b60d7ad458a4fd58f8974165d5af1d70"
+      },
+      "evidence_sha256": "610daecb3615a0753688e1da7f220d9bfffdbeea4f23e6ce584020648afff7a1",
+      "e2e_behavior": {
+        "source_path": "build-out/web/main.dart.js",
+        "artifact_sha256": "02b3b1195e1c063c076469d8780bbe379de9abb58f15a63a9eaff60270ee142e",
+        "snapshot_path": "<redacted temporary path>",
+        "tree_sha256": "e476680912cf70cb06425f19993e0efc555722e2606ef3be863c221c63722147",
+        "file_scope_sha256": "a18a9ac48e77bec47bcb320958291807b60d7ad458a4fd58f8974165d5af1d70",
+        "report_path": "<redacted temporary path>",
+        "report_sha256": "897d03a255509b4a565598f2f853aa6746623aad3e40401d661b8385d492bdcd",
+        "runtime_path": "<redacted temporary path>",
+        "runtime_manifest_sha256": "3f4b8e6ccd78ba27f019de0e4240cb5e0887497820928f1c58eb52f6ac38f54d",
+        "runtime_package_lock_sha256": "be5d4bebc3c5ded9ebdc53b504bb14aa7c7aa66f1a8574d4c948c9396b5eade9",
+        "runner": {
+          "name": "e2e",
+          "version": "0.22.0"
+        },
+        "test_ids": [
+          "tests/behavior.e2e.ts::Flutter%20Todo%20adds%20a%20task%20and%20marks%20it%20complete"
+        ],
+        "config": "e2e.config.mjs",
+        "test_file": "tests/behavior.e2e.ts",
+        "cleanup": "loopback app port closed"
+      }
+    },
+    "evidence": [
+      "<redacted temporary path>",
+      "<redacted temporary path>"
+    ]
+  }
+}

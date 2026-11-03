@@ -1,0 +1,167 @@
+{
+  "attempts": [
+    {
+      "adapter_error": "output budget exceeded",
+      "elapsed_seconds": 328,
+      "id": "historical-007",
+      "note": "The adapter error was generic; available records do not prove which stream exceeded its cap. This classification is not independently reproducible.",
+      "raw_cli_output_retained": false,
+      "scope": "full built snapshot",
+      "status": "unverified_blocked",
+      "stream_and_byte_counts": "not retained by that adapter version"
+    },
+    {
+      "analysis_report_created": false,
+      "evidence_bundle_created": false,
+      "exit_code": 1,
+      "id": "rea-full-snapshot-001",
+      "partial_observation_id": "ev_d039f161ee229c495c809931a4214ee369b5e8034abc85d05c4cb429852e75f6",
+      "provider_code": "provider_timeout",
+      "provider_timeout_ms": 300000,
+      "raw_output": {
+        "host_paths_redacted": true,
+        "path": "evidence/rea-attempt-001-full-snapshot.output.json",
+        "raw_bytes": 431526,
+        "raw_sha256": "6fb1a9af01d61e67805098251da665e241d014033f45b724e87468fcb094d86d",
+        "sanitized_bytes": 431328,
+        "sanitized_sha256": "1fd310b910ae4c81c1047b62e5760ffc6d163ad3429d88befa48d2b90138cae0"
+      },
+      "scope": "full built snapshot; 14 inventoried JavaScript sources",
+      "status": "blocked"
+    },
+    {
+      "analysis_report_created": false,
+      "analysis_timeout_ms": 600000,
+      "blocked_reason": "The primary JavaScript artifact exhausted REA worker memory at 1,024 MiB; findings=0 is not a valid result when no JavaScript file parsed.",
+      "evidence_bundle": {
+        "host_paths_redacted": true,
+        "path": "evidence/rea-attempt-002-evidence-bundle.json",
+        "raw_bytes": 382929,
+        "raw_sha256": "133a8a031da30115c8a9034090d8dc8c2281e97dbd98026e66ac8e093a52b6be",
+        "sanitized_bytes": 381856,
+        "sanitized_sha256": "92549796ec2c466ceec45a8e8d649043fb2ebe2e14d0b990cb2ec4dc5b0a5240"
+      },
+      "exit_code": 0,
+      "id": "rea-main-dart-js-002",
+      "max_heap_mb": 1024,
+      "raw_output": {
+        "host_paths_redacted": true,
+        "path": "evidence/rea-attempt-002-main-dart-js.output.json",
+        "raw_bytes": 12742,
+        "raw_sha256": "b6967bee2cf987f088ef67da419db5c8e0686fd738e409bb0f6b819f38471d6e",
+        "sanitized_bytes": 12447,
+        "sanitized_sha256": "36dc6592edf6a6359e362eaf03cda9a3f29e6c1bb28b269231675552e472f40d"
+      },
+      "scope": "build-out/web/main.dart.js only",
+      "statistics": {
+        "findings": 0,
+        "parse_failures": 0,
+        "parsed_javascript_files": 0,
+        "relevant_files": 35,
+        "skipped_javascript_files": 1,
+        "text_bytes_read": 2683181
+      },
+      "status": "blocked_incomplete_source_parse"
+    },
+    {
+      "analysis_report_created": false,
+      "analysis_timeout_ms": 900000,
+      "evidence_bundle_created": false,
+      "exit_code": 1,
+      "id": "rea-main-dart-js-003",
+      "max_heap_mb": 4096,
+      "partial_observation_id": "ev_8b7e0465a4a62d771cab72a1502be42d5a85381a4b11febcd9bcbf27e3bfdd51",
+      "provider_code": "provider_timeout",
+      "raw_output": {
+        "host_paths_redacted": true,
+        "path": "evidence/rea-attempt-003-main-dart-js-timeout.output.json",
+        "raw_bytes": 375673,
+        "raw_sha256": "c5abc6e149ab319f8027a67e6df4dde1bb3d57aed265833808aa94ba4ca72fc2",
+        "sanitized_bytes": 375475,
+        "sanitized_sha256": "14a6551431fc8db23856fa7bb6d04f9394dbdb7895afbae7384ed1248e14e5bb"
+      },
+      "scope": "build-out/web/main.dart.js only",
+      "status": "blocked"
+    },
+    {
+      "analysis_report_created": false,
+      "analysis_timeout_ms": 600000,
+      "artifact_sha256": "02b3b1195e1c063c076469d8780bbe379de9abb58f15a63a9eaff60270ee142e",
+      "evidence_bundle_created": false,
+      "id": "rea-main-dart-js-low-semantic-004",
+      "max_heap_mb": 4096,
+      "partial_analysis_status": "interrupted",
+      "partial_observation_id": "ev_eb4815fceaba80e8672451d5985f5440165f2d9255df81ebd3df27a4d76d5222",
+      "provider_code": "provider_timeout",
+      "raw_output": {
+        "host_paths_redacted": true,
+        "path": "evidence/rea-attempt-004-low-semantic-timeout.json",
+        "raw_bytes": 293980,
+        "raw_sha256": "3f69f7c3043e7fd83bbbdc2890e0fb75ea7616123b8ef1b560b324b5844c31a2",
+        "sanitized_bytes": 515550,
+        "sanitized_sha256": "be9afeb3876da02249e022adcfff8f72e1b6d1f05116e834a5da3272a65fcd87"
+      },
+      "scope": "build-out/web/main.dart.js only; 22 other inventoried files unselected",
+      "semantic_limits": {
+        "max_semantic_nodes": 256,
+        "max_semantic_nodes_per_file": 64,
+        "max_semantic_unknowns": 512,
+        "max_semantic_unknowns_per_file": 128
+      },
+      "status": "blocked"
+    },
+    {
+      "analysis_report_created": false,
+      "analysis_timeout_ms": 600000,
+      "artifact_sha256": "2d0c9d82ff6fab055dd1fce2f554ec852295f0158484a3485038cb8c451f1825",
+      "id": "rea-main-dart-js-unminified-005",
+      "max_heap_mb": 4096,
+      "partial_observation_id": "ev_19bbb95c35bbcb621f5ce3e763eb34eb19025ab5181b462717884f712febd9ff",
+      "provider_code": "provider_timeout",
+      "raw_output": {
+        "host_paths_redacted": true,
+        "path": "evidence/rea-attempt-005-unminified-timeout.json",
+        "raw_bytes": 428609,
+        "raw_sha256": "443a29e54e8d301f4ddb6c0dc00c3de379b8832c121631dac62084dd0b2f02e4",
+        "sanitized_bytes": 2058,
+        "sanitized_sha256": "8ba309633b84f1fc0e917d31f0d6135fcd8fa7fa43dd1c0b164095f346a11f11"
+      },
+      "scope": "release build with JavaScript minification disabled; build-out/web/main.dart.js only",
+      "statistics": {
+        "findings": 0,
+        "parse_failures": 0,
+        "parsed_javascript_files": 0,
+        "relevant_files": 42,
+        "skipped_javascript_files": 1,
+        "text_bytes_read": 8204126
+      },
+      "status": "blocked"
+    }
+  ],
+  "interpretation": "No usable REA analysis report or comparison exists. The original app bundle exhausted the 1 GiB worker heap or timed out with longer budgets. A separate release build with JavaScript minification disabled produced an 8.2 MB app bundle, but a 4 GiB, 600-second analysis still timed out before parsing a JavaScript file. Retained outputs are sanitized diagnostics, not REA analysis reports.",
+  "output_limits_bytes": {
+    "stderr": 8388608,
+    "stdout": 67108864
+  },
+  "protection_claim": false,
+  "record_type": "rea_attempt_result",
+  "runtime": {
+    "manifest_sha256": "2481fc7000f0363b27506c6679e9bc8b07915a2b9fe08b459ad5b453914f8b76",
+    "name": "REA",
+    "node": "v24.22.1",
+    "package_lock_sha256": "b6cb714948a7ec224fa6f676f0e9b6f570bbabf3518a1a187be571ac8ddfe232",
+    "package_tree_sha256": "2faad76ce0c1b5f8c5da1774224179cb6b052978fbf917f651bfb82b2ffb6c76",
+    "source_commit": "160d821ac9a0310afcb8d1fc427862dd6508add5",
+    "version": "6.8.0"
+  },
+  "schema_version": "1.0",
+  "status": "blocked",
+  "target": {
+    "artifact": "build-out/web/main.dart.js",
+    "artifact_sha256": "02b3b1195e1c063c076469d8780bbe379de9abb58f15a63a9eaff60270ee142e",
+    "artifact_size": 2683181,
+    "baseline_snapshot_tree_sha256": "e476680912cf70cb06425f19993e0efc555722e2606ef3be863c221c63722147",
+    "commit": "9df0dc821ff020b42a5ac459c0f2e1ba09d3f9a8",
+    "repository": "https://github.com/Gaygysyz05/flutter-todo-app"
+  }
+}

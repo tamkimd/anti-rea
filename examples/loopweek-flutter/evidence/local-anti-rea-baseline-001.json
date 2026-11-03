@@ -1,0 +1,139 @@
+{
+  "baseline": {
+    "artifact": {
+      "path": "build/app/outputs/flutter-apk/app-release.apk",
+      "sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b",
+      "size": 62349581,
+      "stored_in_repository": false
+    },
+    "build_command": "flutter build apk --release",
+    "build_duration_ms": 94575,
+    "build_resolved_pubspec_lock_sha256": "eace41a91701744b181632e65eb19e91e2d6a42858a82fc9088002247f39c264",
+    "id": "loopweek-before-001",
+    "lock_matches_source": false,
+    "source_pubspec_lock_sha256": "dc46e2b78f7e101d0434f9d4aeae7e27adfe23d4a076f9b0eb4a6cb67dc76c0f",
+    "status": "captured",
+    "target": "apk",
+    "toolchain": {
+      "android": {
+        "build_tools_version": "36.0.0",
+        "platform_version": "android-37.0",
+        "sdk_version": "36.0.0"
+      },
+      "flutter": {
+        "channel": "stable",
+        "dart_sdk_version": "3.13.7",
+        "engine_revision": "cf636b1dfb818dd6a3ff16e390e93b1a036969c8",
+        "framework_revision": "737ba8f885dc774b53b442759999a312c9461e4e",
+        "framework_version": "3.47.8"
+      },
+      "java": {
+        "vendor": "Temurin",
+        "version": "17.0.20.1"
+      }
+    },
+    "transitive_lock_version_changes": [
+      "matcher 0.12.19 -> 0.12.20",
+      "meta 1.17.0 -> 1.19.0",
+      "test_api 0.7.10 -> 0.7.12",
+      "vector_math 2.2.0 -> 2.4.4"
+    ]
+  },
+  "behavior": {
+    "status": "passed_single_emulator_journey",
+    "report": "evidence/local-baseline-emulator-behavior-001.json",
+    "report_bytes": 1583,
+    "report_sha256": "aabce2fc57169855b302ff7cf1609ea03141195af4ea4a03cd467cd49b51e53f",
+    "scope": "install, foreground launch, onboarding, task creation/completion, and force-stop/relaunch persistence",
+    "device": {
+      "android_version": "16",
+      "api_level": 36,
+      "abi": "arm64-v8a"
+    },
+    "launch_smoke_report": "evidence/local-baseline-emulator-launch-001.json",
+    "journey_report": "evidence/local-baseline-emulator-behavior-001.json",
+    "journey_report_bytes": 1583,
+    "journey_report_sha256": "aabce2fc57169855b302ff7cf1609ea03141195af4ea4a03cd467cd49b51e53f",
+    "launch_smoke_report_bytes": 1643,
+    "launch_smoke_report_sha256": "3ace226e1eb39ef8ca28bc8fbd87d759d730d06817306cf2667e0e744c2f3f98"
+  },
+  "candidate": {
+    "reason": "Candidate execution waits for an explicit plan selection; no paired AOT verifier supports this baseline profile.",
+    "status": "not_built"
+  },
+  "independent_apk_signature_verification": {
+    "certificate_sha256": "841acd06bcdca601e950d5d1819339fd9a28871cf1189ff8257e9cf8727a6089",
+    "publisher_identity_externally_trusted": false,
+    "report": {
+      "bytes": 1230,
+      "file": "evidence/apksigner-verification-local-baseline-001.json",
+      "sha256": "a530609982db93f7edfd6ce45aeedb59a8cfbfd6a1790a97c9790bab27083739"
+    },
+    "scheme": "v2",
+    "status": "passed"
+  },
+  "limitations": [
+    "Flutter build resolved four transitive dependencies to newer versions because the upstream pubspec.lock could not be honored by the installed Flutter toolchain.",
+    "The baseline APK is locally Android Debug-signed and does not match the published release signer.",
+    "REA 6.8.0 identifies three ABI payloads but cannot inspect the current unified Dart AOT snapshot profile.",
+    "No Android package inspection, obfuscated candidate, or BEFORE/AFTER protection comparison was completed.",
+    "This baseline shows toolchain/report readiness and makes no protection claim."
+  ],
+  "rea": {
+    "android_package_inspection": {
+      "reason": "Pinned REA runtime has no configured JADX MCP provider.",
+      "report": {
+        "bytes": 1192,
+        "file": "evidence/rea-inspect-android-package-local-baseline-001.json",
+        "sha256": "050b91359f989d1924144d6e3b37572005232d57fb55ecb548af1dfcae5a8f27"
+      },
+      "status": "blocked_provider_unavailable"
+    },
+    "apk_signature_static_inspection": {
+      "cryptographic_verification_performed": false,
+      "report": {
+        "bytes": 6061,
+        "file": "evidence/rea-inspect-apk-signature-local-baseline-001.json",
+        "sha256": "2ce253bc344a50d317ed8d54b62e9393cb8898fd3ed078792707bba67f62272d"
+      },
+      "status": "static_only"
+    },
+    "dart_aot_inspection": {
+      "observed_exports": [
+        "_kDartSnapshotText",
+        "_kDartSnapshotData"
+      ],
+      "observed_profile": "unified Dart snapshot exports",
+      "report": {
+        "bytes": 1732,
+        "file": "evidence/rea-inspect-dart-aot-local-baseline-001.json",
+        "sha256": "94a6fbf5566b12c306e68f7455afe8c4b88e4b5519fc27ce6fbbeb73a1757800"
+      },
+      "status": "blocked_unsupported_profile",
+      "supported_profile": "dart-2.14-split-full-aot"
+    },
+    "flutter_build_identification": {
+      "abi_count": 3,
+      "arm64_libapp_sha256": "a65630234c7f8fc713f8485ac8e89e11b5e5a81b1988951f2785b0913679f2e0",
+      "coverage": "partial",
+      "evidence_id": "ev_ae470e11e58cb322de8ec5c9c6ca2fde02fc910b0dc83cf2a325f1af5daa1130",
+      "report": {
+        "bytes": 6080,
+        "file": "evidence/rea-identify-flutter-local-baseline-001.json",
+        "sha256": "3b2dd89f1a4f3b09c4ec060a5eec479876c71f63c5928d45a109893fa005c32e"
+      },
+      "status": "passed_with_partial_coverage"
+    },
+    "runtime": "rea-agents 6.8.0",
+    "runtime_manifest_sha256": "8494f80f5d0b7f4bd7f9a5e71731f810ae5f79d8faa71188fb7bb0ea3a045fdb"
+  },
+  "record_type": "anti_rea_loopweek_local_flutter_baseline",
+  "schema_version": "1.0",
+  "source": {
+    "commit": "f07a75f0875c2b51a953c258c358fbfca957be89",
+    "dirty": false,
+    "license": "MIT",
+    "release_tag": "v1.0.3",
+    "repository": "https://github.com/ZaryabKhan/Loopweek"
+  }
+}

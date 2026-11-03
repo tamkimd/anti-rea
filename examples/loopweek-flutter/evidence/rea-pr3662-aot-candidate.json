@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_upstream_candidate_flutter_aot_report",
+  "status": "supported_with_partial_string_pool",
+  "protection_claim": false,
+  "candidate_artifact_built": false,
+  "upstream": {
+    "repository": "https://github.com/morluto/rea",
+    "pull_request": 3662,
+    "commit": "e50d3f74ade8b21f43d0d4f6e9a1b31f44a09efe",
+    "npm_package": "rea-agents",
+    "npm_version": "6.8.0",
+    "release_status": "unmerged_upstream_candidate",
+    "package_lock_sha256": "1d8fa0f33b3125d3e601ec832b18d9d35b37453f36340dc0507f065a8de158ad"
+  },
+  "operation": {
+    "name": "inspect_dart_aot",
+    "exit_code": 0,
+    "evidence_id": "ev_5805feec5ae6ed3b231d8f4acc9821af80836ae1ed73dbf859ee10cba92d0a6e",
+    "full_report_sha256": "a273b49e70cf6861ccfab018aefa8031d7e3aeddc1896bbbeab43394f159ea78",
+    "full_report_retained_privately": true
+  },
+  "artifact": {
+    "format": "apk",
+    "sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b",
+    "size": 62349581,
+    "stored_in_repository": false
+  },
+  "aot": {
+    "abi": "arm64-v8a",
+    "libapp": {
+      "sha256": "a65630234c7f8fc713f8485ac8e89e11b5e5a81b1988951f2785b0913679f2e0",
+      "size": 6947720,
+      "coverage": "complete",
+      "snapshot_hash": "0451907c2eaa8467e848c0067bfe8ed4",
+      "snapshot_hash_sources": 1,
+      "sections": [
+        {
+          "name": "_kDartSnapshotText",
+          "offset": 2949120,
+          "size": 3965760,
+          "magic_valid": false,
+          "kind": null,
+          "header_length": null
+        },
+        {
+          "name": "_kDartSnapshotData",
+          "offset": 704,
+          "size": 2899168,
+          "magic_valid": true,
+          "kind": 2,
+          "header_length": 2460660
+        }
+      ]
+    },
+    "string_pool": {
+      "coverage": "partial",
+      "package_uris_returned": 500,
+      "package_uri_count_at_least": 684,
+      "dart_uris_returned": 214,
+      "dart_uri_count_at_least": 214,
+      "class_like_tokens_returned": 2000,
+      "class_like_token_count_at_least": 4000,
+      "printable_run_count": 17424
+    }
+  },
+  "interpretation": {
+    "structural_aot_gate": "passed_for_this_candidate_runtime_and_exact_arm64_apk",
+    "anti_rea_pinned_runtime_gate": "still_blocked_until_upstream_fix_is_released_and_the_pinned_integration_is_reverified",
+    "string_observations": "bounded byte-pattern projections; not decoded Dart cluster semantics"
+  },
+  "limitations": [
+    "The runtime was built from an unmerged upstream pull request and is not the pinned REA npm runtime.",
+    "Only the arm64-v8a ABI was inspected in this run.",
+    "Complete structural AOT coverage does not mean complete string-pool coverage.",
+    "No transformed candidate or protection claim is present."
+  ],
+  "source_verification": {
+    "verified_at_utc": "2026-11-02T09:38:53Z",
+    "checkout_commit": "e50d3f74ade8b21f43d0d4f6e9a1b31f44a09efe",
+    "node_version": "24.22.1",
+    "npm_version": "11.19.1",
+    "npm_ci_ignore_scripts_exit_code": 0,
+    "npm_build_exit_code": 0,
+    "build_tasks": {
+      "successful": 3,
+      "total": 3
+    },
+    "flutter_provider_test_command": "node_modules/.bin/vitest run tests/boundary/filesystem/flutterBuildProvider.test.ts",
+    "flutter_provider_tests_passed": 103,
+    "flutter_provider_test_failures": 0,
+    "source_build_is_pinned_release": false,
+    "pinned_anti_rea_runtime_changed": false,
+    "exact_baseline_reinspection": {
+      "raw_report_sha256": "a273b49e70cf6861ccfab018aefa8031d7e3aeddc1896bbbeab43394f159ea78",
+      "artifact_sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b",
+      "abi": "arm64-v8a",
+      "libapp_coverage": "complete",
+      "snapshot_hash": "0451907c2eaa8467e848c0067bfe8ed4",
+      "snapshot_hash_sources": 1,
+      "string_pool_coverage": "partial"
+    },
+    "git_install_with_scripts_disabled": {
+      "dist_present": false,
+      "cli_startup": "missing_compiled_runtime"
+    },
+    "packed_source_install": {
+      "tarball_sha256": "8ceb743bd90226b5c28353316841f6a420fbaefc347a86a1b45eb831155f0377",
+      "install_scripts_disabled": true,
+      "rea_version": "6.8.0",
+      "worker_module_imported": true
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "artifact": {
+    "filename": "app-release.apk",
+    "sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b",
+    "size": 62349581,
+    "stored_in_repository": false
+  },
+  "limitations": [
+    "This locally generated baseline uses Android Debug signing, not the published Loopweek release certificate.",
+    "Signature validity does not establish publisher identity or production signing equivalence."
+  ],
+  "publisher_identity_externally_trusted": false,
+  "record_type": "anti_rea_android_apk_signature_verification",
+  "result": "Verifies",
+  "schema_version": "1.0",
+  "signature_schemes": {
+    "v1": false,
+    "v2": true,
+    "v3": false,
+    "v3.1": false,
+    "v4": false
+  },
+  "signers": [
+    {
+      "algorithm": "RSA-2048",
+      "certificate_sha256": "841acd06bcdca601e950d5d1819339fd9a28871cf1189ff8257e9cf8727a6089",
+      "identity": "Android Debug",
+      "public_key_sha256": "409bdb140a40bea5be7f294bab21bd4fefe858ec2ed62adaa4e9b72affc82145"
+    }
+  ],
+  "stdout_sha256": "f8c1ef9006499b8f6917e01a8bafd6015f18f3d746d206114188b79c5dafceb1",
+  "tool": {
+    "android_sdk_build_tools": "36.0.0",
+    "java": "Temurin JDK 17.0.20.1",
+    "name": "apksigner",
+    "version": "0.9"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_private_full_composite_cli_fixture_workflow",
+  "date": "2026-11-02",
+  "scope": "External owned synthetic two-file JavaScript fixture; normal saved-plan choose path selected both compatible BLA actions; candidate remained outside repository. No TodoMVC, optimizer, real-app behavior check, or protection claim.",
+  "fixture": {
+    "path": "/private/tmp/anti-rea-live-composite-20261102/project",
+    "captured_project_tree_sha256": "0b60d47485230a8dd8edd8a043fe6f5f87f568e41a048979130f958d5f863003",
+    "baseline_id": "composite-before-001",
+    "artifacts": {
+      "dist/app.mjs": {"source_sha256": "d0c4f7940676e83858f2374107fa8d2ffc5aa436517433df2fe0811cd28790e3", "candidate_sha256": "6422d4568c0fd0a10f38f392bee74cbb7ddb2b1569e6ef5daff0b52955e34884"},
+      "dist/math.mjs": {"source_sha256": "76f26bd292166033d02e77bdb8fe6aec01e915ccb8cb3f93b8971f9dcd78250e", "candidate_sha256": "b45fd31634f9dbb6052c3e60465cd758a614bb319686b97cbf6168dc18c9263a"}
+    }
+  },
+  "runtime": {
+    "anti_rea": "0.1.32 fresh CPython 3.11 venv",
+    "wheel_sha256": "e28c83365f5998fb237009ed8be97f27972ec8f8da89e787b507227d0e21efa7",
+    "bla": "bla-agents@1.6.3",
+    "bla_package_tree_sha256": "675fa40df7d9ad25e15da7ace0dcabff496331b85042a3e2d4fe962f32f5ff23",
+    "rea": "rea-agents@6.8.0",
+    "rea_package_tree_sha256": "2faad76ce0c1b5f8c5da1774224179cb6b052978fbf917f651bfb82b2ffb6c76",
+    "node": "v24.22.1",
+    "npm": "11.19.1",
+    "rea_node_sandbox": "host (explicit, matching baseline report paths)"
+  },
+  "workflow": {
+    "run_id": "composite-run-007",
+    "plan_id": "composite-plan-002",
+    "plan_sha256": "0be100fcbeb698d83a811bc984f0ecf6764a317bc5640db75a4383491bba75d4",
+    "decision_id": "composite-decision-007",
+    "selected_action_ids": ["bla-js-95258bdcd224", "bla-js-ddafa90d93c5"],
+    "execution_id": "exec-3c1eb1cf2461f53bb272f750",
+    "execution_sha256": "a2d83b2e780c3eb90726f86e4e2f99549934a6dfebae70cd18e3b4f1671d81e9",
+    "verification_id": "verify-3c1eb1cf2461f53bb272f750",
+    "verification_sha256": "71628585a9ba787b4e64a06c2e9993aa848bab519100713b979e5029c6a8d269",
+    "acceptance_id": "composite-acceptance-007",
+    "acceptance": "accepted",
+    "final_state": "completed",
+    "checks": {
+      "bla_invariants": "passed for both action stages",
+      "performance": "passed for both actions; 3 trials/action",
+      "rea_comparison": "passed; complete paired-project static summaries, comparable scope; findings 4 to 46"
+    },
+    "application_behavior": "not run; the saved plan did not include a behavior checker",
+    "measurements": {
+      "candidate_bytes": 142766,
+      "candidate_tree_sha256": "1ec19a97fa44199352d8688d70cb9655f5d9799558dda9ebeff3252cc025e559",
+      "elapsed_ms": 12575,
+      "app_mjs_performance_elapsed_ms_mean": 171.66666666666666,
+      "math_mjs_performance_elapsed_ms_mean": 185.33333333333334
+    }
+  },
+  "rollback_and_replay": {
+    "status": "discarded",
+    "rollback_id": "rollback-bc3743377068473c7a5c3f04",
+    "retained_candidate_sha256": "1ec19a97fa44199352d8688d70cb9655f5d9799558dda9ebeff3252cc025e559",
+    "report_replay_sha256_before_and_after_rollback": "ab6617c7db46be7e4e4e2a9eb463df7559a7f9b4469d3a093944c5fc3a9676fe",
+    "tampering_retained_candidate_rejected": true,
+    "tamper_error": "Retained rollback tree hash mismatch",
+    "restoration_report_replay_identical": true
+  },
+  "diagnostics": [
+    "Run 004 used a wheel built before the composite adapter and parent-directory fixes; it failed when creating nested paired snapshots.",
+    "Run 005 used the same stale wheel and failed at the same nested snapshot parent creation.",
+    "Run 006 used the fresh adapter wheel but REA defaulted to Docker, whose normalized report artifact `/input/0` could not be resolved by host-side validation; BLA trials, performance, and paired analyses completed before failure and cleanup.",
+    "Run 007 rebuilt from current source (installed helper confirmed `before.parent.mkdir(..., parents=True, ...)`) and used explicit host mode, matching the successful baseline capture environment."
+  ],
+  "limitations": [
+    "Synthetic fixture contains two separately transformed JavaScript modules; no real application was evaluated.",
+    "The exact selected plan did not specify application behavior verification.",
+    "REA finding deltas, BLA invariants, and performance measurements do not establish protection effectiveness or behavior equivalence.",
+    "Detailed run state, candidate outputs, and raw REA reports remain in the external private state directory."
+  ]
+}

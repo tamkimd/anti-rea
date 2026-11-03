@@ -1,0 +1,7 @@
+{
+  "name": "anti-rea-bla-runtime",
+  "private": true,
+  "version": "0.1.0",
+  "engines": { "node": "^22.23.4 || >=24.0.0" },
+  "dependencies": { "bla-agents": "1.6.3" }
+}

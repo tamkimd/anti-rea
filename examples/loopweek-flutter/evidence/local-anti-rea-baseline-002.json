@@ -1,0 +1,136 @@
+{
+  "aot_inspection": {
+    "abi": "arm64-v8a",
+    "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "attached_baseline_record_sha256": "64ded3d037a0a15fd7150f117e78b93e894513e3e0e248cc49c2d1f0121030f7",
+    "baseline_id": "loopweek-before-004-aot",
+    "libapp_bytes": 6947720,
+    "libapp_sha256": "8618681e842db345fb1ebe016ba23413867fd07eb6136db2f155654bd8c2d392",
+    "observed_exports": [
+      {
+        "name": "_kDartSnapshotText",
+        "offset": 2949120,
+        "size": 3965760
+      },
+      {
+        "name": "_kDartSnapshotData",
+        "offset": 704,
+        "size": 2899168
+      }
+    ],
+    "raw_upstream_report_sha256": "0252f71088f919c7e7e8a8255ad5d7374b6e7970b9bb0e18245fc0c6f08d97d4",
+    "report": "evidence/rea-inspect-dart-aot-local-baseline-002.json",
+    "report_bytes": 1562,
+    "report_sha256": "59421939e94aafae5f34fe6f0d48ebc0c57c92e1fd4806a82e2a667a68ef5e48",
+    "runtime": "rea-agents 6.8.0",
+    "runtime_manifest_sha256": "8494f80f5d0b7f4bd7f9a5e71731f810ae5f79d8faa71188fb7bb0ea3a045fdb",
+    "status": "unsupported",
+    "supported_profile": "dart-2.14-split-full-aot"
+  },
+  "artifact_stored_in_repository": false,
+  "baseline": {
+    "android_sdk_licenses": "accepted_on_host",
+    "artifact": {
+      "path": "build/app/outputs/flutter-apk/app-release.apk",
+      "sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+      "size": 62349581,
+      "stored_in_repository": false
+    },
+    "build_command": [
+      "flutter",
+      "build",
+      "apk",
+      "--release"
+    ],
+    "build_duration_ms": 34581,
+    "id": "loopweek-before-004",
+    "lock_matches_source": false,
+    "record_sha256": "de539d6a01b0381fa15e3f607938da96f877fbc6bfb417e786278348f8729366",
+    "resolved_pubspec_lock_sha256": "eace41a91701744b181632e65eb19e91e2d6a42858a82fc9088002247f39c264",
+    "snapshot": {
+      "file_scope_sha256": "3ac9b835af8d58b1a6ff12c280f376f74ed404c8ecbbb11cf265a5d1cc089721",
+      "source_tree_sha256": "22df89cb032e18fad9bbf46040ac1397c033bfdf25a5f39d23b6c3ce36f84058",
+      "tree_sha256": "87cca243b70983b5094baf6a2727b26a98bded62e2337bfede8f89ce7c943d85"
+    },
+    "source_pubspec_lock_sha256": "dc46e2b78f7e101d0434f9d4aeae7e27adfe23d4a076f9b0eb4a6cb67dc76c0f",
+    "status": "captured",
+    "target": "apk",
+    "transitive_lock_version_changes": [
+      "matcher 0.12.19 -> 0.12.20",
+      "meta 1.17.0 -> 1.19.0",
+      "test_api 0.7.10 -> 0.7.12",
+      "vector_math 2.2.0 -> 2.4.4"
+    ]
+  },
+  "behavior": {
+    "status": "passed_single_emulator_journey",
+    "report": "evidence/local-baseline-emulator-behavior-002.json",
+    "report_sha256": "e5e5b0f96d60d364fd0af6290e3688c3aad07a0a8d742885278b103620ed7196",
+    "report_bytes": 1681,
+    "existing_emulator_reports_apply_to_a_different_apk": false
+  },
+  "limitations": [
+    "The upstream pubspec.lock could not be enforced with the installed Flutter/Dart toolchain; four transitive versions changed in the private build snapshot.",
+    "Pinned REA 6.8.0 reports the unified Dart snapshot as unsupported; this does not mean AOT data is absent.",
+    "The APK is signed with the Android Debug certificate; publisher identity was not checked against an external trust anchor.",
+    "No behavior journey was run on this exact APK, and no transformed candidate or BEFORE/AFTER protection result exists."
+  ],
+  "plan": {
+    "action_count": 0,
+    "blockers": [
+      "Flutter obfuscation for build/app/outputs/flutter-apk/app-release.apk is blocked until REA confirms a supported arm64-v8a AOT profile for this exact baseline APK."
+    ],
+    "candidate_built": false,
+    "canonical_sha256": "70f0185095837a1eee6884dc7777c15812a360c9c2df5f11e88ed49e5c21b5b3",
+    "id": "loopweek-plan-005",
+    "record_sha256": "959790d035b50b40fc054200f11c12abe851d30f40d399821e1f8b23af7908d0",
+    "status": "blocked"
+  },
+  "protection_claim": false,
+  "record_type": "anti_rea_loopweek_clean_source_flutter_baseline",
+  "schema_version": "1.0",
+  "signature": {
+    "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "certificate_sha256": "841acd06bcdca601e950d5d1819339fd9a28871cf1189ff8257e9cf8727a6089",
+    "publisher_identity_externally_trusted": false,
+    "report": "evidence/apksigner-verification-local-baseline-002.json",
+    "report_bytes": 668,
+    "report_sha256": "87be91b093f40b82263a52d94cc353492f4e83b987b6a077e3c9c66279ba374a",
+    "result": "Verifies",
+    "scheme": "v2"
+  },
+  "source": {
+    "commit": "f07a75f0875c2b51a953c258c358fbfca957be89",
+    "dirty": false,
+    "license": "MIT",
+    "license_sha256": "f447360da327a54e53044a3d956e0ed663c5c816f7781812158f9635913bb6b8",
+    "release_tag": "v1.0.3",
+    "repository": "https://github.com/ZaryabKhan/Loopweek",
+    "source_inventory_sha256": "13ae1df199f736d027c3c0160591d5d921125af67af2242ad22baa8664bfbc02"
+  },
+  "toolchain": {
+    "android_build_tools": "36.0.0",
+    "android_platform": "android-37.0",
+    "android_sdk": "36.0.0",
+    "dart": "3.13.7",
+    "engine_revision": "cf636b1dfb818dd6a3ff16e390e93b1a036969c8",
+    "flutter": "3.47.8",
+    "flutter_channel": "stable",
+    "flutter_revision": "737ba8f885dc774b53b442759999a312c9461e4e",
+    "java": "Temurin 17.0.20.1"
+  },
+  "android_package_inspection": {
+    "status": "passed",
+    "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "report": "evidence/inspect-android-package-local-baseline-002.json",
+    "report_sha256": "1bfb3095f62cd301e3ff7a1cf072ab8958c2843a6518e6032499a0627d4bf356",
+    "report_bytes": 46710,
+    "raw_report_sha256": "e83fe493d6923e15a1deddde61dc0c6138f2ed7c4573799857235b60e9336c49",
+    "evidence_id": "ev_1afe145df60058a7561af44d02a629f8c8598c4ba778ee7398f8b127f99e36ae",
+    "provider": "JADX headless 0.7.1",
+    "class_count": 1695,
+    "resource_count": 561,
+    "signature_verification": "not_performed",
+    "artifact_stored_in_repository": false
+  }
+}

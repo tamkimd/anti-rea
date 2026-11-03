@@ -1,0 +1,590 @@
+{
+  "schemaVersion": "report-1",
+  "run": {
+    "id": "01a19ae6-11dc-796f-9ef0-81984218e7ac",
+    "specVersion": "0.1",
+    "runner": {
+      "name": "e2e",
+      "version": "0.22.0"
+    },
+    "status": "passed",
+    "exitCode": 0,
+    "startedAt": "2026-11-02T06:15:31.833Z",
+    "finishedAt": "2026-11-02T06:15:33.341Z",
+    "project": {
+      "id": "todomvc-react",
+      "configDigest": "ccb285122ca27cc15bf0ea49fcf19bbbef778a33dc018c02a0534714fe0219e7"
+    },
+    "environment": {
+      "ci": false,
+      "trustNoticeShown": false,
+      "os": "darwin 25.6.0",
+      "arch": "arm64",
+      "runtime": "node v24.22.1"
+    },
+    "targets": [
+      {
+        "id": "todomvc-react",
+        "index": 0,
+        "platform": "web",
+        "baseOrigin": "http://127.0.0.1:62041",
+        "environment": "test",
+        "engine": {
+          "name": "web",
+          "version": "0.15.4",
+          "spiVersion": 1
+        },
+        "capabilities": [
+          "actions",
+          "artifacts",
+          "browser",
+          "keyboard",
+          "location",
+          "observation",
+          "pointer",
+          "state"
+        ],
+        "artifactCapabilities": [
+          "screenshot",
+          "video"
+        ],
+        "stateCapability": true
+      }
+    ],
+    "serialGroups": [],
+    "results": [
+      {
+        "id": "a6844edcc7d3da6b037c2818a5a0e97716952ad435260fcc2ebd2ace5127a4b9",
+        "testId": "tests/behavior.e2e.ts::TodoMVC%20rejects%20blank%20input%2C%20adds%2C%20toggles%2C%20and%20filters%20one%20todo",
+        "kind": "test",
+        "declarationIndex": 0,
+        "titlePath": [
+          "TodoMVC rejects blank input, adds, toggles, and filters one todo"
+        ],
+        "file": "tests/behavior.e2e.ts",
+        "source": {
+          "file": "tests/behavior.e2e.ts",
+          "line": 4,
+          "column": 1
+        },
+        "targetId": "todomvc-react",
+        "platform": "web",
+        "agent": "default",
+        "repeat": 0,
+        "tags": [],
+        "selected": true,
+        "status": "passed",
+        "attempts": [
+          {
+            "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58",
+            "index": 0,
+            "status": "passed",
+            "startedAt": "2026-11-02T06:15:32.227Z",
+            "durationMs": 1075,
+            "artifacts": [],
+            "secondaryErrors": [],
+            "cleanup": "complete",
+            "environment": {
+              "browser": "chromium 156.0.8078.4",
+              "user agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.8078.4 Safari/537.36"
+            },
+            "steps": [
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:0",
+                "index": 0,
+                "kind": "app",
+                "api": "app.open",
+                "label": "/",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:32.528Z",
+                "durationMs": 310,
+                "events": [
+                  {
+                    "kind": "navigation",
+                    "startedAt": "2026-11-02T06:15:32.787Z",
+                    "durationMs": 0,
+                    "status": "passed",
+                    "detail": "navigated to http://127.0.0.1:62041/"
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:62041/",
+                  "nodes": 9,
+                  "changes": []
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 5,
+                  "column": 13
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:1",
+                "index": 1,
+                "kind": "locator",
+                "api": "locator.fill",
+                "label": "getByLabel(\"New Todo Input\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:32.840Z",
+                "durationMs": 76,
+                "events": [
+                  {
+                    "kind": "engine",
+                    "name": "fill",
+                    "startedAt": "2026-11-02T06:15:32.841Z",
+                    "durationMs": 75,
+                    "status": "passed",
+                    "detail": "fill textbox \"New Todo Input\""
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:62041/",
+                  "nodes": 9,
+                  "since": 0,
+                  "changes": [
+                    "changed textbox \"New Todo Input\" testid=\"text-input\" value=\"   \" (was: textbox \"New Todo Input\" testid=\"text-input\")"
+                  ]
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 9,
+                  "column": 15
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:2",
+                "index": 2,
+                "kind": "locator",
+                "api": "locator.press",
+                "label": "getByLabel(\"New Todo Input\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:32.917Z",
+                "durationMs": 26,
+                "events": [
+                  {
+                    "kind": "engine",
+                    "name": "press",
+                    "startedAt": "2026-11-02T06:15:32.917Z",
+                    "durationMs": 26,
+                    "status": "passed",
+                    "detail": "press textbox \"New Todo Input\""
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:62041/",
+                  "nodes": 9,
+                  "since": 1,
+                  "changes": []
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 10,
+                  "column": 15
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:3",
+                "index": 3,
+                "kind": "assertion",
+                "api": "expect.toHaveCount",
+                "label": "getByTestId(\"todo-list\") >> getByRole(\"listitem\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:32.944Z",
+                "durationMs": 6,
+                "events": [
+                  {
+                    "kind": "poll",
+                    "name": "expect",
+                    "startedAt": "2026-11-02T06:15:32.944Z",
+                    "durationMs": 5,
+                    "status": "passed",
+                    "count": 1
+                  }
+                ],
+                "artifacts": [],
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 11,
+                  "column": 23
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:4",
+                "index": 4,
+                "kind": "locator",
+                "api": "locator.fill",
+                "label": "getByLabel(\"New Todo Input\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:32.950Z",
+                "durationMs": 21,
+                "events": [
+                  {
+                    "kind": "engine",
+                    "name": "fill",
+                    "startedAt": "2026-11-02T06:15:32.950Z",
+                    "durationMs": 21,
+                    "status": "passed",
+                    "detail": "fill textbox \"New Todo Input\""
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:62041/",
+                  "nodes": 9,
+                  "since": 2,
+                  "changes": [
+                    "changed textbox \"New Todo Input\" testid=\"text-input\" value=\"Anti-REA example task\" (was: textbox \"New Todo Input\" testid=\"text-input\" value=\"   \")"
+                  ]
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 13,
+                  "column": 15
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:5",
+                "index": 5,
+                "kind": "locator",
+                "api": "locator.press",
+                "label": "getByLabel(\"New Todo Input\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:32.971Z",
+                "durationMs": 98,
+                "events": [
+                  {
+                    "kind": "engine",
+                    "name": "press",
+                    "startedAt": "2026-11-02T06:15:32.972Z",
+                    "durationMs": 98,
+                    "status": "passed",
+                    "detail": "press textbox \"New Todo Input\""
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:62041/",
+                  "nodes": 25,
+                  "since": 4,
+                  "changes": [
+                    "changed textbox \"New Todo Input\" testid=\"text-input\" (was: textbox \"New Todo Input\" testid=\"text-input\" value=\"Anti-REA example task\")",
+                    "added main testid=\"main\"",
+                    "added checkbox \"❯ Toggle All Input\" testid=\"toggle-all\"",
+                    "added text=\"Toggle All Input\"",
+                    "added list testid=\"todo-list\"",
+                    "added listitem \"Anti-REA example task\" testid=\"todo-item\"",
+                    "added checkbox testid=\"todo-item-toggle\"",
+                    "added text=\"Anti-REA example task\" testid=\"todo-item-label\"",
+                    "added testid=\"footer\"",
+                    "added text=\"1 item left!\"",
+                    "added list testid=\"footer-navigation\"",
+                    "added listitem \"All\""
+                  ],
+                  "more": 5
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 14,
+                  "column": 15
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:6",
+                "index": 6,
+                "kind": "assertion",
+                "api": "expect.toHaveCount",
+                "label": "getByTestId(\"todo-list\") >> getByRole(\"listitem\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:33.070Z",
+                "durationMs": 7,
+                "events": [
+                  {
+                    "kind": "poll",
+                    "name": "expect",
+                    "startedAt": "2026-11-02T06:15:33.070Z",
+                    "durationMs": 7,
+                    "status": "passed",
+                    "count": 1
+                  }
+                ],
+                "artifacts": [],
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 15,
+                  "column": 23
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:7",
+                "index": 7,
+                "kind": "assertion",
+                "api": "expect.toContainText",
+                "label": "getByTestId(\"todo-list\") >> getByRole(\"listitem\").first()",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:33.078Z",
+                "durationMs": 2,
+                "events": [
+                  {
+                    "kind": "poll",
+                    "name": "expect",
+                    "startedAt": "2026-11-02T06:15:33.078Z",
+                    "durationMs": 2,
+                    "status": "passed",
+                    "count": 1
+                  }
+                ],
+                "artifacts": [],
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 16,
+                  "column": 31
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:8",
+                "index": 8,
+                "kind": "locator",
+                "api": "locator.check",
+                "label": "getByTestId(\"todo-item-toggle\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:33.080Z",
+                "durationMs": 87,
+                "events": [
+                  {
+                    "kind": "engine",
+                    "name": "check",
+                    "startedAt": "2026-11-02T06:15:33.081Z",
+                    "durationMs": 86,
+                    "status": "passed",
+                    "detail": "check checkbox \"todo-item-toggle\""
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:62041/",
+                  "nodes": 27,
+                  "since": 5,
+                  "changes": [
+                    "changed checkbox \"❯ Toggle All Input\" testid=\"toggle-all\" [checked] (was: checkbox \"❯ Toggle All Input\" testid=\"toggle-all\")",
+                    "changed listitem \"Anti-REA example task Delete todo\" testid=\"todo-item\" (was: listitem \"Anti-REA example task\" testid=\"todo-item\")",
+                    "changed checkbox testid=\"todo-item-toggle\" [checked] (was: checkbox testid=\"todo-item-toggle\")",
+                    "added button \"Delete todo\" testid=\"todo-item-button\"",
+                    "changed text=\"0 items left!\" (was: text=\"1 item left!\")",
+                    "added button \"Clear completed\""
+                  ]
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 18,
+                  "column": 48
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:9",
+                "index": 9,
+                "kind": "assertion",
+                "api": "expect.toHaveClass",
+                "label": "/completed/",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:33.168Z",
+                "durationMs": 6,
+                "events": [],
+                "artifacts": [],
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 19,
+                  "column": 25
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:10",
+                "index": 10,
+                "kind": "locator",
+                "api": "locator.click",
+                "label": "getByRole(\"link\", name: \"Active\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:33.174Z",
+                "durationMs": 62,
+                "events": [
+                  {
+                    "kind": "navigation",
+                    "startedAt": "2026-11-02T06:15:33.219Z",
+                    "durationMs": 0,
+                    "status": "passed",
+                    "detail": "navigated to http://127.0.0.1:62041/#/active"
+                  },
+                  {
+                    "kind": "engine",
+                    "name": "tap",
+                    "startedAt": "2026-11-02T06:15:33.174Z",
+                    "durationMs": 62,
+                    "status": "passed",
+                    "detail": "tap link \"Active\""
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:62041/#/active",
+                  "nodes": 22,
+                  "since": 8,
+                  "changes": [
+                    "changed checkbox \"❯ Toggle All Input\" testid=\"toggle-all\" (was: checkbox \"❯ Toggle All Input\" testid=\"toggle-all\" [checked])",
+                    "removed list testid=\"todo-list\"",
+                    "removed listitem \"Anti-REA example task Delete todo\" testid=\"todo-item\"",
+                    "removed checkbox testid=\"todo-item-toggle\" [checked]",
+                    "removed text=\"Anti-REA example task\" testid=\"todo-item-label\"",
+                    "removed button \"Delete todo\" testid=\"todo-item-button\""
+                  ]
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 21,
+                  "column": 44
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:11",
+                "index": 11,
+                "kind": "assertion",
+                "api": "expect.toHaveCount",
+                "label": "getByTestId(\"todo-list\") >> getByRole(\"listitem\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:33.237Z",
+                "durationMs": 4,
+                "events": [
+                  {
+                    "kind": "poll",
+                    "name": "expect",
+                    "startedAt": "2026-11-02T06:15:33.237Z",
+                    "durationMs": 4,
+                    "status": "passed",
+                    "count": 1
+                  }
+                ],
+                "artifacts": [],
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 22,
+                  "column": 23
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:12",
+                "index": 12,
+                "kind": "locator",
+                "api": "locator.click",
+                "label": "getByRole(\"link\", name: \"Completed\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:33.241Z",
+                "durationMs": 46,
+                "events": [
+                  {
+                    "kind": "navigation",
+                    "startedAt": "2026-11-02T06:15:33.269Z",
+                    "durationMs": 0,
+                    "status": "passed",
+                    "detail": "navigated to http://127.0.0.1:62041/#/completed"
+                  },
+                  {
+                    "kind": "engine",
+                    "name": "tap",
+                    "startedAt": "2026-11-02T06:15:33.241Z",
+                    "durationMs": 46,
+                    "status": "passed",
+                    "detail": "tap link \"Completed\""
+                  }
+                ],
+                "artifacts": [],
+                "screen": {
+                  "location": "http://127.0.0.1:62041/#/completed",
+                  "nodes": 26,
+                  "since": 10,
+                  "changes": [
+                    "changed checkbox \"❯ Toggle All Input\" testid=\"toggle-all\" [checked] (was: checkbox \"❯ Toggle All Input\" testid=\"toggle-all\")",
+                    "added list testid=\"todo-list\"",
+                    "added listitem \"Anti-REA example task\" testid=\"todo-item\"",
+                    "added checkbox testid=\"todo-item-toggle\" [checked]",
+                    "added text=\"Anti-REA example task\" testid=\"todo-item-label\""
+                  ]
+                },
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 23,
+                  "column": 47
+                }
+              },
+              {
+                "id": "01a19ae6-1483-73d4-a403-f1fecf4f0b58:13",
+                "index": 13,
+                "kind": "assertion",
+                "api": "expect.toHaveCount",
+                "label": "getByTestId(\"todo-list\") >> getByRole(\"listitem\")",
+                "status": "passed",
+                "startedAt": "2026-11-02T06:15:33.287Z",
+                "durationMs": 5,
+                "events": [
+                  {
+                    "kind": "poll",
+                    "name": "expect",
+                    "startedAt": "2026-11-02T06:15:33.287Z",
+                    "durationMs": 5,
+                    "status": "passed",
+                    "count": 1
+                  }
+                ],
+                "artifacts": [],
+                "source": {
+                  "file": "tests/behavior.e2e.ts",
+                  "line": 24,
+                  "column": 23
+                }
+              }
+            ],
+            "appLog": [
+              {
+                "source": "network",
+                "level": "warning",
+                "text": "GET http://127.0.0.1:62041/learn.json 404 Not Found",
+                "at": "2026-11-02T06:15:32.786Z",
+                "step": 0
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "errors": [],
+    "summary": {
+      "discovered": 1,
+      "selected": 1,
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "interrupted": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "limits": {
+      "maxAgentContextBytes": 16384,
+      "maxLedgerBytes": 8192,
+      "maxObservationBytes": 262144,
+      "maxEventsPerStep": 1000,
+      "maxModelTokensPerCall": 64000
+    },
+    "usage": {
+      "discoveredResults": 1,
+      "maxAgentContextBytes": 0,
+      "maxLedgerBytes": 0,
+      "maxObservationBytes": 0,
+      "artifactBytes": 0,
+      "downloads": 0,
+      "events": 15,
+      "modelTokens": 0,
+      "maxModelCallsInStep": 0,
+      "maxActionStepsInStep": 0
+    }
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "checks": [
+    {
+      "evidence": [
+        {
+          "kind": "bla-verify",
+          "sha256": "d3f54aff10bc84b4f3e82861e1c9d9ff5e4749055b55d46bb32859d296356801"
+        }
+      ],
+      "id": "bla_invariants",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "rea-comparison",
+          "sha256": "57c5057338f6b1425c32c0fad6d0da5049d2e3e894ae1c9cc31b2f277073ae0f"
+        }
+      ],
+      "id": "rea_comparison",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "performance",
+          "sha256": "24a1ff138949d083b27e59a7e93021a8ad989986ee3480ce19cb89df785e5fcd"
+        }
+      ],
+      "id": "performance",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "behavior-baseline",
+          "sha256": "7d601a9d0c233274cc7cb7fcbde1bf5fe5fefce039272e637f289f823e6408ba"
+        },
+        {
+          "kind": "behavior-source",
+          "sha256": "672ba6474edcd1dbd1dbb4ce5c94041e2bb5f7f5a4ae326007c658073cafca26"
+        },
+        {
+          "kind": "behavior-candidate",
+          "sha256": "14d42516cbdfa8fcac194f37ad094d2136ad110f2f1385caf9727edd199a562f"
+        }
+      ],
+      "id": "application_behavior",
+      "status": "passed"
+    }
+  ],
+  "checksums": {
+    "mcp_result_sha256": "5d44c629935f20d3d7db094ec7b960d2c53585b48eee909c9d7a9064773becc6",
+    "tamper_probe_result_sha256": "5aaa232534afe64df4ec87001d597c10a2b509a0bfee68616ef0cf8e6acb61d8"
+  },
+  "date": "2026-11-02",
+  "external_state_path": "/private/tmp/anti-rea-mcp-full-20261102/state",
+  "limitations": [
+    "Owned 134-byte synthetic module only; not TodoMVC or a user application.",
+    "One Node behavior checker is not broad compatibility testing.",
+    "REA comparison and BLA verification do not establish protection effectiveness.",
+    "Detailed candidate and raw reports remain in external private state."
+  ],
+  "project": {
+    "baseline_artifact": "dist/app.mjs",
+    "file_count": 3,
+    "path": "/private/tmp/anti-rea-mcp-full-20261102/project",
+    "source_sha256": "4be9050739ee2703f2a87023505aef4fef12076b1b79ddf883e21faa798a461e"
+  },
+  "record_type": "anti_rea_private_full_mcp_fixture_workflow",
+  "rollback": {
+    "report_after_rollback": "ok",
+    "report_before_rollback": "ok",
+    "report_replayed_after_exact_byte_restore": true,
+    "retained_candidate_outside_repository": true,
+    "rollback_id": "rollback-26199fb9ed3bec5e34c2a9dd",
+    "status": "discarded",
+    "tamper_probe_error": "[TextContent(type='text', text='Error executing tool get_report', annotations=None, meta=None)]",
+    "tampered_retained_bytes_rejected_by_mcp_get_report": true
+  },
+  "runtime": {
+    "anti_rea_version": "0.1.32",
+    "bla": "bla-agents@1.6.3",
+    "bla_package_tree_sha256": "675fa40df7d9ad25e15da7ace0dcabff496331b85042a3e2d4fe962f32f5ff23",
+    "fresh_virtual_environment": true,
+    "node": "v24.22.1",
+    "npm": "11.19.1",
+    "pip_check": "No broken requirements found.",
+    "python": "3.11.18",
+    "rea": "rea-agents@6.8.0",
+    "wheel_bytes": 927016,
+    "wheel_path": "/private/tmp/anti-rea-mcp-plan-handoff-20261102/wheels/anti_rea-0.1.32-py3-none-any.whl",
+    "wheel_sha256": "c24dc7506b6cb7c5cb42f9cbfc6a726b6f3f7c55a64743ac1dddbbac45b280ce"
+  },
+  "schema_version": "1.0",
+  "scope": "Complete actual MCP stdio plan/decision/execution/semantic acceptance/rollback/report replay on an owned synthetic JavaScript fixture; no real application protection claim.",
+  "workflow": {
+    "acceptance": "accepted",
+    "acceptance_id": "mcp-acceptance-001",
+    "baseline_id": "mcp-before-001",
+    "create_plan_returns_complete_plan_and_submit_plan_uses_it_verbatim": true,
+    "decision_id": "mcp-decision-001",
+    "execution_id": "exec-cfc5e287197625bcddb64c99",
+    "final_state": "completed",
+    "plan_id": "mcp-plan-001",
+    "plan_sha256": "fc99f944e97ecaa5d655d58d5d40177123207d282a094f464fd97bd6ad9f2449",
+    "run_id": "mcp-run-001",
+    "selected_action_ids": [
+      "bla-js-95258bdcd224"
+    ],
+    "target_id": "target-41bcc22842325cd2037d",
+    "transport": "MCP stdio subprocess",
+    "verification_id": "verify-cfc5e287197625bcddb64c99"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "artifact_kind": "private_source_verification_build",
+  "official_release_artifact": false,
+  "platform": "macOS-26.7.1-arm64-arm-64bit",
+  "python": "3.11.18",
+  "wheel": {
+    "filename": "anti_rea-0.1.32-py3-none-any.whl",
+    "bytes": 898997,
+    "sha256": "335689a0324766a3f0772d3445231328d3a47775c88764f86525433691fd52c3"
+  },
+  "install": {
+    "fresh_virtual_environment": true,
+    "pip_check": "No broken requirements found.",
+    "cli_help_exit_code": 0,
+    "doctor_status": "ready",
+    "baseline_adapter_module_imported": true,
+    "unsupported_python_baseline_command": "rejected_by_docker_profile"
+  },
+  "installed_baseline_smoke": {
+    "command": ["node", "-e", "require('fs').writeFileSync('dist.js','wheel smoke')"],
+    "sandbox_image": "node@sha256:d862bb5d082c5ae0210ac07e8c0344cb8cf7bef6d78e9b8c50c179da923108ea",
+    "network": "none",
+    "snapshot_writable": true,
+    "project_source_unchanged": true,
+    "baseline_record_sha256": "79beeff3e73bc38bca3368c1a5e94b7d86fe32bf37cd663f2ba25bdee7fc6469",
+    "evidence_sha256": "367fe2396d57b852adc17b9c3d26e895bb12faac14449fedf7e98cc33e93b3c3",
+    "artifact": {
+      "path": "dist.js",
+      "bytes": 11,
+      "sha256": "4181fdec4b408261f5537dfa30759473e0dbd0773c7e877855b8e6b75b0b0b31"
+    },
+    "store_and_outputs_outside_repository": true
+  },
+  "packaging_tests": {
+    "suite": "tests.test_packaging",
+    "passed": 17,
+    "skipped": 0
+  },
+  "limitations": [
+    "This is a private same-version verification build, not an official release.",
+    "The smoke project has no Git identity; its source revision is unknown.",
+    "The Docker daemon remains trusted and the writable snapshot has no live disk quota."
+  ]
+}

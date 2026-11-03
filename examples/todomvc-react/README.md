@@ -1,0 +1,26 @@
+# TodoMVC React example target
+
+This is an Anti-REA verification harness for the maintained React example in [`tastejs/todomvc`](https://github.com/tastejs/todomvc/tree/ff43b02e59dfa604386bb382034b2cd07c2bcd8a/examples/react), pinned at commit `ff43b02e59dfa604386bb382034b2cd07c2bcd8a`. The upstream repository's [`license.md`](https://github.com/tastejs/todomvc/blob/ff43b02e59dfa604386bb382034b2cd07c2bcd8a/license.md) states that repository contents are MIT unless otherwise specified. Keep that license and upstream attributions with any copy. This example does not vendor upstream application code.
+
+The current upstream React example requires Node 20.19+ and npm 10+. Its build is `npm run build` and emits `dist/index.html`, `dist/app.bundle.js`, and `dist/app.css`. The current generic baseline lane cannot yet reproduce this dependency-backed build: discovery excludes `node_modules`, and Docker build commands run offline. The historical terminal-fallback report below was produced by Anti-REA 0.1.20 and does not establish support in the current lane. Treat a fresh TodoMVC baseline as blocked until Anti-REA has an explicit, isolated project-dependency preparation workflow.
+
+For an isolated checkout at `/tmp/anti-rea-example-todomvc/examples/react`, copy `e2e.config.mjs` to the checkout root, `tests/behavior.e2e.ts` to its `tests/` directory, and `server.cjs` to `anti-rea-example/server.cjs`. The harness uses the project-relative test layout expected by the pinned runner. These commands prepare a separate checkout for manual work and inspection; they do not make the current baseline build supported:
+
+```sh
+npm ci --ignore-scripts --no-audit --no-fund
+anti-rea inspect /tmp/anti-rea-example-todomvc/examples/react --store /tmp/anti-rea-todomvc-state
+```
+
+Do not use a shell-wrapped `npm ci && npm run build` as a current baseline command. The Docker profile rejects `sh`, and a dependency install performed before capture is not copied into the private snapshot. Once a supported preparation workflow exists, capture `dist/index.html`, `dist/app.bundle.js`, `dist/app.bundle.js.LICENSE.txt`, `dist/app.bundle.js.map`, `dist/app.css`, `dist/app.css.map`, and `dist/base.js`; put `dist/app.bundle.js` first so it is the primary single-file REA scope. Use the pinned e2e runtime with `e2e.config.mjs` and `tests/behavior.e2e.ts`, plus the pinned REA runtime. Until then, that target remains blocked in the current baseline lane.
+
+The acceptance journey checks only blank-input rejection, adding one todo, toggling it complete, and Active/Completed filtering. The selected React example currently stores todos in component state and does not persist them across reloads, so persistence is deliberately outside this check. This is a synthetic third-party target for exercising Anti-REA's web workflow. Its results do not establish protection for the user's application.
+
+## Captured example evidence
+
+On 2026-11-01, Anti-REA built the pinned React target in a private snapshot and passed the browser journey. The detached summary in [`evidence-summary.json`](evidence-summary.json) records the upstream commit, license, package-lock and artifact hashes, runtime identities, test result, and the plan-bound recommendation. The run is still `awaiting_decision`; no candidate was executed.
+
+REA 6.8.0 produced a valid summary and evidence bundle for the nine first-party JavaScript/JSX source files selected from the same pinned snapshot. The captured summary is [`evidence/rea-source-report-001.json`](evidence/rea-source-report-001.json): all nine selected files parsed, with 86 findings and no skipped files or parse failures. Its exact scope, source hashes, snapshot/runtime identities, and raw report/evidence-bundle hashes are recorded there. The report is limited to selected source files; 14 inventoried files were unselected, including the generated 236,914-byte production bundle. The separate full-bundle attempts timed out, so this scoped source result is not a complete production-bundle analysis or a protection claim. No candidate was executed.
+
+The original whole-snapshot REA analysis timed out after 300 seconds. A targeted retry on `dist/app.bundle.js`, using a 2 GiB worker heap and a 600-second per-source deadline, also timed out; its sanitized diagnostic is [`evidence/rea-attempt-600s-targeted.json`](evidence/rea-attempt-600s-targeted.json).
+
+The generic terminal fallback was exercised on 2026-11-02 from a fresh `git archive` of the pinned MIT commit using Anti-REA 0.1.20. That historical host-era run discovered the project, built the baseline in a private external store, passed the pinned one-test browser journey, and produced a four-action recommendation plan. The first baseline attempt exposed the e2e Node-version selector requirement; the successful retry set `ANTI_REA_E2E_NODE` to the exact pinned Node 24 executable. The sanitized workflow record and verbatim browser report are [`evidence/cli-fallback-workflow.json`](evidence/cli-fallback-workflow.json) and [`evidence/cli-fallback-e2e-report.json`](evidence/cli-fallback-e2e-report.json). The workflow stopped before user choice; no candidate ran. This is evidence for that historical version and run only; it does not verify the current Docker baseline contract, an AI harness, or an application protection result.

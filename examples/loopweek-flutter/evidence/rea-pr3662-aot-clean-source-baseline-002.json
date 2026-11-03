@@ -1,0 +1,112 @@
+{
+  "aot": {
+    "abi": "arm64-v8a",
+    "libapp": {
+      "coverage": "complete",
+      "sections": [
+        {
+          "header_length": null,
+          "kind": null,
+          "magic_valid": false,
+          "name": "_kDartSnapshotText",
+          "offset": 2949120,
+          "size": 3965760
+        },
+        {
+          "header_length": 2460667,
+          "kind": 2,
+          "magic_valid": true,
+          "name": "_kDartSnapshotData",
+          "offset": 704,
+          "size": 2899168
+        }
+      ],
+      "sha256": "8618681e842db345fb1ebe016ba23413867fd07eb6136db2f155654bd8c2d392",
+      "size": 6947720,
+      "snapshot_hash": "0451907c2eaa8467e848c0067bfe8ed4",
+      "snapshot_hash_sources": 1
+    },
+    "string_pool": {
+      "class_like_token_count_at_least": 4000,
+      "class_like_tokens_returned": 2000,
+      "coverage": "partial",
+      "dart_uri_count_at_least": 214,
+      "dart_uris_returned": 214,
+      "package_uri_count_at_least": 684,
+      "package_uris_returned": 500,
+      "printable_run_count": 17424
+    }
+  },
+  "artifact": {
+    "baseline_id": "loopweek-before-004",
+    "format": "apk",
+    "sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "size": 62349581,
+    "stored_in_repository": false
+  },
+  "candidate_artifact_built": false,
+  "interpretation": {
+    "anti_rea_pinned_runtime_gate": "still_blocked_until_upstream_fix_is_released_and_the_pinned_integration_is_reverified",
+    "string_observations": "bounded byte-pattern projections; not decoded Dart cluster semantics",
+    "structural_aot_gate": "passed_for_this_unmerged_candidate_runtime_and_exact_arm64_apk"
+  },
+  "limitations": [
+    "The runtime was built from an unmerged upstream pull request and is not the pinned REA npm runtime.",
+    "Only the arm64-v8a ABI was inspected in this run.",
+    "Complete structural AOT coverage does not mean complete string-pool coverage.",
+    "The string pool is a bounded byte-pattern projection, not decoded Dart semantics.",
+    "No transformed candidate or protection claim is present."
+  ],
+  "operation": {
+    "evidence_id": "ev_00c713c74c4337e34ca22689bb7f0c993e18f0e03e622ca2a7e4dc14c052be7e",
+    "exit_code": 0,
+    "full_report_path_external": true,
+    "full_report_retained_privately": true,
+    "full_report_sha256": "c2967ac9915a04aebcb3a9b62b8b3c7f911515c7fffaa6f8aa5d2a0f2d132eee",
+    "name": "inspect_dart_aot"
+  },
+  "protection_claim": false,
+  "record_type": "anti_rea_upstream_candidate_flutter_aot_report",
+  "schema_version": "1.0",
+  "source_verification": {
+    "build_tasks": {
+      "successful": 3,
+      "total": 3
+    },
+    "checkout_commit": "e50d3f74ade8b21f43d0d4f6e9a1b31f44a09efe",
+    "exact_baseline_reinspection": {
+      "abi": "arm64-v8a",
+      "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+      "libapp_coverage": "complete",
+      "raw_report_sha256": "c2967ac9915a04aebcb3a9b62b8b3c7f911515c7fffaa6f8aa5d2a0f2d132eee",
+      "snapshot_hash": "0451907c2eaa8467e848c0067bfe8ed4",
+      "snapshot_hash_sources": 1,
+      "string_pool_coverage": "partial"
+    },
+    "flutter_provider_test_command": "node_modules/.bin/vitest run tests/boundary/filesystem/flutterBuildProvider.test.ts",
+    "flutter_provider_test_failures": 0,
+    "flutter_provider_tests_passed": 103,
+    "node_version": "24.22.1",
+    "npm_build_exit_code": 0,
+    "npm_ci_ignore_scripts_exit_code": 0,
+    "npm_version": "11.19.1",
+    "packed_source_install": {
+      "install_scripts_disabled": true,
+      "rea_version": "6.8.0",
+      "tarball_sha256": "8ceb743bd90226b5c28353316841f6a420fbaefc347a86a1b45eb831155f0377",
+      "worker_module_imported": true
+    },
+    "pinned_anti_rea_runtime_changed": false,
+    "source_build_is_pinned_release": false
+  },
+  "status": "supported_with_partial_string_pool",
+  "upstream": {
+    "commit": "e50d3f74ade8b21f43d0d4f6e9a1b31f44a09efe",
+    "npm_package": "rea-agents",
+    "npm_version": "6.8.0",
+    "package_lock_sha256": "1d8fa0f33b3125d3e601ec832b18d9d35b37453f36340dc0507f065a8de158ad",
+    "pull_request": 3662,
+    "release_status": "unmerged_upstream_candidate",
+    "repository": "https://github.com/morluto/rea"
+  }
+}

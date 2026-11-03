@@ -1,0 +1,57 @@
+{
+  "analysis_report_created": false,
+  "build": {
+    "command": [
+      "flutter",
+      "build",
+      "web",
+      "--release",
+      "--no-pub",
+      "--no-tree-shake-icons",
+      "--no-minify-js",
+      "--output=build-out/web"
+    ],
+    "dart": "3.13.7",
+    "flutter": "3.47.8",
+    "location": "external private snapshot; generated output is not in the repository",
+    "minify_js": false,
+    "mode": "release"
+  },
+  "capture": {
+    "private_paths_redacted": true,
+    "provider_code": "provider_timeout",
+    "raw_output_bytes": 428609,
+    "raw_output_sha256": "443a29e54e8d301f4ddb6c0dc00c3de379b8832c121631dac62084dd0b2f02e4"
+  },
+  "id": "rea-main-dart-js-unminified-005",
+  "interpretation": "REA did not produce an analysis report for the app bundle. Disabling dart2js minification created an 8.2 MB release bundle, but the pinned REA worker still timed out after 600 seconds before parsing any JavaScript file.",
+  "protection_claim": false,
+  "rea": {
+    "analysis_timeout_ms": 600000,
+    "coverage_status": "partial",
+    "max_heap_mb": 4096,
+    "node": "v24.22.1",
+    "partial_observation_id": "ev_19bbb95c35bbcb621f5ce3e763eb34eb19025ab5181b462717884f712febd9ff",
+    "runtime_manifest_sha256": "2481fc7000f0363b27506c6679e9bc8b07915a2b9fe08b459ad5b453914f8b76",
+    "statistics": {
+      "findings": 0,
+      "parse_failures": 0,
+      "parsed_javascript_files": 0,
+      "relevant_files": 42,
+      "skipped_javascript_files": 1,
+      "text_bytes_read": 8204126
+    },
+    "version": "6.8.0"
+  },
+  "record_type": "anti_rea_flutter_rea_diagnostic",
+  "schema_version": "1.0",
+  "status": "blocked_provider_timeout",
+  "target": {
+    "artifact": "build-out/web/main.dart.js",
+    "artifact_sha256": "2d0c9d82ff6fab055dd1fce2f554ec852295f0158484a3485038cb8c451f1825",
+    "artifact_size": 8204126,
+    "commit": "9df0dc821ff020b42a5ac459c0f2e1ba09d3f9a8",
+    "repository": "https://github.com/Gaygysyz05/flutter-todo-app",
+    "snapshot_tree_sha256": "183062fe61606a926a3b58f4a1540a93f24e52e3ea08feb1f74c7cb2fa67c3fc"
+  }
+}

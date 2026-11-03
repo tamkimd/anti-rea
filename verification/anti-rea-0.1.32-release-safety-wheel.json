@@ -1,0 +1,25 @@
+{
+  "artifact_kind": "private_release_safety_verification",
+  "official_release_artifact": false,
+  "wheel": {
+    "filename": "anti_rea-0.1.32-py3-none-any.whl",
+    "bytes": 903923,
+    "sha256": "a980929139933e61834b5c095ddf68ca9b9eff565e785e1045d75c4dfe5ec71b"
+  },
+  "install": {
+    "fresh_virtual_environment": true,
+    "pip_check": "passed"
+  },
+  "release_cli": {
+    "create_sign_verify": "passed",
+    "tampered_wheel_rejected": true,
+    "compressed_oversized_member_rejected": true
+  },
+  "manifest_artifact_identity": {
+    "filename": "anti_rea-0.1.32-py3-none-any.whl",
+    "bytes": 903923,
+    "sha256": "a980929139933e61834b5c095ddf68ca9b9eff565e785e1045d75c4dfe5ec71b"
+  },
+  "signing_identity": "ephemeral untrusted key; not a release trust anchor",
+  "official_r122_unchanged": true
+}

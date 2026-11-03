@@ -1,0 +1,28 @@
+{
+  "status": "passed_single_emulator_journey",
+  "device": {
+    "android_version": "16",
+    "api_level": 36,
+    "abi": "arm64-v8a"
+  },
+  "artifact_sha256": "ac8e37299f2d62af5314c5f9953a3febda35ad66fb33c40e358ca01d8327c71a",
+  "steps": [
+    "installed the published release APK",
+    "created a task named Anti-REA behavior check",
+    "marked the task complete",
+    "force-stopped and relaunched the app"
+  ],
+  "observed_after_relaunch": "The task remained visible and checked in the captured screenshot.",
+  "screenshot": {
+    "stored_in_repository": false,
+    "external_path": "<PRIVATE_SCREENSHOT>",
+    "sha256": "7ce8d7180977ca88cdce03f78341c6cd212f17a5f634eab4700a8e3696ccdd40"
+  },
+  "limitations": [
+    "One emulator journey only; no broad behavior coverage or repeatability claim.",
+    "No BEFORE/AFTER transformation comparison, candidate, or protection claim."
+  ],
+  "record_type": "anti_rea_loopweek_flutter_emulator_behavior_check",
+  "schema_version": "1.0",
+  "evidence_id": "loopweek-emulator-behavior-001"
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_android_apk_signature_verification",
+  "artifact": {
+    "filename": "Loopweek-v1.0.3.apk",
+    "sha256": "ac8e37299f2d62af5314c5f9953a3febda35ad66fb33c40e358ca01d8327c71a"
+  },
+  "tool": {
+    "name": "apksigner",
+    "version": "0.9",
+    "android_sdk_build_tools": "36.0.0",
+    "java": "Temurin JDK 17.0.20.1"
+  },
+  "result": "Verifies",
+  "signature_schemes": {
+    "v1": false,
+    "v2": true,
+    "v3": false,
+    "v3.1": false,
+    "v4": false
+  },
+  "signers": [
+    {
+      "algorithm": "RSA-2048",
+      "certificate_sha256": "9e8253d4d9d174a225eaa5051db1901c892c65b86af2e5163b4692c610c49c64",
+      "public_key_sha256": "c941a5e2a612c7bf7a6f5bc6449d5e9fa53ab21d25a34370fa893c9c092073ea"
+    }
+  ],
+  "interpretation": "The APK signature cryptographically validates this artifact under its embedded signer certificate.",
+  "limitations": [
+    "The signer identity is not externally trusted; no publisher trust anchor was checked.",
+    "Verification applies to the pinned APK digest only and does not establish app safety or protection."
+  ]
+}

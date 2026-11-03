@@ -1,0 +1,14 @@
+{
+  "artifact_sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+  "artifact_size": 62349581,
+  "certificate_sha256": "841acd06bcdca601e950d5d1819339fd9a28871cf1189ff8257e9cf8727a6089",
+  "public_key_sha256": "409bdb140a40bea5be7f294bab21bd4fefe858ec2ed62adaa4e9b72affc82145",
+  "publisher_identity_externally_trusted": false,
+  "raw_output_sha256": "f8c1ef9006499b8f6917e01a8bafd6015f18f3d746d206114188b79c5dafceb1",
+  "record_type": "anti_rea_loopweek_flutter_apk_signature_verification",
+  "result": "Verifies",
+  "schema_version": "1.0",
+  "scheme": "v2",
+  "signer_count": 1,
+  "tool": "apksigner 0.9 (Android SDK build-tools 36.0.0)"
+}

@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_example_evidence",
+  "source": {
+    "repository": "https://github.com/tastejs/todomvc",
+    "subdirectory": "examples/react",
+    "commit": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+    "license": "MIT",
+    "license_path": "license.md",
+    "package_lock_sha256": "aea2330afc769b02493c52c1c88b3086ad04395e69458002c93b5efd4793a694"
+  },
+  "environment": {
+    "node": "v24.22.1",
+    "npm": "11.19.1",
+    "build_command": [
+      "sh",
+      "-c",
+      "npm ci --ignore-scripts --no-audit --no-fund && npm run build"
+    ],
+    "browser_runner": "e2e@0.22.0",
+    "browser_engine": "@e2e-dev/web@0.15.4",
+    "browser_runtime_manifest_sha256": "3f4b8e6ccd78ba27f019de0e4240cb5e0887497820928f1c58eb52f6ac38f54d"
+  },
+  "baseline": {
+    "target_id": "target-e676176533da60035f51",
+    "baseline_id": "todomvc-before-001",
+    "build_duration_ms": 3415,
+    "artifacts": {
+      "dist/index.html": {
+        "size": 645,
+        "sha256": "23b40a8b71f26e44f3e72e682188a3ab238d17fd375ff0ec06295af9971fa959"
+      },
+      "dist/app.bundle.js": {
+        "size": 236914,
+        "sha256": "6197ad9358985fb3f745aef3fca9abbe2fc7f0cd35cd4525cb8570107ae6b78a"
+      },
+      "dist/app.bundle.js.LICENSE.txt": {
+        "size": 1332,
+        "sha256": "2fde10fedaa9ebac195ff484ddb08969f5d04ab284ba65000b3cbf0992703640"
+      },
+      "dist/app.bundle.js.map": {
+        "size": 1361509,
+        "sha256": "cb7affe8ae39349410fbc771d400d7cdd291d7f3f20611941a497811d10c3619"
+      },
+      "dist/app.css": {
+        "size": 7400,
+        "sha256": "a0ccea8c39f22bcad35a2821b1e1009a05e028e51884649d0cd1552776b0fdef"
+      },
+      "dist/app.css.map": {
+        "size": 14375,
+        "sha256": "486a28c197a62733ccec8a1167086b13f27c950a4bd76369d08b2e06822bfea8"
+      },
+      "dist/base.js": {
+        "size": 3752,
+        "sha256": "8cfbaa8d2bc03e2e52a8b7788e041efda231a17e2a25c8bc4bfe2659adc5bb90"
+      }
+    }
+  },
+  "behavior": {
+    "status": "passed",
+    "report_sha256": "3019c460a58b972dda719dfaddeb92f52e1e495b612f414268a0c31406b27987",
+    "test_id": "tests/behavior.e2e.ts::TodoMVC%20rejects%20blank%20input%2C%20adds%2C%20toggles%2C%20and%20filters%20one%20todo",
+    "scope": [
+      "reject blank todo submission",
+      "add one todo",
+      "toggle it complete",
+      "filter Active and Completed todos"
+    ],
+    "cleanup": "loopback app port closed"
+  },
+  "rea": {
+    "package": "rea-agents@6.8.0",
+    "status": "blocked",
+    "reason": "Analysis of dist/app.bundle.js timed out after 300000 ms; no comparable REA baseline is available.",
+    "raw_report_sha256": "1734376565ee627baafb716d14282fc23bb06807e2638f0f842ad96988de1bd2",
+    "source_analysis": {
+      "file": "evidence/rea-source-report-001.json",
+      "sha256": "9be7e52452da50bdf46c89e8efffa73203cdf1b9cf1e024add53d2ca9e091149",
+      "status": "passed_with_limited_scope",
+      "selected_files": 9,
+      "parsed_javascript_files": 9,
+      "skipped_javascript_files": 0,
+      "parse_failures": 0,
+      "findings": 86,
+      "scope": "first-party React app source files; generated production bundle excluded"
+    },
+    "latest_attempt": {
+      "file": "evidence/rea-attempt-600s-targeted.json",
+      "sha256": "5531a8cae463280c16a7578805180f11f810abdd91a2a9791d37f6dec1c199a6",
+      "result": "blocked",
+      "analysis_timeout_ms": 600000,
+      "parsed_javascript_files": 0,
+      "skipped_javascript_files": 1,
+      "findings": 0,
+      "partial_evidence_id": "ev_796e7d946937b006e00ca1c8207ff17c386dd7e1352f8e2402bbda10e0c71b98"
+    }
+  },
+  "recommendation": {
+    "plan_id": "todomvc-example-plan-001",
+    "plan_sha256": "84613e88bdc16e0161d00758b138eb383065c564e064b7a9194d88346ceace91",
+    "run_id": "todomvc-example-review-001",
+    "state": "awaiting_decision",
+    "candidate_executed": false
+  },
+  "limitations": [
+    "This third-party synthetic example is not the user's application.",
+    "The recorded terminal fallback is from Anti-REA 0.1.20 and does not verify the current Docker baseline contract; a fresh dependency-backed TodoMVC capture is blocked until isolated project dependency preparation is supported.",
+    "The app has no persistence behavior in the pinned source; persistence is not tested.",
+    "The source-map candidate recommendation has not been selected or executed.",
+    "The baseline browser test is not a complete compatibility or security test.",
+    "No protection claim is established without a passing comparable REA analysis and a selected candidate's acceptance evidence."
+  ],
+  "terminal_fallback": {
+    "file": "evidence/cli-fallback-workflow.json",
+    "sha256": "395a00568a3976dda32bffd52d005e6cd62b061ddaafa75770b0a373848e8d67",
+    "status": "recommendations_ready_before_choice",
+    "inspect_status": "discovered",
+    "baseline_status": "captured",
+    "browser_status": "passed",
+    "candidate_executed": false,
+    "target_id": "target-4a30c3ed2391e809f1f9",
+    "baseline_id": "fallback-before-002",
+    "plan_id": "fallback-plan-001",
+    "e2e_report": "evidence/cli-fallback-e2e-report.json",
+    "e2e_report_sha256": "c53bedee1b4a06aa3b4c2f43a33fe471a854569e0fd0f4bd07d472a02dc7d0a8"
+  }
+}

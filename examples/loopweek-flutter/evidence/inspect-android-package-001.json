@@ -1,0 +1,569 @@
+{
+  "evidence_id": "ev_1d50a8250391d9c1bcb22755b475afb17f916ad4d27080247f2c3f38f66cd4b1",
+  "subject": {
+    "name": "anti-rea-loopweek-v1.0.3.apk",
+    "digest": {
+      "sha256": "ac8e37299f2d62af5314c5f9953a3febda35ad66fb33c40e358ca01d8327c71a"
+    },
+    "local_path": "<PRIVATE_APK>",
+    "format": "apk",
+    "architecture": null
+  },
+  "provider": {
+    "id": "jadx",
+    "name": "JADX headless",
+    "version": "0.7.1"
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.analysis",
+  "operation": "inspect_android_package",
+  "parameters": {
+    "path": "<PRIVATE_APK>"
+  },
+  "raw_result": {
+    "server": {
+      "name": "rea-jadx-bridge",
+      "version": "7"
+    },
+    "bridge_sha256": "e5044a8312dd0731f53af3f095508b3e5cff54df6b971c95d4305e2f39b4fa30",
+    "jar_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+    "loaded": {
+      "state": "LOADED",
+      "apk_path": "<PRIVATE_TEMP_APK>",
+      "class_count": 1688,
+      "resource_count": 561,
+      "threads": 1,
+      "resources": "full"
+    },
+    "calls": [
+      {
+        "operation": "rea_jvm_status",
+        "input": {},
+        "response": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"engine_reported_version\":\"0.7.1\",\"available_processors\":10,\"java_version\":\"17.0.21\",\"max_heap_bytes\":4294967296,\"metadata_scope\":\"parsed_members\"}"
+            }
+          ],
+          "isError": false
+        }
+      },
+      {
+        "operation": "load_apk",
+        "input": {
+          "path": "<PRIVATE_TEMP_APK>",
+          "threads": 1,
+          "resources": "full"
+        },
+        "response": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"state\":\"LOADED\",\"apk_path\":\"<PRIVATE_TEMP_APK>\",\"class_count\":1688,\"raw_class_count\":1688,\"resource_count\":561,\"load_duration_ms\":874,\"decompile_timeout_ms\":90000,\"threads\":1,\"code_cache_size\":64,\"resources\":\"full\"}"
+            }
+          ],
+          "isError": false
+        }
+      },
+      {
+        "operation": "get_app_info",
+        "input": {},
+        "response": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"package\":\"com.appcodecraft.loopweek\",\"version_name\":\"1.0.3\",\"version_code\":\"4\",\"min_sdk\":\"24\",\"target_sdk\":\"36\",\"permissions\":[\"android.permission.RECEIVE_BOOT_COMPLETED\",\"android.permission.SCHEDULE_EXACT_ALARM\",\"android.permission.USE_EXACT_ALARM\",\"android.permission.VIBRATE\",\"android.permission.POST_NOTIFICATIONS\",\"android.permission.WAKE_LOCK\",\"android.permission.ACCESS_NETWORK_STATE\",\"android.permission.FOREGROUND_SERVICE\",\"com.appcodecraft.loopweek.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION\"]}"
+            }
+          ],
+          "isError": false
+        }
+      },
+      {
+        "operation": "get_android_manifest",
+        "input": {},
+        "response": {
+          "content": [
+            {
+              "type": "text",
+              "text": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    android:versionCode=\"4\"\n    android:versionName=\"1.0.3\"\n    android:compileSdkVersion=\"36\"\n    android:compileSdkVersionCodename=\"16\"\n    package=\"com.appcodecraft.loopweek\"\n    platformBuildVersionCode=\"36\"\n    platformBuildVersionName=\"16\">\n    <uses-sdk\n        android:minSdkVersion=\"24\"\n        android:targetSdkVersion=\"36\"/>\n    <uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>\n    <uses-permission android:name=\"android.permission.SCHEDULE_EXACT_ALARM\"/>\n    <uses-permission android:name=\"android.permission.USE_EXACT_ALARM\"/>\n    <uses-permission android:name=\"android.permission.VIBRATE\"/>\n    <uses-permission android:name=\"android.permission.POST_NOTIFICATIONS\"/>\n    <queries>\n        <intent>\n            <action android:name=\"android.intent.action.VIEW\"/>\n            <data android:scheme=\"https\"/>\n        </intent>\n        <intent>\n            <action android:name=\"android.intent.action.VIEW\"/>\n            <data android:scheme=\"http\"/>\n        </intent>\n        <intent>\n            <action android:name=\"android.intent.action.PROCESS_TEXT\"/>\n            <data android:mimeType=\"text/plain\"/>\n        </intent>\n    </queries>\n    <uses-permission android:name=\"android.permission.WAKE_LOCK\"/>\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>\n    <uses-permission android:name=\"android.permission.FOREGROUND_SERVICE\"/>\n    <permission\n        android:name=\"com.appcodecraft.loopweek.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION\"\n        android:protectionLevel=\"signature\"/>\n    <uses-permission android:name=\"com.appcodecraft.loopweek.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION\"/>\n    <application\n        android:label=\"Loopweek\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:name=\"android.app.Application\"\n        android:extractNativeLibs=\"false\"\n        android:appComponentFactory=\"androidx.core.app.CoreComponentFactory\">\n        <activity\n            android:theme=\"@style/LaunchTheme\"\n            android:name=\"com.appcodecraft.loopweek.MainActivity\"\n            android:exported=\"true\"\n            android:taskAffinity=\"\"\n            android:launchMode=\"singleTop\"\n            android:configChanges=\"fontScale|layoutDirection|density|smallestScreenSize|screenSize|uiMode|screenLayout|orientation|keyboardHidden|keyboard|locale\"\n            android:windowSoftInputMode=\"adjustResize\"\n            android:hardwareAccelerated=\"true\">\n            <meta-data\n                android:name=\"io.flutter.embedding.android.NormalTheme\"\n                android:resource=\"@style/NormalTheme\"/>\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\"/>\n                <category android:name=\"android.intent.category.LAUNCHER\"/>\n            </intent-filter>\n        </activity>\n        <meta-data\n            android:name=\"flutterEmbedding\"\n            android:value=\"2\"/>\n        <receiver\n            android:name=\"com.appcodecraft.loopweek.LoopweekWidgetProvider\"\n            android:exported=\"true\">\n            <intent-filter>\n                <action android:name=\"android.appwidget.action.APPWIDGET_UPDATE\"/>\n            </intent-filter>\n            <meta-data\n                android:name=\"android.appwidget.provider\"\n                android:resource=\"@xml/loopweek_widget_info\"/>\n        </receiver>\n        <receiver\n            android:name=\"com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver\"\n            android:exported=\"false\"/>\n        <receiver\n            android:name=\"com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver\"\n            android:exported=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.BOOT_COMPLETED\"/>\n                <action android:name=\"android.intent.action.MY_PACKAGE_REPLACED\"/>\n                <action android:name=\"android.intent.action.QUICKBOOT_POWERON\"/>\n                <action android:name=\"com.htc.intent.action.QUICKBOOT_POWERON\"/>\n            </intent-filter>\n        </receiver>\n        <activity\n            android:theme=\"@android:style/Theme.NoTitleBar.Fullscreen\"\n            android:name=\"io.flutter.plugins.urllauncher.WebViewActivity\"\n            android:exported=\"false\"/>\n        <activity\n            android:name=\"androidx.glance.appwidget.action.ActionTrampolineActivity\"\n            android:enabled=\"true\"\n            android:exported=\"false\"\n            android:excludeFromRecents=\"true\"/>\n        <activity\n            android:theme=\"@style/Widget.Glance.AppWidget.CallbackTrampoline\"\n            android:name=\"androidx.glance.appwidget.action.InvisibleActionTrampolineActivity\"\n            android:enabled=\"true\"\n            android:exported=\"false\"\n            android:taskAffinity=\"androidx.glance.appwidget.ListAdapterCallbackTrampoline\"\n            android:launchMode=\"singleInstance\"\n            android:noHistory=\"true\"/>\n        <receiver\n            android:name=\"androidx.glance.appwidget.action.ActionCallbackBroadcastReceiver\"\n            android:enabled=\"true\"\n            android:exported=\"false\"/>\n        <receiver\n            android:name=\"androidx.glance.appwidget.MyPackageReplacedReceiver\"\n            android:enabled=\"true\"\n            android:exported=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MY_PACKAGE_REPLACED\"/>\n            </intent-filter>\n        </receiver>\n        <service\n            android:name=\"androidx.glance.appwidget.GlanceRemoteViewsService\"\n            android:permission=\"android.permission.BIND_REMOTEVIEWS\"\n            android:exported=\"true\"/>\n        <uses-library\n            android:name=\"androidx.window.extensions\"\n            android:required=\"false\"/>\n        <uses-library\n            android:name=\"androidx.window.sidecar\"\n            android:required=\"false\"/>\n        <service\n            android:name=\"androidx.core.widget.RemoteViewsCompatService\"\n            android:permission=\"android.permission.BIND_REMOTEVIEWS\"/>\n        <provider\n            android:name=\"androidx.startup.InitializationProvider\"\n            android:exported=\"false\"\n            android:authorities=\"com.appcodecraft.loopweek.androidx-startup\">\n            <meta-data\n                android:name=\"androidx.work.WorkManagerInitializer\"\n                android:value=\"androidx.startup\"/>\n            <meta-data\n                android:name=\"androidx.lifecycle.ProcessLifecycleInitializer\"\n                android:value=\"androidx.startup\"/>\n            <meta-data\n                android:name=\"androidx.profileinstaller.ProfileInstallerInitializer\"\n                android:value=\"androidx.startup\"/>\n        </provider>\n        <service\n            android:name=\"androidx.work.impl.background.systemalarm.SystemAlarmService\"\n            android:enabled=\"@bool/enable_system_alarm_service_default\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\"/>\n        <service\n            android:name=\"androidx.work.impl.background.systemjob.SystemJobService\"\n            android:permission=\"android.permission.BIND_JOB_SERVICE\"\n            android:enabled=\"@bool/enable_system_job_service_default\"\n            android:exported=\"true\"\n            android:directBootAware=\"false\"/>\n        <service\n            android:name=\"androidx.work.impl.foreground.SystemForegroundService\"\n            android:enabled=\"@bool/enable_system_foreground_service_default\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\"/>\n        <receiver\n            android:name=\"androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver\"\n            android:enabled=\"true\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\"/>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy\"\n            android:enabled=\"false\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.ACTION_POWER_CONNECTED\"/>\n                <action android:name=\"android.intent.action.ACTION_POWER_DISCONNECTED\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy\"\n            android:enabled=\"false\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.BATTERY_OKAY\"/>\n                <action android:name=\"android.intent.action.BATTERY_LOW\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy\"\n            android:enabled=\"false\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.DEVICE_STORAGE_LOW\"/>\n                <action android:name=\"android.intent.action.DEVICE_STORAGE_OK\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy\"\n            android:enabled=\"false\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"android.net.conn.CONNECTIVITY_CHANGE\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.RescheduleReceiver\"\n            android:enabled=\"false\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.BOOT_COMPLETED\"/>\n                <action android:name=\"android.intent.action.TIME_SET\"/>\n                <action android:name=\"android.intent.action.TIMEZONE_CHANGED\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver\"\n            android:enabled=\"@bool/enable_system_alarm_service_default\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"androidx.work.impl.background.systemalarm.UpdateProxies\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.diagnostics.DiagnosticsReceiver\"\n            android:permission=\"android.permission.DUMP\"\n            android:enabled=\"true\"\n            android:exported=\"true\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"androidx.work.diagnostics.REQUEST_DIAGNOSTICS\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.profileinstaller.ProfileInstallReceiver\"\n            android:permission=\"android.permission.DUMP\"\n            android:enabled=\"true\"\n            android:exported=\"true\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"androidx.profileinstaller.action.INSTALL_PROFILE\"/>\n            </intent-filter>\n            <intent-filter>\n                <action android:name=\"androidx.profileinstaller.action.SKIP_FILE\"/>\n            </intent-filter>\n            <intent-filter>\n                <action android:name=\"androidx.profileinstaller.action.SAVE_PROFILE\"/>\n            </intent-filter>\n            <intent-filter>\n                <action android:name=\"androidx.profileinstaller.action.BENCHMARK_OPERATION\"/>\n            </intent-filter>\n        </receiver>\n        <service\n            android:name=\"androidx.room.MultiInstanceInvalidationService\"\n            android:exported=\"false\"\n            android:directBootAware=\"true\"/>\n    </application>\n</manifest>"
+            }
+          ],
+          "isError": false
+        }
+      }
+    ]
+  },
+  "normalized_result": {
+    "engine": {
+      "name": "jadx-headless-mcp",
+      "version": "0.7.1",
+      "artifact_sha256": "6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75",
+      "source_revision": "5844800a486d2248fa949b74c9896285f5b54de2",
+      "worker_count": 1,
+      "heap_limit_mib": 4096
+    },
+    "package_name": "com.appcodecraft.loopweek",
+    "version_name": "1.0.3",
+    "version_code": "4",
+    "min_sdk": "24",
+    "target_sdk": "36",
+    "permissions": [
+      "android.permission.RECEIVE_BOOT_COMPLETED",
+      "android.permission.SCHEDULE_EXACT_ALARM",
+      "android.permission.USE_EXACT_ALARM",
+      "android.permission.VIBRATE",
+      "android.permission.POST_NOTIFICATIONS",
+      "android.permission.WAKE_LOCK",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.FOREGROUND_SERVICE",
+      "com.appcodecraft.loopweek.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+    ],
+    "manifest": {
+      "status": "complete",
+      "text": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    android:versionCode=\"4\"\n    android:versionName=\"1.0.3\"\n    android:compileSdkVersion=\"36\"\n    android:compileSdkVersionCodename=\"16\"\n    package=\"com.appcodecraft.loopweek\"\n    platformBuildVersionCode=\"36\"\n    platformBuildVersionName=\"16\">\n    <uses-sdk\n        android:minSdkVersion=\"24\"\n        android:targetSdkVersion=\"36\"/>\n    <uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>\n    <uses-permission android:name=\"android.permission.SCHEDULE_EXACT_ALARM\"/>\n    <uses-permission android:name=\"android.permission.USE_EXACT_ALARM\"/>\n    <uses-permission android:name=\"android.permission.VIBRATE\"/>\n    <uses-permission android:name=\"android.permission.POST_NOTIFICATIONS\"/>\n    <queries>\n        <intent>\n            <action android:name=\"android.intent.action.VIEW\"/>\n            <data android:scheme=\"https\"/>\n        </intent>\n        <intent>\n            <action android:name=\"android.intent.action.VIEW\"/>\n            <data android:scheme=\"http\"/>\n        </intent>\n        <intent>\n            <action android:name=\"android.intent.action.PROCESS_TEXT\"/>\n            <data android:mimeType=\"text/plain\"/>\n        </intent>\n    </queries>\n    <uses-permission android:name=\"android.permission.WAKE_LOCK\"/>\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>\n    <uses-permission android:name=\"android.permission.FOREGROUND_SERVICE\"/>\n    <permission\n        android:name=\"com.appcodecraft.loopweek.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION\"\n        android:protectionLevel=\"signature\"/>\n    <uses-permission android:name=\"com.appcodecraft.loopweek.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION\"/>\n    <application\n        android:label=\"Loopweek\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:name=\"android.app.Application\"\n        android:extractNativeLibs=\"false\"\n        android:appComponentFactory=\"androidx.core.app.CoreComponentFactory\">\n        <activity\n            android:theme=\"@style/LaunchTheme\"\n            android:name=\"com.appcodecraft.loopweek.MainActivity\"\n            android:exported=\"true\"\n            android:taskAffinity=\"\"\n            android:launchMode=\"singleTop\"\n            android:configChanges=\"fontScale|layoutDirection|density|smallestScreenSize|screenSize|uiMode|screenLayout|orientation|keyboardHidden|keyboard|locale\"\n            android:windowSoftInputMode=\"adjustResize\"\n            android:hardwareAccelerated=\"true\">\n            <meta-data\n                android:name=\"io.flutter.embedding.android.NormalTheme\"\n                android:resource=\"@style/NormalTheme\"/>\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\"/>\n                <category android:name=\"android.intent.category.LAUNCHER\"/>\n            </intent-filter>\n        </activity>\n        <meta-data\n            android:name=\"flutterEmbedding\"\n            android:value=\"2\"/>\n        <receiver\n            android:name=\"com.appcodecraft.loopweek.LoopweekWidgetProvider\"\n            android:exported=\"true\">\n            <intent-filter>\n                <action android:name=\"android.appwidget.action.APPWIDGET_UPDATE\"/>\n            </intent-filter>\n            <meta-data\n                android:name=\"android.appwidget.provider\"\n                android:resource=\"@xml/loopweek_widget_info\"/>\n        </receiver>\n        <receiver\n            android:name=\"com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver\"\n            android:exported=\"false\"/>\n        <receiver\n            android:name=\"com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver\"\n            android:exported=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.BOOT_COMPLETED\"/>\n                <action android:name=\"android.intent.action.MY_PACKAGE_REPLACED\"/>\n                <action android:name=\"android.intent.action.QUICKBOOT_POWERON\"/>\n                <action android:name=\"com.htc.intent.action.QUICKBOOT_POWERON\"/>\n            </intent-filter>\n        </receiver>\n        <activity\n            android:theme=\"@android:style/Theme.NoTitleBar.Fullscreen\"\n            android:name=\"io.flutter.plugins.urllauncher.WebViewActivity\"\n            android:exported=\"false\"/>\n        <activity\n            android:name=\"androidx.glance.appwidget.action.ActionTrampolineActivity\"\n            android:enabled=\"true\"\n            android:exported=\"false\"\n            android:excludeFromRecents=\"true\"/>\n        <activity\n            android:theme=\"@style/Widget.Glance.AppWidget.CallbackTrampoline\"\n            android:name=\"androidx.glance.appwidget.action.InvisibleActionTrampolineActivity\"\n            android:enabled=\"true\"\n            android:exported=\"false\"\n            android:taskAffinity=\"androidx.glance.appwidget.ListAdapterCallbackTrampoline\"\n            android:launchMode=\"singleInstance\"\n            android:noHistory=\"true\"/>\n        <receiver\n            android:name=\"androidx.glance.appwidget.action.ActionCallbackBroadcastReceiver\"\n            android:enabled=\"true\"\n            android:exported=\"false\"/>\n        <receiver\n            android:name=\"androidx.glance.appwidget.MyPackageReplacedReceiver\"\n            android:enabled=\"true\"\n            android:exported=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MY_PACKAGE_REPLACED\"/>\n            </intent-filter>\n        </receiver>\n        <service\n            android:name=\"androidx.glance.appwidget.GlanceRemoteViewsService\"\n            android:permission=\"android.permission.BIND_REMOTEVIEWS\"\n            android:exported=\"true\"/>\n        <uses-library\n            android:name=\"androidx.window.extensions\"\n            android:required=\"false\"/>\n        <uses-library\n            android:name=\"androidx.window.sidecar\"\n            android:required=\"false\"/>\n        <service\n            android:name=\"androidx.core.widget.RemoteViewsCompatService\"\n            android:permission=\"android.permission.BIND_REMOTEVIEWS\"/>\n        <provider\n            android:name=\"androidx.startup.InitializationProvider\"\n            android:exported=\"false\"\n            android:authorities=\"com.appcodecraft.loopweek.androidx-startup\">\n            <meta-data\n                android:name=\"androidx.work.WorkManagerInitializer\"\n                android:value=\"androidx.startup\"/>\n            <meta-data\n                android:name=\"androidx.lifecycle.ProcessLifecycleInitializer\"\n                android:value=\"androidx.startup\"/>\n            <meta-data\n                android:name=\"androidx.profileinstaller.ProfileInstallerInitializer\"\n                android:value=\"androidx.startup\"/>\n        </provider>\n        <service\n            android:name=\"androidx.work.impl.background.systemalarm.SystemAlarmService\"\n            android:enabled=\"@bool/enable_system_alarm_service_default\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\"/>\n        <service\n            android:name=\"androidx.work.impl.background.systemjob.SystemJobService\"\n            android:permission=\"android.permission.BIND_JOB_SERVICE\"\n            android:enabled=\"@bool/enable_system_job_service_default\"\n            android:exported=\"true\"\n            android:directBootAware=\"false\"/>\n        <service\n            android:name=\"androidx.work.impl.foreground.SystemForegroundService\"\n            android:enabled=\"@bool/enable_system_foreground_service_default\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\"/>\n        <receiver\n            android:name=\"androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver\"\n            android:enabled=\"true\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\"/>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy\"\n            android:enabled=\"false\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.ACTION_POWER_CONNECTED\"/>\n                <action android:name=\"android.intent.action.ACTION_POWER_DISCONNECTED\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy\"\n            android:enabled=\"false\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.BATTERY_OKAY\"/>\n                <action android:name=\"android.intent.action.BATTERY_LOW\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy\"\n            android:enabled=\"false\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.DEVICE_STORAGE_LOW\"/>\n                <action android:name=\"android.intent.action.DEVICE_STORAGE_OK\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy\"\n            android:enabled=\"false\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"android.net.conn.CONNECTIVITY_CHANGE\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.RescheduleReceiver\"\n            android:enabled=\"false\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.BOOT_COMPLETED\"/>\n                <action android:name=\"android.intent.action.TIME_SET\"/>\n                <action android:name=\"android.intent.action.TIMEZONE_CHANGED\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver\"\n            android:enabled=\"@bool/enable_system_alarm_service_default\"\n            android:exported=\"false\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"androidx.work.impl.background.systemalarm.UpdateProxies\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.work.impl.diagnostics.DiagnosticsReceiver\"\n            android:permission=\"android.permission.DUMP\"\n            android:enabled=\"true\"\n            android:exported=\"true\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"androidx.work.diagnostics.REQUEST_DIAGNOSTICS\"/>\n            </intent-filter>\n        </receiver>\n        <receiver\n            android:name=\"androidx.profileinstaller.ProfileInstallReceiver\"\n            android:permission=\"android.permission.DUMP\"\n            android:enabled=\"true\"\n            android:exported=\"true\"\n            android:directBootAware=\"false\">\n            <intent-filter>\n                <action android:name=\"androidx.profileinstaller.action.INSTALL_PROFILE\"/>\n            </intent-filter>\n            <intent-filter>\n                <action android:name=\"androidx.profileinstaller.action.SKIP_FILE\"/>\n            </intent-filter>\n            <intent-filter>\n                <action android:name=\"androidx.profileinstaller.action.SAVE_PROFILE\"/>\n            </intent-filter>\n            <intent-filter>\n                <action android:name=\"androidx.profileinstaller.action.BENCHMARK_OPERATION\"/>\n            </intent-filter>\n        </receiver>\n        <service\n            android:name=\"androidx.room.MultiInstanceInvalidationService\"\n            android:exported=\"false\"\n            android:directBootAware=\"true\"/>\n    </application>\n</manifest>",
+      "reported_total_bytes": null
+    },
+    "components": {
+      "status": "complete",
+      "items": [
+        {
+          "kind": "activity",
+          "declared_name": "com.appcodecraft.loopweek.MainActivity",
+          "name": "com.appcodecraft.loopweek.MainActivity",
+          "exported": true,
+          "exported_default": true,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 1,
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.LAUNCHER"
+          ],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "com.appcodecraft.loopweek.LoopweekWidgetProvider",
+          "name": "com.appcodecraft.loopweek.LoopweekWidgetProvider",
+          "exported": true,
+          "exported_default": true,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 1,
+          "actions": [
+            "android.appwidget.action.APPWIDGET_UPDATE"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver",
+          "name": "com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver",
+          "exported": false,
+          "exported_default": false,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver",
+          "name": "com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver",
+          "exported": false,
+          "exported_default": true,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 1,
+          "actions": [
+            "android.intent.action.BOOT_COMPLETED",
+            "android.intent.action.MY_PACKAGE_REPLACED",
+            "android.intent.action.QUICKBOOT_POWERON",
+            "com.htc.intent.action.QUICKBOOT_POWERON"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "activity",
+          "declared_name": "io.flutter.plugins.urllauncher.WebViewActivity",
+          "name": "io.flutter.plugins.urllauncher.WebViewActivity",
+          "exported": false,
+          "exported_default": false,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "activity",
+          "declared_name": "androidx.glance.appwidget.action.ActionTrampolineActivity",
+          "name": "androidx.glance.appwidget.action.ActionTrampolineActivity",
+          "exported": false,
+          "exported_default": false,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "activity",
+          "declared_name": "androidx.glance.appwidget.action.InvisibleActionTrampolineActivity",
+          "name": "androidx.glance.appwidget.action.InvisibleActionTrampolineActivity",
+          "exported": false,
+          "exported_default": false,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.glance.appwidget.action.ActionCallbackBroadcastReceiver",
+          "name": "androidx.glance.appwidget.action.ActionCallbackBroadcastReceiver",
+          "exported": false,
+          "exported_default": false,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.glance.appwidget.MyPackageReplacedReceiver",
+          "name": "androidx.glance.appwidget.MyPackageReplacedReceiver",
+          "exported": false,
+          "exported_default": true,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 1,
+          "actions": [
+            "android.intent.action.MY_PACKAGE_REPLACED"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "service",
+          "declared_name": "androidx.glance.appwidget.GlanceRemoteViewsService",
+          "name": "androidx.glance.appwidget.GlanceRemoteViewsService",
+          "exported": true,
+          "exported_default": false,
+          "permission": "android.permission.BIND_REMOTEVIEWS",
+          "permission_source": "component",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "service",
+          "declared_name": "androidx.core.widget.RemoteViewsCompatService",
+          "name": "androidx.core.widget.RemoteViewsCompatService",
+          "exported": null,
+          "exported_default": false,
+          "permission": "android.permission.BIND_REMOTEVIEWS",
+          "permission_source": "component",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "provider",
+          "declared_name": "androidx.startup.InitializationProvider",
+          "name": "androidx.startup.InitializationProvider",
+          "exported": false,
+          "exported_default": false,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": [
+            "com.appcodecraft.loopweek.androidx-startup"
+          ],
+          "target_activity": null
+        },
+        {
+          "kind": "service",
+          "declared_name": "androidx.work.impl.background.systemalarm.SystemAlarmService",
+          "name": "androidx.work.impl.background.systemalarm.SystemAlarmService",
+          "exported": false,
+          "exported_default": false,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "service",
+          "declared_name": "androidx.work.impl.background.systemjob.SystemJobService",
+          "name": "androidx.work.impl.background.systemjob.SystemJobService",
+          "exported": true,
+          "exported_default": false,
+          "permission": "android.permission.BIND_JOB_SERVICE",
+          "permission_source": "component",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "service",
+          "declared_name": "androidx.work.impl.foreground.SystemForegroundService",
+          "name": "androidx.work.impl.foreground.SystemForegroundService",
+          "exported": false,
+          "exported_default": false,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver",
+          "name": "androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver",
+          "exported": false,
+          "exported_default": false,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy",
+          "name": "androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy",
+          "exported": false,
+          "exported_default": true,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 1,
+          "actions": [
+            "android.intent.action.ACTION_POWER_CONNECTED",
+            "android.intent.action.ACTION_POWER_DISCONNECTED"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy",
+          "name": "androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy",
+          "exported": false,
+          "exported_default": true,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 1,
+          "actions": [
+            "android.intent.action.BATTERY_OKAY",
+            "android.intent.action.BATTERY_LOW"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy",
+          "name": "androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy",
+          "exported": false,
+          "exported_default": true,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 1,
+          "actions": [
+            "android.intent.action.DEVICE_STORAGE_LOW",
+            "android.intent.action.DEVICE_STORAGE_OK"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy",
+          "name": "androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy",
+          "exported": false,
+          "exported_default": true,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 1,
+          "actions": [
+            "android.net.conn.CONNECTIVITY_CHANGE"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.work.impl.background.systemalarm.RescheduleReceiver",
+          "name": "androidx.work.impl.background.systemalarm.RescheduleReceiver",
+          "exported": false,
+          "exported_default": true,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 1,
+          "actions": [
+            "android.intent.action.BOOT_COMPLETED",
+            "android.intent.action.TIME_SET",
+            "android.intent.action.TIMEZONE_CHANGED"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver",
+          "name": "androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver",
+          "exported": false,
+          "exported_default": true,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 1,
+          "actions": [
+            "androidx.work.impl.background.systemalarm.UpdateProxies"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.work.impl.diagnostics.DiagnosticsReceiver",
+          "name": "androidx.work.impl.diagnostics.DiagnosticsReceiver",
+          "exported": true,
+          "exported_default": true,
+          "permission": "android.permission.DUMP",
+          "permission_source": "component",
+          "intent_filter_count": 1,
+          "actions": [
+            "androidx.work.diagnostics.REQUEST_DIAGNOSTICS"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "receiver",
+          "declared_name": "androidx.profileinstaller.ProfileInstallReceiver",
+          "name": "androidx.profileinstaller.ProfileInstallReceiver",
+          "exported": true,
+          "exported_default": true,
+          "permission": "android.permission.DUMP",
+          "permission_source": "component",
+          "intent_filter_count": 4,
+          "actions": [
+            "androidx.profileinstaller.action.INSTALL_PROFILE",
+            "androidx.profileinstaller.action.SKIP_FILE",
+            "androidx.profileinstaller.action.SAVE_PROFILE",
+            "androidx.profileinstaller.action.BENCHMARK_OPERATION"
+          ],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        },
+        {
+          "kind": "service",
+          "declared_name": "androidx.room.MultiInstanceInvalidationService",
+          "name": "androidx.room.MultiInstanceInvalidationService",
+          "exported": false,
+          "exported_default": false,
+          "permission": null,
+          "permission_source": "none",
+          "intent_filter_count": 0,
+          "actions": [],
+          "categories": [],
+          "foreground_service_type": null,
+          "authorities": null,
+          "target_activity": null
+        }
+      ],
+      "limitations": []
+    },
+    "class_count": 1688,
+    "resource_count": 561,
+    "signature_verification": "not_performed"
+  },
+  "confidence": "observed",
+  "authority": "shipped-artifact",
+  "environment": null,
+  "limitations": [
+    "Static decompiler observations do not establish runtime behavior; the APK is never executed.",
+    "Method signatures use provider display types; DEX prototypes come from frozen JADX metadata. Display names may be aliases, and overload indices are local to this engine and artifact.",
+    "Class inventories use parsed metadata before code generation, including synthetic members that may be omitted from decompiled source. Source positions remain unknown.",
+    "Incoming reference totals count JADX using nodes. Direct invoke entries within a using method report raw DEX code-unit offsets and method indexes, but coverage is limited to those nodes and directly matched invokes; it does not establish every possible dynamic or reflective call site.",
+    "Manifest summaries are parsed once by REA's bridge from the exact root AndroidManifest.xml resource, using namespace-aware XML attributes; decoded XML is retained. APK signatures, split APKs, native libraries and Android runtime capture are not verified by this provider."
+  ],
+  "relationship_coverage": null,
+  "locations": [
+    {
+      "kind": "artifact-path",
+      "path": "AndroidManifest.xml"
+    }
+  ],
+  "evidence_links": []
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_private_bla_fixture_verification",
+  "date": "2026-11-02",
+  "scope": "Pinned BLA engine smoke against the owned 201-byte JavaScript browser fixture; not a complete application workflow or protection claim.",
+  "fixture": {
+    "source": "fixtures/e2e/web/app.js",
+    "source_bytes": 201,
+    "source_sha256": "467bc67245f78c37175d0af4c00deb4e6258490814d2c264caa6c1a62563fa8f",
+    "disposable_copy": "/private/tmp/anti-rea-bla-gate-20261102/input/app.js"
+  },
+  "runtime": {
+    "external_path": "/private/tmp/anti-rea-bla-gate-20261102/runtime",
+    "package": "bla-agents",
+    "version": "1.6.3",
+    "node_version": "v24.22.1",
+    "npm_version": "11.19.1",
+    "install_scripts": "disabled",
+    "package_lock_sha256": "d5cfae8757bc6b94d5bcdf2ef03e4ec70830b2c1d9456c753eea936cd193fd44",
+    "package_tree_sha256": "675fa40df7d9ad25e15da7ace0dcabff496331b85042a3e2d4fe962f32f5ff23",
+    "runtime_manifest_sha256": "8d1bdda5ea1d0c70c402ed68905f4461035bbcec7a571c1b553be90024d3f5cd"
+  },
+  "checks": {
+    "runtime_verification": "passed",
+    "probe": "passed",
+    "cli_help": "passed",
+    "protection": {
+      "status": "passed",
+      "intensity": "balanced",
+      "seed": "disposable-gate-20261102",
+      "candidate_bytes": 70956,
+      "candidate_sha256": "e5628f051742ee28b6ec3fdde9e94d7c6e4a958f7b5c2dd8ba750bab8127b878",
+      "report_sha256": "cb081bde0d305d34f87547baae4cbe5153f70311f524a94e18192ffc2cd85b12"
+    },
+    "verification": {
+      "status": "passed",
+      "overall_passed": true,
+      "check_count": 5,
+      "functional_integrity_verified_by_upstream": true,
+      "report_sha256": "15a10116913d20d6c019c2f909b3f6a9aef5bea19245fcd7ba92b98495dc3341"
+    }
+  },
+  "artifacts": {
+    "candidate_and_raw_reports_stored_outside_repository": true,
+    "private_directory": "/private/tmp/anti-rea-bla-gate-20261102/output",
+    "complete_anti_rea_plan_decision_run_acceptance_workflow": false,
+    "REA_comparison": false,
+    "application_behavior_test": false,
+    "protection_effectiveness_established": false
+  },
+  "limitations": [
+    "This executes BLA only on an owned synthetic fixture, not on TodoMVC or a user application.",
+    "BLA's verifier reports its own invariant checks; it is not independent behavioral equivalence evidence.",
+    "No REA comparison, browser behavior rerun, Anti-REA acceptance record, or rollback exercise was performed in this smoke."
+  ]
+}

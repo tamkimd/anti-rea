@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://anti-rea.invalid/schemas/release-manifest-v1.schema.json",
+  "title": "Anti-REA detached release manifest v1.0",
+  "type": "object",
+  "required": ["schema_version", "record_type", "product", "artifact"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "record_type": {"const": "anti_rea_release"},
+    "product": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {"name": {"const": "anti-rea"}, "version": {"type": "string", "minLength": 1}},
+      "additionalProperties": false
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["filename", "sha256", "size", "tags", "requires_python", "lock_sha256"],
+      "properties": {
+        "filename": {"type": "string", "pattern": "^anti_rea-.+\\.whl$"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "size": {"type": "integer", "minimum": 1},
+        "tags": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "requires_python": {"type": "string", "minLength": 1},
+        "lock_sha256": {
+          "type": "object",
+          "required": ["upstreams.json", "pylock.toml"],
+          "properties": {
+            "upstreams.json": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "pylock.toml": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

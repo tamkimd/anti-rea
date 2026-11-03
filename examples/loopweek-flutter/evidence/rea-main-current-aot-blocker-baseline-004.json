@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_current_upstream_flutter_aot_probe",
+  "upstream": {
+    "repository": "https://github.com/morluto/rea",
+    "branch": "main",
+    "commit": "26c3e9e4134971c79e822bbcb16fb42bb7dd8e8d",
+    "package_version": "6.8.0",
+    "published_latest_release": "6.8.0",
+    "pull_request": {
+      "number": 3662,
+      "url": "https://github.com/morluto/rea/pull/3662",
+      "status": "open"
+    }
+  },
+  "source_verification": {
+    "node": "v24.22.1",
+    "npm": "11.19.1",
+    "install_command": "npm ci --ignore-scripts",
+    "build_command": "npm run build",
+    "flutter_provider_test_command": "node_modules/.bin/vitest run tests/boundary/filesystem/flutterBuildProvider.test.ts",
+    "flutter_provider_tests_passed": 108,
+    "flutter_provider_test_failures": 0
+  },
+  "artifact": {
+    "baseline_id": "loopweek-before-004",
+    "sha256": "05faf0b7f951eb15a332994e991309147db4749f85683210acd80d5b4a9a1cc7",
+    "size": 62349581,
+    "stored_in_repository": false
+  },
+  "operation": {
+    "name": "inspect_dart_aot",
+    "abi": "arm64-v8a",
+    "status": "unsupported_target",
+    "supported_profile": "dart-2.14-split-full-aot",
+    "observed_exports": [
+      {"name": "_kDartSnapshotText", "offset": 2949120, "size": 3965760},
+      {"name": "_kDartSnapshotData", "offset": 704, "size": 2899168}
+    ],
+    "libapp_sha256": "8618681e842db345fb1ebe016ba23413867fd07eb6136db2f155654bd8c2d392",
+    "libapp_bytes": 6947720,
+    "raw_report_sha256": "4dd7a5e2ad1046c97ebdcfef7423a516384d449b55ed0ae8f8c89997cc8527a2",
+    "raw_report_bytes": 1416,
+    "raw_report_retained_privately": true
+  },
+  "interpretation": {
+    "current_main_supports_unified_snapshot": false,
+    "anti_rea_pinned_gate": "blocked",
+    "candidate_action_executed": false,
+    "protection_claim": false
+  },
+  "limitations": [
+    "Only arm64-v8a was inspected.",
+    "This is a static parser diagnostic for the exact baseline APK; it does not test a transformed candidate.",
+    "The latest main checkout is not a published package release and cannot replace Anti-REA's pinned runtime.",
+    "A separate PR-source build previously recognized this layout, but PR #3662 remains open and the supported fix is not in the current main checkout or latest release."
+  ]
+}

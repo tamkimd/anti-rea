@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_release_install_verification",
+  "status": "passed",
+  "artifact": {
+    "filename": "anti_rea-0.1.25-py3-none-any.whl",
+    "size": 799111,
+    "sha256": "cdffd235f56c73a07113e4495ddf4347463231401775c013d52bf8a0fbbaf339"
+  },
+  "environment": {
+    "container_image": "python:3.11.18-slim-bookworm",
+    "container_image_digest": "sha256:94a8fee35252d06ab75856f15f12c7bae67b10e8a6da93c7fded82b2610926cd",
+    "os": "linux",
+    "architecture": "aarch64",
+    "python": "3.11.18",
+    "docker_engine": "29.8.2"
+  },
+  "checks": {
+    "clean_virtual_environment": "passed",
+    "wheel_install": "passed",
+    "pip_check": "passed",
+    "anti_rea_help": "passed",
+    "source_test_suite": "passed"
+  },
+  "command": "python -m venv /tmp/venv && /tmp/venv/bin/pip install /wheels/anti_rea-0.1.25-py3-none-any.whl && /tmp/venv/bin/pip check && /tmp/venv/bin/anti-rea --help",
+  "limitations": [
+    "This verifies Linux ARM64 only; other operating systems and architectures remain unchecked.",
+    "Dependency resolution used the package's pinned direct requirements and current compatible transitive versions; the macOS-specific project lock was not applied in this container."
+  ],
+  "source_suite_environment": {
+    "container_image": "node:24.22.1-bookworm-slim",
+    "container_image_digest": "sha256:be8204d4bd327363357f532187b752ff62759c31bedf98e9e18fc08c9cbd605c",
+    "os": "linux",
+    "architecture": "aarch64",
+    "python": "3.11.2",
+    "node": "v24.22.1",
+    "procps": "installed",
+    "docker_engine": "29.8.2"
+  },
+  "source_test_suite": {
+    "command": "python -m unittest discover -s tests",
+    "tests_run": 337,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 23,
+    "duration_seconds": 71.247,
+    "checkout": "read-only repository copy in disposable container"
+  }
+}

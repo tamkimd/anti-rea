@@ -1,0 +1,720 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_python_dependency_multi_platform_wheel_selection",
+  "date": "2026-11-02",
+  "lock": {
+    "path": "locks/pylock.toml",
+    "sha256": "fcd36cf55e21c3a6228894feecf4a218a2f5932f857f48c05430c98fbf4b4cae",
+    "package_count": 28,
+    "wheel_source_count": 40
+  },
+  "python_version": "3.11",
+  "method": "All unique lock wheel URLs were downloaded into /private/tmp, SHA-256 verified against the lock, then pip download selected one wheel per pinned package using --platform/--abi tags with --no-index and --require-hashes. No cross-platform wheel was installed or executed.",
+  "targets": {
+    "macos-arm64": {
+      "status": "pip_target_selection_passed",
+      "selected_wheels": [
+        {
+          "package": "annotated-types",
+          "version": "0.8.0",
+          "wheel": "annotated_types-0.8.0-py3-none-any.whl",
+          "sha256": "f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0"
+        },
+        {
+          "package": "anyio",
+          "version": "4.15.1",
+          "wheel": "anyio-4.15.1-py3-none-any.whl",
+          "sha256": "6152fdbbf9a77fdec97731721bebf7c4c44f7c29b424b0065826173efc7ed101"
+        },
+        {
+          "package": "attrs",
+          "version": "26.1.0",
+          "wheel": "attrs-26.1.0-py3-none-any.whl",
+          "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309"
+        },
+        {
+          "package": "cffi",
+          "version": "2.1.1",
+          "wheel": "cffi-2.1.1-cp311-cp311-macosx_11_0_arm64.whl",
+          "sha256": "398aff33cee2767e3e781d2554c54bd0dff386bb437581e0d8011fde1a942ec1"
+        },
+        {
+          "package": "click",
+          "version": "8.5.0",
+          "wheel": "click-8.5.0-py3-none-any.whl",
+          "sha256": "255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360"
+        },
+        {
+          "package": "cryptography",
+          "version": "50.0.2",
+          "wheel": "cryptography-50.0.2-cp311-abi3-macosx_11_0_arm64.whl",
+          "sha256": "fa8f5efb344d6908a1ce62f4a24e2e5780f825d6f53f5f50ec5ffacac72936cb"
+        },
+        {
+          "package": "h11",
+          "version": "0.16.0",
+          "wheel": "h11-0.16.0-py3-none-any.whl",
+          "sha256": "63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86"
+        },
+        {
+          "package": "httpcore2",
+          "version": "2.16.0",
+          "wheel": "httpcore2-2.16.0-py3-none-any.whl",
+          "sha256": "5c4358319f2602d984ad93182c9fee5160f22e9da7babdda870a5e7c4e2dc34f"
+        },
+        {
+          "package": "httpx2",
+          "version": "2.16.0",
+          "wheel": "httpx2-2.16.0-py3-none-any.whl",
+          "sha256": "fd2c5d7909e8d86fe92d53020c310ca0e4e431b838c207c5754b9bbf0308d49a"
+        },
+        {
+          "package": "idna",
+          "version": "3.20",
+          "wheel": "idna-3.20-py3-none-any.whl",
+          "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c"
+        },
+        {
+          "package": "jsonschema",
+          "version": "4.26.0",
+          "wheel": "jsonschema-4.26.0-py3-none-any.whl",
+          "sha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce"
+        },
+        {
+          "package": "jsonschema-specifications",
+          "version": "2025.9.1",
+          "wheel": "jsonschema_specifications-2025.9.1-py3-none-any.whl",
+          "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe"
+        },
+        {
+          "package": "mcp",
+          "version": "2.3.0",
+          "wheel": "mcp-2.3.0-py3-none-any.whl",
+          "sha256": "dd0c44c089d16453e8ae31a3877a0054d7a2314caaa81f5e0541b9b1734b2377"
+        },
+        {
+          "package": "mcp-types",
+          "version": "2.3.0",
+          "wheel": "mcp_types-2.3.0-py3-none-any.whl",
+          "sha256": "968efdbdaedfab06adae40d378a34395f1090c5921d4be3c9cde283aaf76d91d"
+        },
+        {
+          "package": "opentelemetry-api",
+          "version": "1.45.2",
+          "wheel": "opentelemetry_api-1.45.2-py3-none-any.whl",
+          "sha256": "2cbd737377e710ee740d261c94e93fa0f08e6d037c18f17513cc0a2d94479a34"
+        },
+        {
+          "package": "pycparser",
+          "version": "3.12",
+          "wheel": "pycparser-3.12-py3-none-any.whl",
+          "sha256": "a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e"
+        },
+        {
+          "package": "pydantic",
+          "version": "2.14.2",
+          "wheel": "pydantic-2.14.2-py3-none-any.whl",
+          "sha256": "7efbf7507b937931cd32a5755acb00ea1cf5ccb1d4e8067a5850d5069e382118"
+        },
+        {
+          "package": "pydantic-core",
+          "version": "2.50.2",
+          "wheel": "pydantic_core-2.50.2-cp311-cp311-macosx_11_0_arm64.whl",
+          "sha256": "b2dd65864aad38dbcc57c3d0e2c978d4286e063378137d8fc0c9fcd558943285"
+        },
+        {
+          "package": "pyjwt",
+          "version": "2.15.1",
+          "wheel": "pyjwt-2.15.1-py3-none-any.whl",
+          "sha256": "42d59d631f7768a1028a64c7ff581a9bf7519804daf91fc5b6c56e30eec5e193"
+        },
+        {
+          "package": "python-multipart",
+          "version": "0.0.33",
+          "wheel": "python_multipart-0.0.33-py3-none-any.whl",
+          "sha256": "8f16c07b36add9da6b2ee87d3efcaf0a45a6de9c3d0a5dd94e9ccf7675a7bc45"
+        },
+        {
+          "package": "referencing",
+          "version": "0.37.0",
+          "wheel": "referencing-0.37.0-py3-none-any.whl",
+          "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231"
+        },
+        {
+          "package": "rpds-py",
+          "version": "2026.9.1",
+          "wheel": "rpds_py-2026.9.1-cp311-cp311-macosx_11_0_arm64.whl",
+          "sha256": "3231c4c0e521dafa5be0c9f114ee2c2ad46650836f2d72caa86801950c3e7044"
+        },
+        {
+          "package": "sse-starlette",
+          "version": "3.6.0",
+          "wheel": "sse_starlette-3.6.0-py3-none-any.whl",
+          "sha256": "e4dfa4d237d2712cb2b4d4918eda9b457cd6b44bbecdc838af75de836565bafd"
+        },
+        {
+          "package": "starlette",
+          "version": "1.10.0",
+          "wheel": "starlette-1.10.0-py3-none-any.whl",
+          "sha256": "478c0ab3b4ced6e82719849c118fa406f0278a3499c1a898cd15cd31bdc38ce4"
+        },
+        {
+          "package": "truststore",
+          "version": "0.10.5",
+          "wheel": "truststore-0.10.5-py3-none-any.whl",
+          "sha256": "9aaaedaefaf06d8b206278cf8b5012bc897f485a874503501e12d776df78951c"
+        },
+        {
+          "package": "typing-extensions",
+          "version": "4.16.0",
+          "wheel": "typing_extensions-4.16.0-py3-none-any.whl",
+          "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+        },
+        {
+          "package": "typing-inspection",
+          "version": "0.4.4",
+          "wheel": "typing_inspection-0.4.4-py3-none-any.whl",
+          "sha256": "65b8397ba37ccbce054456aaccddfc91e6e3083c92824df348d96ca832f3f147"
+        },
+        {
+          "package": "uvicorn",
+          "version": "0.54.0",
+          "wheel": "uvicorn-0.54.0-py3-none-any.whl",
+          "sha256": "505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf"
+        }
+      ]
+    },
+    "linux-glibc-x86_64": {
+      "status": "pip_target_selection_passed",
+      "selected_wheels": [
+        {
+          "package": "annotated-types",
+          "version": "0.8.0",
+          "wheel": "annotated_types-0.8.0-py3-none-any.whl",
+          "sha256": "f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0"
+        },
+        {
+          "package": "anyio",
+          "version": "4.15.1",
+          "wheel": "anyio-4.15.1-py3-none-any.whl",
+          "sha256": "6152fdbbf9a77fdec97731721bebf7c4c44f7c29b424b0065826173efc7ed101"
+        },
+        {
+          "package": "attrs",
+          "version": "26.1.0",
+          "wheel": "attrs-26.1.0-py3-none-any.whl",
+          "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309"
+        },
+        {
+          "package": "cffi",
+          "version": "2.1.1",
+          "wheel": "cffi-2.1.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+          "sha256": "34e261f78cb6ceaaa36f42f2613f4380d94d9c759a9c73c769ee6e0247364632"
+        },
+        {
+          "package": "click",
+          "version": "8.5.0",
+          "wheel": "click-8.5.0-py3-none-any.whl",
+          "sha256": "255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360"
+        },
+        {
+          "package": "cryptography",
+          "version": "50.0.2",
+          "wheel": "cryptography-50.0.2-cp311-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "4061c0079120205fb760c58acab6443e217307dcf05e3702cf970e0689972856"
+        },
+        {
+          "package": "h11",
+          "version": "0.16.0",
+          "wheel": "h11-0.16.0-py3-none-any.whl",
+          "sha256": "63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86"
+        },
+        {
+          "package": "httpcore2",
+          "version": "2.16.0",
+          "wheel": "httpcore2-2.16.0-py3-none-any.whl",
+          "sha256": "5c4358319f2602d984ad93182c9fee5160f22e9da7babdda870a5e7c4e2dc34f"
+        },
+        {
+          "package": "httpx2",
+          "version": "2.16.0",
+          "wheel": "httpx2-2.16.0-py3-none-any.whl",
+          "sha256": "fd2c5d7909e8d86fe92d53020c310ca0e4e431b838c207c5754b9bbf0308d49a"
+        },
+        {
+          "package": "idna",
+          "version": "3.20",
+          "wheel": "idna-3.20-py3-none-any.whl",
+          "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c"
+        },
+        {
+          "package": "jsonschema",
+          "version": "4.26.0",
+          "wheel": "jsonschema-4.26.0-py3-none-any.whl",
+          "sha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce"
+        },
+        {
+          "package": "jsonschema-specifications",
+          "version": "2025.9.1",
+          "wheel": "jsonschema_specifications-2025.9.1-py3-none-any.whl",
+          "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe"
+        },
+        {
+          "package": "mcp",
+          "version": "2.3.0",
+          "wheel": "mcp-2.3.0-py3-none-any.whl",
+          "sha256": "dd0c44c089d16453e8ae31a3877a0054d7a2314caaa81f5e0541b9b1734b2377"
+        },
+        {
+          "package": "mcp-types",
+          "version": "2.3.0",
+          "wheel": "mcp_types-2.3.0-py3-none-any.whl",
+          "sha256": "968efdbdaedfab06adae40d378a34395f1090c5921d4be3c9cde283aaf76d91d"
+        },
+        {
+          "package": "opentelemetry-api",
+          "version": "1.45.2",
+          "wheel": "opentelemetry_api-1.45.2-py3-none-any.whl",
+          "sha256": "2cbd737377e710ee740d261c94e93fa0f08e6d037c18f17513cc0a2d94479a34"
+        },
+        {
+          "package": "pycparser",
+          "version": "3.12",
+          "wheel": "pycparser-3.12-py3-none-any.whl",
+          "sha256": "a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e"
+        },
+        {
+          "package": "pydantic",
+          "version": "2.14.2",
+          "wheel": "pydantic-2.14.2-py3-none-any.whl",
+          "sha256": "7efbf7507b937931cd32a5755acb00ea1cf5ccb1d4e8067a5850d5069e382118"
+        },
+        {
+          "package": "pydantic-core",
+          "version": "2.50.2",
+          "wheel": "pydantic_core-2.50.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+          "sha256": "86e7abd24a67f61a4bfe8df059b67a2bdd8bf33705178e98463195d140bd3780"
+        },
+        {
+          "package": "pyjwt",
+          "version": "2.15.1",
+          "wheel": "pyjwt-2.15.1-py3-none-any.whl",
+          "sha256": "42d59d631f7768a1028a64c7ff581a9bf7519804daf91fc5b6c56e30eec5e193"
+        },
+        {
+          "package": "python-multipart",
+          "version": "0.0.33",
+          "wheel": "python_multipart-0.0.33-py3-none-any.whl",
+          "sha256": "8f16c07b36add9da6b2ee87d3efcaf0a45a6de9c3d0a5dd94e9ccf7675a7bc45"
+        },
+        {
+          "package": "referencing",
+          "version": "0.37.0",
+          "wheel": "referencing-0.37.0-py3-none-any.whl",
+          "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231"
+        },
+        {
+          "package": "rpds-py",
+          "version": "2026.9.1",
+          "wheel": "rpds_py-2026.9.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+          "sha256": "136a1c3fe4402b7008bc81cb62ee538481795b61a7e83df88dff3b3f02b726ff"
+        },
+        {
+          "package": "sse-starlette",
+          "version": "3.6.0",
+          "wheel": "sse_starlette-3.6.0-py3-none-any.whl",
+          "sha256": "e4dfa4d237d2712cb2b4d4918eda9b457cd6b44bbecdc838af75de836565bafd"
+        },
+        {
+          "package": "starlette",
+          "version": "1.10.0",
+          "wheel": "starlette-1.10.0-py3-none-any.whl",
+          "sha256": "478c0ab3b4ced6e82719849c118fa406f0278a3499c1a898cd15cd31bdc38ce4"
+        },
+        {
+          "package": "truststore",
+          "version": "0.10.5",
+          "wheel": "truststore-0.10.5-py3-none-any.whl",
+          "sha256": "9aaaedaefaf06d8b206278cf8b5012bc897f485a874503501e12d776df78951c"
+        },
+        {
+          "package": "typing-extensions",
+          "version": "4.16.0",
+          "wheel": "typing_extensions-4.16.0-py3-none-any.whl",
+          "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+        },
+        {
+          "package": "typing-inspection",
+          "version": "0.4.4",
+          "wheel": "typing_inspection-0.4.4-py3-none-any.whl",
+          "sha256": "65b8397ba37ccbce054456aaccddfc91e6e3083c92824df348d96ca832f3f147"
+        },
+        {
+          "package": "uvicorn",
+          "version": "0.54.0",
+          "wheel": "uvicorn-0.54.0-py3-none-any.whl",
+          "sha256": "505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf"
+        }
+      ]
+    },
+    "linux-glibc-aarch64": {
+      "status": "pip_target_selection_passed",
+      "selected_wheels": [
+        {
+          "package": "annotated-types",
+          "version": "0.8.0",
+          "wheel": "annotated_types-0.8.0-py3-none-any.whl",
+          "sha256": "f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0"
+        },
+        {
+          "package": "anyio",
+          "version": "4.15.1",
+          "wheel": "anyio-4.15.1-py3-none-any.whl",
+          "sha256": "6152fdbbf9a77fdec97731721bebf7c4c44f7c29b424b0065826173efc7ed101"
+        },
+        {
+          "package": "attrs",
+          "version": "26.1.0",
+          "wheel": "attrs-26.1.0-py3-none-any.whl",
+          "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309"
+        },
+        {
+          "package": "cffi",
+          "version": "2.1.1",
+          "wheel": "cffi-2.1.1-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+          "sha256": "3311ed60d36f83378794e1009ac6258bafbf81f7888b4caa7b35a521e3f95813"
+        },
+        {
+          "package": "click",
+          "version": "8.5.0",
+          "wheel": "click-8.5.0-py3-none-any.whl",
+          "sha256": "255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360"
+        },
+        {
+          "package": "cryptography",
+          "version": "50.0.2",
+          "wheel": "cryptography-50.0.2-cp311-abi3-manylinux_2_28_aarch64.whl",
+          "sha256": "f9f6143a8c75945eb960d9eb98905a441394abfa24afaae239d514ffb2586480"
+        },
+        {
+          "package": "h11",
+          "version": "0.16.0",
+          "wheel": "h11-0.16.0-py3-none-any.whl",
+          "sha256": "63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86"
+        },
+        {
+          "package": "httpcore2",
+          "version": "2.16.0",
+          "wheel": "httpcore2-2.16.0-py3-none-any.whl",
+          "sha256": "5c4358319f2602d984ad93182c9fee5160f22e9da7babdda870a5e7c4e2dc34f"
+        },
+        {
+          "package": "httpx2",
+          "version": "2.16.0",
+          "wheel": "httpx2-2.16.0-py3-none-any.whl",
+          "sha256": "fd2c5d7909e8d86fe92d53020c310ca0e4e431b838c207c5754b9bbf0308d49a"
+        },
+        {
+          "package": "idna",
+          "version": "3.20",
+          "wheel": "idna-3.20-py3-none-any.whl",
+          "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c"
+        },
+        {
+          "package": "jsonschema",
+          "version": "4.26.0",
+          "wheel": "jsonschema-4.26.0-py3-none-any.whl",
+          "sha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce"
+        },
+        {
+          "package": "jsonschema-specifications",
+          "version": "2025.9.1",
+          "wheel": "jsonschema_specifications-2025.9.1-py3-none-any.whl",
+          "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe"
+        },
+        {
+          "package": "mcp",
+          "version": "2.3.0",
+          "wheel": "mcp-2.3.0-py3-none-any.whl",
+          "sha256": "dd0c44c089d16453e8ae31a3877a0054d7a2314caaa81f5e0541b9b1734b2377"
+        },
+        {
+          "package": "mcp-types",
+          "version": "2.3.0",
+          "wheel": "mcp_types-2.3.0-py3-none-any.whl",
+          "sha256": "968efdbdaedfab06adae40d378a34395f1090c5921d4be3c9cde283aaf76d91d"
+        },
+        {
+          "package": "opentelemetry-api",
+          "version": "1.45.2",
+          "wheel": "opentelemetry_api-1.45.2-py3-none-any.whl",
+          "sha256": "2cbd737377e710ee740d261c94e93fa0f08e6d037c18f17513cc0a2d94479a34"
+        },
+        {
+          "package": "pycparser",
+          "version": "3.12",
+          "wheel": "pycparser-3.12-py3-none-any.whl",
+          "sha256": "a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e"
+        },
+        {
+          "package": "pydantic",
+          "version": "2.14.2",
+          "wheel": "pydantic-2.14.2-py3-none-any.whl",
+          "sha256": "7efbf7507b937931cd32a5755acb00ea1cf5ccb1d4e8067a5850d5069e382118"
+        },
+        {
+          "package": "pydantic-core",
+          "version": "2.50.2",
+          "wheel": "pydantic_core-2.50.2-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+          "sha256": "e80c47314c7233e7105a7efcfffd89d56e479e558189d1959eeeaf2639a27680"
+        },
+        {
+          "package": "pyjwt",
+          "version": "2.15.1",
+          "wheel": "pyjwt-2.15.1-py3-none-any.whl",
+          "sha256": "42d59d631f7768a1028a64c7ff581a9bf7519804daf91fc5b6c56e30eec5e193"
+        },
+        {
+          "package": "python-multipart",
+          "version": "0.0.33",
+          "wheel": "python_multipart-0.0.33-py3-none-any.whl",
+          "sha256": "8f16c07b36add9da6b2ee87d3efcaf0a45a6de9c3d0a5dd94e9ccf7675a7bc45"
+        },
+        {
+          "package": "referencing",
+          "version": "0.37.0",
+          "wheel": "referencing-0.37.0-py3-none-any.whl",
+          "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231"
+        },
+        {
+          "package": "rpds-py",
+          "version": "2026.9.1",
+          "wheel": "rpds_py-2026.9.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl",
+          "sha256": "e01b3c878c8641913e688edd1b3f08658c6783d29cf6b826bd3c0d1ae7a1ffaa"
+        },
+        {
+          "package": "sse-starlette",
+          "version": "3.6.0",
+          "wheel": "sse_starlette-3.6.0-py3-none-any.whl",
+          "sha256": "e4dfa4d237d2712cb2b4d4918eda9b457cd6b44bbecdc838af75de836565bafd"
+        },
+        {
+          "package": "starlette",
+          "version": "1.10.0",
+          "wheel": "starlette-1.10.0-py3-none-any.whl",
+          "sha256": "478c0ab3b4ced6e82719849c118fa406f0278a3499c1a898cd15cd31bdc38ce4"
+        },
+        {
+          "package": "truststore",
+          "version": "0.10.5",
+          "wheel": "truststore-0.10.5-py3-none-any.whl",
+          "sha256": "9aaaedaefaf06d8b206278cf8b5012bc897f485a874503501e12d776df78951c"
+        },
+        {
+          "package": "typing-extensions",
+          "version": "4.16.0",
+          "wheel": "typing_extensions-4.16.0-py3-none-any.whl",
+          "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+        },
+        {
+          "package": "typing-inspection",
+          "version": "0.4.4",
+          "wheel": "typing_inspection-0.4.4-py3-none-any.whl",
+          "sha256": "65b8397ba37ccbce054456aaccddfc91e6e3083c92824df348d96ca832f3f147"
+        },
+        {
+          "package": "uvicorn",
+          "version": "0.54.0",
+          "wheel": "uvicorn-0.54.0-py3-none-any.whl",
+          "sha256": "505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf"
+        }
+      ]
+    },
+    "windows-x86_64": {
+      "status": "pip_target_selection_passed",
+      "selected_wheels": [
+        {
+          "package": "annotated-types",
+          "version": "0.8.0",
+          "wheel": "annotated_types-0.8.0-py3-none-any.whl",
+          "sha256": "f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0"
+        },
+        {
+          "package": "anyio",
+          "version": "4.15.1",
+          "wheel": "anyio-4.15.1-py3-none-any.whl",
+          "sha256": "6152fdbbf9a77fdec97731721bebf7c4c44f7c29b424b0065826173efc7ed101"
+        },
+        {
+          "package": "attrs",
+          "version": "26.1.0",
+          "wheel": "attrs-26.1.0-py3-none-any.whl",
+          "sha256": "c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309"
+        },
+        {
+          "package": "cffi",
+          "version": "2.1.1",
+          "wheel": "cffi-2.1.1-cp311-cp311-win_amd64.whl",
+          "sha256": "42f6930c31dc7f50732c9ae793c2786c7b6b044195967bbdde40bb9be81c4cc0"
+        },
+        {
+          "package": "click",
+          "version": "8.5.0",
+          "wheel": "click-8.5.0-py3-none-any.whl",
+          "sha256": "255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360"
+        },
+        {
+          "package": "cryptography",
+          "version": "50.0.2",
+          "wheel": "cryptography-50.0.2-cp311-abi3-win_amd64.whl",
+          "sha256": "7afa5a6602a9f29af1f3a2965f831bae7c9d5d597b7cbb716d41ab3b7d89879c"
+        },
+        {
+          "package": "h11",
+          "version": "0.16.0",
+          "wheel": "h11-0.16.0-py3-none-any.whl",
+          "sha256": "63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86"
+        },
+        {
+          "package": "httpcore2",
+          "version": "2.16.0",
+          "wheel": "httpcore2-2.16.0-py3-none-any.whl",
+          "sha256": "5c4358319f2602d984ad93182c9fee5160f22e9da7babdda870a5e7c4e2dc34f"
+        },
+        {
+          "package": "httpx2",
+          "version": "2.16.0",
+          "wheel": "httpx2-2.16.0-py3-none-any.whl",
+          "sha256": "fd2c5d7909e8d86fe92d53020c310ca0e4e431b838c207c5754b9bbf0308d49a"
+        },
+        {
+          "package": "idna",
+          "version": "3.20",
+          "wheel": "idna-3.20-py3-none-any.whl",
+          "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c"
+        },
+        {
+          "package": "jsonschema",
+          "version": "4.26.0",
+          "wheel": "jsonschema-4.26.0-py3-none-any.whl",
+          "sha256": "d489f15263b8d200f8387e64b4c3a75f06629559fb73deb8fdfb525f2dab50ce"
+        },
+        {
+          "package": "jsonschema-specifications",
+          "version": "2025.9.1",
+          "wheel": "jsonschema_specifications-2025.9.1-py3-none-any.whl",
+          "sha256": "98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe"
+        },
+        {
+          "package": "mcp",
+          "version": "2.3.0",
+          "wheel": "mcp-2.3.0-py3-none-any.whl",
+          "sha256": "dd0c44c089d16453e8ae31a3877a0054d7a2314caaa81f5e0541b9b1734b2377"
+        },
+        {
+          "package": "mcp-types",
+          "version": "2.3.0",
+          "wheel": "mcp_types-2.3.0-py3-none-any.whl",
+          "sha256": "968efdbdaedfab06adae40d378a34395f1090c5921d4be3c9cde283aaf76d91d"
+        },
+        {
+          "package": "opentelemetry-api",
+          "version": "1.45.2",
+          "wheel": "opentelemetry_api-1.45.2-py3-none-any.whl",
+          "sha256": "2cbd737377e710ee740d261c94e93fa0f08e6d037c18f17513cc0a2d94479a34"
+        },
+        {
+          "package": "pycparser",
+          "version": "3.12",
+          "wheel": "pycparser-3.12-py3-none-any.whl",
+          "sha256": "a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e"
+        },
+        {
+          "package": "pydantic",
+          "version": "2.14.2",
+          "wheel": "pydantic-2.14.2-py3-none-any.whl",
+          "sha256": "7efbf7507b937931cd32a5755acb00ea1cf5ccb1d4e8067a5850d5069e382118"
+        },
+        {
+          "package": "pydantic-core",
+          "version": "2.50.2",
+          "wheel": "pydantic_core-2.50.2-cp311-cp311-win_amd64.whl",
+          "sha256": "b958c217c6e56bef261f516e4caf5d490b079ad6a428752afada5a764cca6c71"
+        },
+        {
+          "package": "pyjwt",
+          "version": "2.15.1",
+          "wheel": "pyjwt-2.15.1-py3-none-any.whl",
+          "sha256": "42d59d631f7768a1028a64c7ff581a9bf7519804daf91fc5b6c56e30eec5e193"
+        },
+        {
+          "package": "python-multipart",
+          "version": "0.0.33",
+          "wheel": "python_multipart-0.0.33-py3-none-any.whl",
+          "sha256": "8f16c07b36add9da6b2ee87d3efcaf0a45a6de9c3d0a5dd94e9ccf7675a7bc45"
+        },
+        {
+          "package": "referencing",
+          "version": "0.37.0",
+          "wheel": "referencing-0.37.0-py3-none-any.whl",
+          "sha256": "381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231"
+        },
+        {
+          "package": "rpds-py",
+          "version": "2026.9.1",
+          "wheel": "rpds_py-2026.9.1-cp311-cp311-win_amd64.whl",
+          "sha256": "ce4d4f52e2a4324396caddbd45a97d8d7be5f42edd25d2355282a9c34f9b2f7f"
+        },
+        {
+          "package": "sse-starlette",
+          "version": "3.6.0",
+          "wheel": "sse_starlette-3.6.0-py3-none-any.whl",
+          "sha256": "e4dfa4d237d2712cb2b4d4918eda9b457cd6b44bbecdc838af75de836565bafd"
+        },
+        {
+          "package": "starlette",
+          "version": "1.10.0",
+          "wheel": "starlette-1.10.0-py3-none-any.whl",
+          "sha256": "478c0ab3b4ced6e82719849c118fa406f0278a3499c1a898cd15cd31bdc38ce4"
+        },
+        {
+          "package": "truststore",
+          "version": "0.10.5",
+          "wheel": "truststore-0.10.5-py3-none-any.whl",
+          "sha256": "9aaaedaefaf06d8b206278cf8b5012bc897f485a874503501e12d776df78951c"
+        },
+        {
+          "package": "typing-extensions",
+          "version": "4.16.0",
+          "wheel": "typing_extensions-4.16.0-py3-none-any.whl",
+          "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+        },
+        {
+          "package": "typing-inspection",
+          "version": "0.4.4",
+          "wheel": "typing_inspection-0.4.4-py3-none-any.whl",
+          "sha256": "65b8397ba37ccbce054456aaccddfc91e6e3083c92824df348d96ca832f3f147"
+        },
+        {
+          "package": "uvicorn",
+          "version": "0.54.0",
+          "wheel": "uvicorn-0.54.0-py3-none-any.whl",
+          "sha256": "505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf"
+        }
+      ]
+    }
+  },
+  "live_provisioning": {
+    "target": "current macOS ARM64 CPython 3.11.18",
+    "status": "prepared_then_reused_offline",
+    "lock_sha256": "fcd36cf55e21c3a6228894feecf4a218a2f5932f857f48c05430c98fbf4b4cae",
+    "runtime_path": "/private/tmp/anti-rea-pylock-portability-live-20261102/cache/7bdb2c3f4c13c4a967b31a4f49bec73672513f0ac199a4bd4d4c02f5da0f586f/venv"
+  },
+  "limitations": [
+    "Linux and Windows were validated by pip wheel selection/download only, not by installing or executing those environments.",
+    "Lock is CPython 3.11 only.",
+    "Linux cryptography wheels require glibc 2.28 or newer.",
+    "Windows ARM64 and macOS x86_64 are not covered because this pinned set has no complete compatible native-wheel set for those targets.",
+    "pip PEP 751 support is experimental."
+  ]
+}

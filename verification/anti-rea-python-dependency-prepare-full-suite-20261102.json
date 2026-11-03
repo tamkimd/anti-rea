@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_current_source_test_run",
+  "date": "2026-11-02",
+  "command": "/private/tmp/anti-rea-live-composite-wheel-20261102-v2/venv/bin/python -m unittest discover -s tests",
+  "environment": {
+    "python": "3.11.18",
+    "pip": "26.2.2",
+    "pip_pep751": "experimental pylock install path used with local hash-pinned wheel fixtures"
+  },
+  "result": {
+    "status": "passed",
+    "tests_run": 444,
+    "optional_skips": 28,
+    "duration_seconds": 115.612
+  },
+  "scope": "Current repository source and tests including Python wheel provisioning, symlinked cache-parent rejection, venv and site-packages tamper detection, .pth non-execution during installation/cache verification, multi-platform wheel matrix selection, CLI, and MCP exposure. Focused dependency and MCP tests passed 60 tests with 2 optional skips. This does not establish cross-platform Python lock support, real-application protection, or the skipped optional runtime lanes."
+}

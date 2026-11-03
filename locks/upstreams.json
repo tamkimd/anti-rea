@@ -1,0 +1,74 @@
+{
+  "lock_schema_version": "1.0",
+  "observed_at": "2026-11-01",
+  "integrations": {
+    "rea": {
+      "repository": "https://github.com/morluto/rea.git",
+      "tag": "rea-agents-6.8.0",
+      "source_commit": "160d821ac9a0310afcb8d1fc427862dd6508add5",
+      "npm_package": "rea-agents",
+      "npm_version": "6.8.0",
+      "npm_integrity": "sha512-9QDeRnGqEDzABZyr04eLnBXBv/c6I9/TWu/6M0MD4pEfkySI/BIgwTODIbAReX3C1x6hjw9+Jlx4A2yUSPZ9ww==",
+      "package_lock": "integrations/rea/package-lock.json",
+      "package_lock_sha256": "b6cb714948a7ec224fa6f676f0e9b6f570bbabf3518a1a187be571ac8ddfe232",
+      "runtime_tool_contracts": "locks/rea-runtime-tool-contracts.json.gz",
+      "runtime_tool_contracts_sha256": "3ecb259aae17dae686923a676ffc7b11bfd38b86aec99a8e5a448054e51645fd",
+      "node_requirement": "^22.23.4 || ^24.22.1 || >=26.12.1",
+      "license": "MIT",
+      "source_package_equivalence": "not_verified",
+      "source_runtime_ledger": "locks/rea-source-runtime-ledger.json",
+      "source_runtime_ledger_sha256": "0eb0749989c3c99fd0476f8b997347e424a8ec8724ed5d637046ceb10af9a847",
+      "runtime_prompt_contracts": "locks/rea-runtime-prompt-contracts.json",
+      "runtime_prompt_contracts_sha256": "93b01c423790be7867ef927b971127e1184235d907c0cc6c66aee288cc6298b1",
+      "capability_readiness_ledger": "locks/rea-capability-readiness.json",
+      "capability_readiness_ledger_sha256": "173beef816f5552771cfa2b2988d4cfc6cbc1176681e599130ac5d217a0a7237"
+    },
+    "e2e": {
+      "repository": "https://github.com/tester-army/e2e.git",
+      "tag": "e2e@0.22.0",
+      "source_commit": "cad17c3200ceb5439a261f9c24e6e7ebbf85ddff",
+      "packages": {
+        "e2e": {
+          "version": "0.22.0",
+          "integrity": "sha512-IsE6LHPuAM5bHar7jNji79FGpfpBoXBSOSx4w0ZWRBosR+PKFjqjqvJWIq52h+S3qMGp8zaBrUWnEbUoOdFV4w=="
+        },
+        "@e2e-dev/web": {
+          "version": "0.15.4",
+          "integrity": "sha512-j4bDSP6wV310h9LwrMVfsUHv7uAIIzK516NboLco6Ah92B32uShIHne5V3AI1lvKtLip+PWlpJ+aw848vogBwQ=="
+        },
+        "@e2e-dev/mobile": {
+          "version": "0.12.5",
+          "integrity": "sha512-mKQOZDiJ9M4aQig+5tOafZXnjFoFtsg2/E4QG+WRQ9nsE0nH7Qp4WC7Kl2XTTCQXRXad/3qgHzEnmNmaJJ54jA=="
+        }
+      },
+      "package_lock": "integrations/e2e/package-lock.json",
+      "package_lock_sha256": "be5d4bebc3c5ded9ebdc53b504bb14aa7c7aa66f1a8574d4c948c9396b5eade9",
+      "node_requirement": "^22.22.3 || >=24.8.0",
+      "license": "Apache-2.0",
+      "source_package_equivalence": "not_verified"
+    },
+    "bla": {
+      "repository": "https://github.com/qybaihe/bla.git",
+      "source_commit": null,
+      "npm_package": "bla-agents",
+      "npm_version": "1.6.3",
+      "npm_integrity": "sha512-zRqevgWoKMZ034UjC/ONgk6uV8M1nafOBLMt8VfWw6TvkmrKFvopnJ125EXNu0W6DAaIou6iDEPscEHEga0Ggw==",
+      "package_lock": "integrations/bla/package-lock.json",
+      "package_lock_sha256": "d5cfae8757bc6b94d5bcdf2ef03e4ec70830b2c1d9456c753eea936cd193fd44",
+      "node_requirement": "^22.23.4 || >=24.0.0",
+      "license": "MIT",
+      "source_package_equivalence": "not_verified"
+    },
+    "mcp_python_sdk": {
+      "repository": "https://github.com/modelcontextprotocol/python-sdk.git",
+      "tag": "v2.3.0",
+      "source_commit": "2118f14f8a19bc158d8a1cf90af58d85d187f849",
+      "pypi_package": "mcp",
+      "pypi_version": "2.3.0",
+      "wheel_sha256": "dd0c44c089d16453e8ae31a3877a0054d7a2314caaa81f5e0541b9b1734b2377",
+      "source_archive_sha256": "8b147a50441cf059dc88c684e0aeed3687f0aa0f39c6cde7b90330effd2b34d8",
+      "python_requirement": ">=3.11",
+      "source_package_equivalence": "not_verified"
+    }
+  }
+}

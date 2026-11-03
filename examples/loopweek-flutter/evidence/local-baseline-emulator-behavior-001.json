@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_loopweek_flutter_local_baseline_behavior_check",
+  "evidence_id": "loopweek-local-baseline-emulator-behavior-001",
+  "status": "passed_single_emulator_journey",
+  "artifact": {
+    "package": "com.appcodecraft.loopweek",
+    "sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b",
+    "stored_in_repository": false
+  },
+  "device": {
+    "android_version": "16",
+    "api_level": 36,
+    "abi": "arm64-v8a",
+    "emulator": true,
+    "disposable": true
+  },
+  "steps": [
+    "Cleared app data to begin from a fresh install state.",
+    "Launched the app and dismissed onboarding with Skip.",
+    "Created a task named Anti-REA basic check for Monday, November 2.",
+    "Marked the task complete.",
+    "Force-stopped and relaunched the app."
+  ],
+  "observed_after_relaunch": "Anti-REA basic check remained visible and checked under Monday, November 2.",
+  "app_process_log_check": {
+    "status": "passed",
+    "scope": "The app process during the final force-stop and relaunch window.",
+    "matched_errors": []
+  },
+  "screenshot": {
+    "stored_in_repository": false,
+    "external_path": "<PRIVATE_SCREENSHOT>",
+    "sha256": "a915ab6052d5a0c9c4e1fd73c466308607b7fa063bfc0e32e40b72cf9fbb7632"
+  },
+  "limitations": [
+    "One task-completion and relaunch-persistence journey on one disposable emulator; no broad coverage or repeatability claim.",
+    "No transformed candidate or comparable BEFORE/AFTER REA result was produced, so this is not a protection claim."
+  ],
+  "protection_claim": false
+}

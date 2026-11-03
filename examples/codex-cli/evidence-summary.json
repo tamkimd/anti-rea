@@ -1,0 +1,35 @@
+{
+  "schema_version": "anti-rea-harness-smoke-2",
+  "harness": {
+    "name": "Codex CLI",
+    "version": "0.165.0-alpha.1.2",
+    "operating_system": "macOS 26.7.1 arm64"
+  },
+  "interface": "project-scoped Skill invoking the Anti-REA CLI",
+  "skill": {
+    "path": ".agents/skills/anti-rea",
+    "sha256": "3a7848043f216881d38d33bea91191fb15948ee9f9af6ef23d4a3947bb4484c9",
+    "project_copy_read_by_harness": true
+  },
+  "evidence": {
+    "file": "evidence/codex-cli-current.json",
+    "sha256": "edb6e6157c0cf22700be2985c61f20fc811a9d24aeef189029697ef239104d8c"
+  },
+  "readiness_evidence": {
+    "file": "evidence/codex-cli-flutter-probe.json",
+    "sha256": "4e7342430f1fcbb2813f765455a4a3d63e272543925d715475c6e01cec93210a"
+  },
+  "plan_review_evidence": {
+    "file": "evidence/codex-cli-todomvc-plan-review.json",
+    "sha256": "6c6e416ef52184e58d9cb7e1db92da687ff0ba090156363b4a5e3355d389d728"
+  },
+  "synthetic_fixture_plan_review_evidence": {
+    "file": "evidence/codex-cli-synthetic-plan-review.json",
+    "sha256": "a677765cc3c2e29399045ce0bff01ff8da92a7acf0a020db01f8b201258b3c0c"
+  },
+  "mcp_approval_blocker_evidence": {
+    "file": "evidence/codex-cli-mcp-approval-blocker.json",
+    "sha256": "9e8712fea72f8996442c755df3a4f40b121ed529147653a4c3edc78fd46a442c"
+  },
+  "result": "partial"
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": "anti-rea-rea-attempt-1",
+  "result": "blocked",
+  "target": {
+    "example": "TodoMVC React",
+    "repository": "https://github.com/tastejs/todomvc",
+    "commit": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+    "baseline_id": "todomvc-before-001",
+    "artifact_path": "dist/app.bundle.js",
+    "artifact_bytes": 236914,
+    "artifact_sha256": "6197ad9358985fb3f745aef3fca9abbe2fc7f0cd35cd4525cb8570107ae6b78a",
+    "snapshot_tree_sha256": "28202e498c24a6e4cf52403afb8af200ed6d37c9a54e4d0a1c43cd2624e0739b",
+    "snapshot_file_scope_sha256": "13174fc1171e924b40f37809f0a7ea17b84db2cf8bb5f8edf5a00cf4165e38da"
+  },
+  "runtime": {
+    "package": "rea-agents@6.8.0",
+    "node": "v24.22.1",
+    "manifest_sha256": "8494f80f5d0b7f4bd7f9a5e71731f810ae5f79d8faa71188fb7bb0ea3a045fdb"
+  },
+  "analysis": {
+    "selected_source_paths": ["dist/app.bundle.js"],
+    "unselected_inventoried_files": 22,
+    "analysis_timeout_ms": 600000,
+    "worker_heap_mb": 2048,
+    "outer_process_timeout_seconds": 660,
+    "exit_code": 1,
+    "error_code": "provider_timeout",
+    "error_category": "timeout",
+    "error_message": "JavaScript source analysis reached its 600000ms per-source server/provider deadline (analysis_timeout_ms), not the MCP client deadline.",
+    "partial_evidence_id": "ev_796e7d946937b006e00ca1c8207ff17c386dd7e1352f8e2402bbda10e0c71b98",
+    "statistics": {
+      "relevant_files": 23,
+      "text_bytes_read": 236914,
+      "parsed_javascript_files": 0,
+      "skipped_javascript_files": 1,
+      "parse_failures": 0,
+      "visited_ast_nodes": 0,
+      "findings": 0,
+      "modules": 0
+    },
+    "complete_analysis_report": false,
+    "evidence_bundle_created": false
+  },
+  "retained_private_output": {
+    "raw_cli_output_sha256": "90243759ddbd7bbc3f694dd47c4e1bc124fc493ff8c8c75070e86458715a4970",
+    "raw_cli_output_bytes": 333458,
+    "stderr_sha256": "aa67ad94e0d8d22030a3150feb9c9ea81b415821a8ba2b5af2ac90d393955d34",
+    "stderr_bytes": 898
+  },
+  "limitations": [
+    "The partial REA observation is diagnostic only and does not count as a successful baseline analysis.",
+    "The selected bundle was not parsed, so zero findings cannot be interpreted as zero exposure.",
+    "The 22 unselected inventoried files and all relationships involving them remain outside this attempt.",
+    "No candidate was executed and no protection claim is supported."
+  ]
+}

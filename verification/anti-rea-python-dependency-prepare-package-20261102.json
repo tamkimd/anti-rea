@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_private_package_current_source_verification",
+  "date": "2026-11-02",
+  "artifact": {
+    "path": "/private/tmp/anti-rea-final-current-20261102/wheels/anti_rea-0.1.32-py3-none-any.whl",
+    "bytes": 938696,
+    "sha256": "8f15bc17594893a9f17ddba677c0693d46e5b98ec27bcb12762ce6233e297bbe",
+    "wheel_entries": 134,
+    "packaged_pylock_sha256": "fcd36cf55e21c3a6228894feecf4a218a2f5932f857f48c05430c98fbf4b4cae"
+  },
+  "environment": {
+    "python": "3.11.18",
+    "environment": "fresh private external CPython 3.11 venv; declared dependencies installed"
+  },
+  "checks": {
+    "pip_check": "passed",
+    "cli_help": "passed",
+    "prepare_python_dependencies_help": "passed",
+    "doctor": "ready",
+    "apk_aab_build_payload": "none",
+    "packaged_pylock_matches_source": true,
+    "apk_aab_zip_build_payload": "none"
+  },
+  "source_suite": "verification/anti-rea-python-dependency-prepare-full-suite-20261102.json",
+  "limitations": [
+    "Private same-version verification only; official release manifest/signature was not changed.",
+    "The lock contains CPython 3.11 wheels for macOS ARM64, Linux glibc x86_64/ARM64, and Windows x86_64; pip wheel selection passed for all, but only macOS ARM64 was installed and run.",
+    "pip PEP 751 support is experimental; wheel code can execute when the prepared environment is used.",
+    "Flutter AOT remains blocked at REA's unsupported snapshot gate; no transformed candidate or protection claim exists."
+  ],
+  "platform_selection_record": "verification/anti-rea-python-dependency-multi-platform-wheel-selection-20261102.json"
+}

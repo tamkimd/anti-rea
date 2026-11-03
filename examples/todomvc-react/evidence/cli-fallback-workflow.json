@@ -1,0 +1,323 @@
+{
+  "baseline": {
+    "artifacts": {
+      "dist/app.bundle.js": {
+        "sha256": "6197ad9358985fb3f745aef3fca9abbe2fc7f0cd35cd4525cb8570107ae6b78a",
+        "size": 236914
+      },
+      "dist/app.bundle.js.LICENSE.txt": {
+        "sha256": "2fde10fedaa9ebac195ff484ddb08969f5d04ab284ba65000b3cbf0992703640",
+        "size": 1332
+      },
+      "dist/app.bundle.js.map": {
+        "sha256": "cb7affe8ae39349410fbc771d400d7cdd291d7f3f20611941a497811d10c3619",
+        "size": 1361509
+      },
+      "dist/app.css": {
+        "sha256": "a0ccea8c39f22bcad35a2821b1e1009a05e028e51884649d0cd1552776b0fdef",
+        "size": 7400
+      },
+      "dist/app.css.map": {
+        "sha256": "486a28c197a62733ccec8a1167086b13f27c950a4bd76369d08b2e06822bfea8",
+        "size": 14375
+      },
+      "dist/base.js": {
+        "sha256": "8cfbaa8d2bc03e2e52a8b7788e041efda231a17e2a25c8bc4bfe2659adc5bb90",
+        "size": 3752
+      },
+      "dist/index.html": {
+        "sha256": "23b40a8b71f26e44f3e72e682188a3ab238d17fd375ff0ec06295af9971fa959",
+        "size": 645
+      }
+    },
+    "build_command": [
+      "sh",
+      "-c",
+      "npm ci --ignore-scripts --no-audit --no-fund && npm run build"
+    ],
+    "build_duration_ms": 4246,
+    "evidence_record_sha256": "cfdb6c4546202a27d8f0122e3cc601ac9d8a7b8dcb2355e4efb38fe367cf90e7",
+    "file_scope_sha256": "13174fc1171e924b40f37809f0a7ea17b84db2cf8bb5f8edf5a00cf4165e38da",
+    "id": "fallback-before-002",
+    "rea_captured": false,
+    "record_sha256": "3573c0a518c8540c7582581c8e8eb17f1ba7a88bab780a1df1dee8720aea688e",
+    "snapshot_tree_sha256": "28202e498c24a6e4cf52403afb8af200ed6d37c9a54e4d0a1c43cd2624e0739b",
+    "status": "captured",
+    "target_id": "target-4a30c3ed2391e809f1f9"
+  },
+  "browser_behavior": {
+    "cleanup": "loopback app port closed",
+    "failed": 0,
+    "passed": 1,
+    "report_file": "evidence/cli-fallback-e2e-report.json",
+    "report_sha256": "c53bedee1b4a06aa3b4c2f43a33fe471a854569e0fd0f4bd07d472a02dc7d0a8",
+    "run_id": "01a19ae6-11dc-796f-9ef0-81984218e7ac",
+    "status": "passed",
+    "test_ids": [
+      "tests/behavior.e2e.ts::TodoMVC%20rejects%20blank%20input%2C%20adds%2C%20toggles%2C%20and%20filters%20one%20todo"
+    ]
+  },
+  "decision": {
+    "candidate_executed": false,
+    "recorded": false
+  },
+  "environment": {
+    "browser_runtime": {
+      "manifest_sha256": "3f4b8e6ccd78ba27f019de0e4240cb5e0887497820928f1c58eb52f6ac38f54d",
+      "name": "e2e@0.22.0",
+      "node": "v24.22.1"
+    },
+    "build_runtime": {
+      "node": "v22.23.3",
+      "npm": "11.17.0"
+    },
+    "e2e_node": "v24.22.1",
+    "e2e_runtime": "e2e@0.22.0",
+    "e2e_runtime_manifest_sha256": "3f4b8e6ccd78ba27f019de0e4240cb5e0887497820928f1c58eb52f6ac38f54d"
+  },
+  "harness_scope": {
+    "interface": "generic terminal/CLI fallback",
+    "note": "No vendor harness was used; this is runtime evidence for the documented portable terminal path.",
+    "verified_ai_harness": false
+  },
+  "inspect": {
+    "component_count": 1,
+    "file_count": 29,
+    "git_revision_detected_by_inspect": false,
+    "inventory_sha256": "b1c5322be7cf471c876dd74134b69fa2a0d8537450d27b8810301f7b089482c6",
+    "record_sha256": "57404add604e30947decc534f7f26262acdcfe798cdc9322c47a844046629955",
+    "status": "discovered",
+    "target_id": "target-4a30c3ed2391e809f1f9"
+  },
+  "limitations": [
+    "This verifies the portable terminal fallback on a pinned synthetic third-party example, not compatibility with a named AI harness.",
+    "The recommendation is pending user choice; no action was selected or executed.",
+    "This baseline run did not capture REA. The production bundle REA timeout and separate limited source report remain documented in this example.",
+    "The baseline browser journey covers only the assertions named in its test ID."
+  ],
+  "product": {
+    "anti_rea_version": "0.1.20",
+    "wheel_sha256": "c8bee18f3eea72028295c3c8a627019ab6d2cc6c72175aa9b417520971835fa0"
+  },
+  "recommendation": {
+    "action_count": 4,
+    "action_ids": [
+      "bla-js-acba3710b570",
+      "source-map-4494addd3ecb",
+      "source-map-e39edf55e15b",
+      "bla-js-dd8dbf41abf6"
+    ],
+    "plan": {
+      "actions": [
+        {
+          "change": "Create a BLA-protected candidate while preserving the original artifact.",
+          "compatibility": [
+            "Adapter accepts one JavaScript file up to 1 MiB.",
+            "Retain the original and verify application behavior before acceptance."
+          ],
+          "cost": "Review and verification time; BLA requires an isolated pinned runtime.",
+          "dependencies": [
+            "Optional pinned bla-agents runtime; no global installation."
+          ],
+          "engine": "bla",
+          "evidence": [
+            {
+              "baseline_id": "fallback-before-002",
+              "path": "dist/app.bundle.js",
+              "sha256": "6197ad9358985fb3f745aef3fca9abbe2fc7f0cd35cd4525cb8570107ae6b78a"
+            }
+          ],
+          "execution": {
+            "adapter": "bla-js",
+            "e2e_config": "e2e.config.mjs",
+            "e2e_runtime_manifest_sha256": "3f4b8e6ccd78ba27f019de0e4240cb5e0887497820928f1c58eb52f6ac38f54d",
+            "e2e_runtime_path": "<PRIVATE_PINNED_E2E_RUNTIME>",
+            "e2e_test_file": "tests/behavior.e2e.ts",
+            "intensity": "balanced",
+            "performance_budget": {
+              "max_candidate_bytes": 67108864,
+              "max_elapsed_ms": 30000,
+              "max_journey_regression_pct": 25,
+              "trials": 3
+            },
+            "source_path": "dist/app.bundle.js"
+          },
+          "expected_benefit": "Increase the effort required to read the transformed JavaScript; measure rather than assume protection.",
+          "finding_or_asset": "Captured JavaScript artifact: dist/app.bundle.js",
+          "id": "bla-js-acba3710b570",
+          "limitations": [
+            "Does not provide confidentiality or prevent determined reverse engineering.",
+            "Behavior equivalence and comparable REA checks do not establish protection."
+          ],
+          "mechanism": "Apply the pinned BLA JavaScript transformation to an isolated copy and run BLA's invariant verifier.",
+          "rollback": "Discard the isolated candidate and restore the original artifact: dist/app.bundle.js",
+          "tradeoffs": [
+            "Protected output may be larger or slower.",
+            "Debugging and stack traces may be less readable.",
+            "Transformation does not prevent runtime inspection or reconstruction."
+          ],
+          "verification": [
+            "bla_invariants",
+            "rea_comparison",
+            "performance",
+            "e2e_behavior"
+          ]
+        },
+        {
+          "change": "Create a private release-tree candidate omitting this map; use it as packaging input only after review.",
+          "compatibility": [
+            "Candidate-tree omission does not change deployment configuration."
+          ],
+          "cost": "Build and review time; a downstream packaging or deployment step must consume the candidate tree.",
+          "dependencies": [
+            "No additional engine; uses the private captured build snapshot."
+          ],
+          "engine": "release packaging candidate",
+          "evidence": [
+            {
+              "baseline_id": "fallback-before-002",
+              "path": "dist/app.bundle.js.map",
+              "sha256": "cb7affe8ae39349410fbc771d400d7cdd291d7f3f20611941a497811d10c3619"
+            }
+          ],
+          "execution": {
+            "adapter": "source-map-candidate",
+            "source_path": "dist/app.bundle.js.map"
+          },
+          "expected_benefit": "Reduce direct disclosure of authored source when this map would otherwise be public.",
+          "finding_or_asset": "Captured source-map artifact: dist/app.bundle.js.map",
+          "id": "source-map-4494addd3ecb",
+          "limitations": [
+            "Candidate-tree exclusion does not prove that a deployed release omits the map.",
+            "This does not prevent inspection or reconstruction of shipped runtime code."
+          ],
+          "mechanism": "Copy the captured build tree and omit only this map while preserving the private baseline.",
+          "rollback": "Discard the private candidate and retain the original build tree: dist/app.bundle.js.map",
+          "tradeoffs": [
+            "Private source maps remain available for debugging.",
+            "The candidate does not change deployment settings or verify the served release."
+          ],
+          "verification": [
+            "public_source_map_absent"
+          ]
+        },
+        {
+          "change": "Create a private release-tree candidate omitting this map; use it as packaging input only after review.",
+          "compatibility": [
+            "Candidate-tree omission does not change deployment configuration."
+          ],
+          "cost": "Build and review time; a downstream packaging or deployment step must consume the candidate tree.",
+          "dependencies": [
+            "No additional engine; uses the private captured build snapshot."
+          ],
+          "engine": "release packaging candidate",
+          "evidence": [
+            {
+              "baseline_id": "fallback-before-002",
+              "path": "dist/app.css.map",
+              "sha256": "486a28c197a62733ccec8a1167086b13f27c950a4bd76369d08b2e06822bfea8"
+            }
+          ],
+          "execution": {
+            "adapter": "source-map-candidate",
+            "source_path": "dist/app.css.map"
+          },
+          "expected_benefit": "Reduce direct disclosure of authored source when this map would otherwise be public.",
+          "finding_or_asset": "Captured source-map artifact: dist/app.css.map",
+          "id": "source-map-e39edf55e15b",
+          "limitations": [
+            "Candidate-tree exclusion does not prove that a deployed release omits the map.",
+            "This does not prevent inspection or reconstruction of shipped runtime code."
+          ],
+          "mechanism": "Copy the captured build tree and omit only this map while preserving the private baseline.",
+          "rollback": "Discard the private candidate and retain the original build tree: dist/app.css.map",
+          "tradeoffs": [
+            "Private source maps remain available for debugging.",
+            "The candidate does not change deployment settings or verify the served release."
+          ],
+          "verification": [
+            "public_source_map_absent"
+          ]
+        },
+        {
+          "change": "Create a BLA-protected candidate while preserving the original artifact.",
+          "compatibility": [
+            "Adapter accepts one JavaScript file up to 1 MiB.",
+            "Retain the original and verify application behavior before acceptance."
+          ],
+          "cost": "Review and verification time; BLA requires an isolated pinned runtime.",
+          "dependencies": [
+            "Optional pinned bla-agents runtime; no global installation."
+          ],
+          "engine": "bla",
+          "evidence": [
+            {
+              "baseline_id": "fallback-before-002",
+              "path": "dist/base.js",
+              "sha256": "8cfbaa8d2bc03e2e52a8b7788e041efda231a17e2a25c8bc4bfe2659adc5bb90"
+            }
+          ],
+          "execution": {
+            "adapter": "bla-js",
+            "e2e_config": "e2e.config.mjs",
+            "e2e_runtime_manifest_sha256": "3f4b8e6ccd78ba27f019de0e4240cb5e0887497820928f1c58eb52f6ac38f54d",
+            "e2e_runtime_path": "<PRIVATE_PINNED_E2E_RUNTIME>",
+            "e2e_test_file": "tests/behavior.e2e.ts",
+            "intensity": "balanced",
+            "performance_budget": {
+              "max_candidate_bytes": 67108864,
+              "max_elapsed_ms": 30000,
+              "max_journey_regression_pct": 25,
+              "trials": 3
+            },
+            "source_path": "dist/base.js"
+          },
+          "expected_benefit": "Increase the effort required to read the transformed JavaScript; measure rather than assume protection.",
+          "finding_or_asset": "Captured JavaScript artifact: dist/base.js",
+          "id": "bla-js-dd8dbf41abf6",
+          "limitations": [
+            "Does not provide confidentiality or prevent determined reverse engineering.",
+            "Behavior equivalence and comparable REA checks do not establish protection."
+          ],
+          "mechanism": "Apply the pinned BLA JavaScript transformation to an isolated copy and run BLA's invariant verifier.",
+          "rollback": "Discard the isolated candidate and restore the original artifact: dist/base.js",
+          "tradeoffs": [
+            "Protected output may be larger or slower.",
+            "Debugging and stack traces may be less readable.",
+            "Transformation does not prevent runtime inspection or reconstruction."
+          ],
+          "verification": [
+            "bla_invariants",
+            "rea_comparison",
+            "performance",
+            "e2e_behavior"
+          ]
+        }
+      ],
+      "baseline_id": "fallback-before-002",
+      "budgets": {
+        "runtime_ms": 60000
+      },
+      "id": "fallback-plan-001",
+      "record_type": "plan",
+      "rollback": "Restore the prior release publication configuration and redeploy the matching artifact.",
+      "schema_version": "2.0",
+      "target_id": "target-4a30c3ed2391e809f1f9"
+    },
+    "plan_canonical_sha256": "4b2f930632ee33246f46be9c7783e8c3eedafad3cdc36d0af88d0aa544614ed5",
+    "plan_id": "fallback-plan-001",
+    "plan_record_sha256": "fb83297504303c607fa23e28cbecdafc773be4248c6c3cb382e17bcc3ca65ee2",
+    "status": "ready"
+  },
+  "record_type": "anti_rea_terminal_fallback_run",
+  "schema_version": "1.0",
+  "source": {
+    "checkout_method": "git archive of the exact pinned commit; local checkout did not include .git",
+    "commit": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+    "license": "MIT",
+    "package_lock_sha256": "aea2330afc769b02493c52c1c88b3086ad04395e69458002c93b5efd4793a694",
+    "repository": "https://github.com/tastejs/todomvc",
+    "subdirectory": "examples/react"
+  },
+  "status": "recommendations_ready_before_choice"
+}

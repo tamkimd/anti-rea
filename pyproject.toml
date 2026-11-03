@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=75,<76"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "anti-rea"
+version = "0.1.32"
+description = "Evidence-driven application hardening against AI reverse engineering"
+readme = "README.md"
+keywords = ["application-hardening", "anti-reverse-engineering", "reverse-engineering", "software-protection", "AI-security", "BLA", "REA", "obfuscation", "MCP", "agent-skills"]
+requires-python = ">=3.11"
+dependencies = ["mcp==2.3.0", "jsonschema==4.26.0", "cryptography==50.0.2"]
+
+[project.scripts]
+anti-rea = "interfaces.cli.anti_rea:main"
+anti-rea-mcp = "interfaces.mcp.server:main"
+
+[tool.setuptools.packages.find]
+include = ["core*", "interfaces*", "schemas*", "scripts*"]
+
+[tool.setuptools.package-data]
+schemas = ["*.json"]
+
+[tool.setuptools.data-files]
+"share/anti-rea" = ["README.md"]
+"share/anti-rea/docs" = ["docs/*.md"]
+"share/anti-rea/schemas" = ["schemas/*.json"]
+"share/anti-rea/skills/anti-rea" = ["skills/anti-rea/SKILL.md"]
+"share/anti-rea/skills/anti-rea/references" = ["skills/anti-rea/references/*.md"]
+"share/anti-rea/skills/anti-rea/examples" = ["skills/anti-rea/examples/*.md"]
+"share/anti-rea/scripts" = ["scripts/*.py"]
+"share/anti-rea/locks" = ["locks/*.json", "locks/*.toml", "locks/*.json.gz"]
+"share/anti-rea/integrations/rea" = ["integrations/rea/package.json", "integrations/rea/package-lock.json"]
+"share/anti-rea/integrations/e2e" = ["integrations/e2e/package.json", "integrations/e2e/package-lock.json"]
+"share/anti-rea/integrations/bla" = ["integrations/bla/package.json", "integrations/bla/package-lock.json"]
+"share/anti-rea/fixtures/e2e/web" = ["fixtures/e2e/web/*.cjs", "fixtures/e2e/web/*.mjs", "fixtures/e2e/web/*.js"]
+"share/anti-rea/fixtures/e2e/web/tests" = ["fixtures/e2e/web/tests/*.ts"]
+"share/anti-rea/fixtures/e2e/static-spa" = ["fixtures/e2e/static-spa/*.cjs", "fixtures/e2e/static-spa/*.mjs"]
+"share/anti-rea/fixtures/e2e/static-spa/tests" = ["fixtures/e2e/static-spa/tests/*.ts"]
+"share/anti-rea/fixtures/e2e/pwa" = ["fixtures/e2e/pwa/*.cjs", "fixtures/e2e/pwa/*.mjs"]
+"share/anti-rea/fixtures/e2e/pwa/tests" = ["fixtures/e2e/pwa/tests/*.ts"]
+"share/anti-rea/examples/todomvc-react" = ["examples/todomvc-react/*.md", "examples/todomvc-react/*.mjs", "examples/todomvc-react/*.cjs", "examples/todomvc-react/*.json"]
+"share/anti-rea/examples/todomvc-react/tests" = ["examples/todomvc-react/tests/*.ts"]
+"share/anti-rea/examples/todomvc-react/evidence" = ["examples/todomvc-react/evidence/*.json"]
+"share/anti-rea/examples/flutter-todo" = ["examples/flutter-todo/*.md", "examples/flutter-todo/*.mjs", "examples/flutter-todo/*.cjs", "examples/flutter-todo/*.json"]
+"share/anti-rea/examples/flutter-todo/tests" = ["examples/flutter-todo/tests/*.ts"]
+"share/anti-rea/examples/flutter-todo/evidence" = ["examples/flutter-todo/evidence/*.json"]
+"share/anti-rea/examples/loopweek-flutter" = ["examples/loopweek-flutter/*.md", "examples/loopweek-flutter/*.json"]
+"share/anti-rea/examples/loopweek-flutter/evidence" = ["examples/loopweek-flutter/evidence/*.json"]
+"share/anti-rea/examples/codex-cli" = ["examples/codex-cli/evidence-summary.json"]
+"share/anti-rea/examples/codex-cli/evidence" = ["examples/codex-cli/evidence/*.json"]

@@ -1,0 +1,115 @@
+{
+  "checks": [
+    {
+      "evidence": [
+        {
+          "kind": "bla-verify",
+          "sha256": "6a1fe11783ec56704f61e5dbb1cc31b049bebb8c5b7d2f7ba1f52090a2638a24"
+        }
+      ],
+      "id": "bla_invariants",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "rea-comparison",
+          "sha256": "29124552bf6415c7cbbfe0d9b468e093ca4917eebef0c0ecde10d14dbc3935d8"
+        }
+      ],
+      "id": "rea_comparison",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "performance",
+          "sha256": "20097dc6df52477e0bc4fca2573694ef29f9792c489ab139087668d54de1df83"
+        }
+      ],
+      "id": "performance",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "behavior-baseline",
+          "sha256": "f9901afa32fb5fc0e724e06d357902c149ded85febd6d3b9c79dfabcd53efd95"
+        },
+        {
+          "kind": "behavior-source",
+          "sha256": "8ff476e687b771b6c4b719b9138f8293e13c7a2d85593f8169b8a566c7fa57bb"
+        },
+        {
+          "kind": "behavior-candidate",
+          "sha256": "b6166630edf7e5f4288bdd052e1ae5e16752202303ee14ee3e3081e2a5d97207"
+        }
+      ],
+      "id": "application_behavior",
+      "status": "passed"
+    }
+  ],
+  "date": "2026-11-02",
+  "limitations": [
+    "Owned 134-byte synthetic module only; not TodoMVC or user application.",
+    "One Node behavior checker is not broad compatibility testing.",
+    "REA delta and BLA verifier results do not establish protection effectiveness.",
+    "Candidate and detailed workflow records remain in external private state."
+  ],
+  "measurements": {
+    "behavior_status": "passed",
+    "candidate_bytes": 71005,
+    "performance_elapsed_ms": [
+      223,
+      166,
+      168
+    ],
+    "performance_trials": 3,
+    "rea_comparison_status": "passed",
+    "source_bytes": 134
+  },
+  "project": {
+    "baseline_artifact": "dist/app.mjs",
+    "file_count": 3,
+    "path": "/private/tmp/anti-rea-full-fixture-20261102/project",
+    "source_sha256": "e4ae5a1d2f2a05fc49bed3329ae8c23d64ab55e1d507e785a4f1e1c553e4c3a8"
+  },
+  "record_type": "anti_rea_private_full_cli_fixture_workflow",
+  "rollback": {
+    "candidate_retained_outside_repository": true,
+    "report_replay_after_rollback": "ok",
+    "retained_candidate_sha256": "7c7bd8811166f44c7d31fdf0989b16ed12ce38620af20618f513ea0e332573a5",
+    "retained_candidate_tampering_rejected": true,
+    "rollback_id": "rollback-c9d608fc26081f5b392a233b",
+    "status": "discarded",
+    "tamper_probe_exit_code": 2
+  },
+  "runtime": {
+    "anti_rea": "0.1.32 private wheel in fresh CPython 3.11.18 venv",
+    "bla": "bla-agents@1.6.3",
+    "bla_package_tree_sha256": "675fa40df7d9ad25e15da7ace0dcabff496331b85042a3e2d4fe962f32f5ff23",
+    "node": "v24.22.1",
+    "npm": "11.19.1",
+    "python": "3.11.18",
+    "rea": "rea-agents@6.8.0",
+    "rea_package_tree_sha256": "2faad76ce0c1b5f8c5da1774224179cb6b052978fbf917f651bfb82b2ffb6c76"
+  },
+  "schema_version": "1.0",
+  "scope": "Complete CLI plan/decision/execution/semantic acceptance/rollback/report replay for an owned synthetic JavaScript fixture; no real application protection claim.",
+  "workflow": {
+    "acceptance": "accepted",
+    "acceptance_id": "fixture-acceptance-001",
+    "baseline_id": "fixture-before-rea-001",
+    "decision_id": "fixture-decision-001",
+    "execution_id": "exec-364d2d7d5e951c6072c8059e",
+    "final_state": "completed",
+    "plan_id": "fixture-plan-rea-001",
+    "plan_sha256": "39594b802731857c0bac8df10ddb715382d1bddad98d491c08d8eb37fb11167a",
+    "run_id": "fixture-run-001",
+    "selected_action_ids": [
+      "bla-js-95258bdcd224"
+    ],
+    "target_id": "target-471195b06010a9e2590c",
+    "verification_id": "verify-364d2d7d5e951c6072c8059e"
+  }
+}

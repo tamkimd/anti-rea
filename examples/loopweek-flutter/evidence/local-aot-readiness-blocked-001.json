@@ -1,0 +1,42 @@
+{
+  "baseline": {
+    "abi": "arm64-v8a",
+    "artifact_sha256": "9389f711fd6566c0906a38d137d1221801dbcb7e90db26b727aee04b3987b18b",
+    "artifact_size": 62349581,
+    "id": "loopweek-before-001-aot",
+    "sha256": "4788630e220d54707df1f69e4d0d123ca3888d651732f79884f021dd7d5ff0bc"
+  },
+  "candidate_built": false,
+  "inspection": {
+    "abi": "arm64-v8a",
+    "observed_exports": [
+      "_kDartSnapshotText",
+      "_kDartSnapshotData"
+    ],
+    "operation": "inspect_dart_aot",
+    "rea_version": "6.8.0",
+    "report_sha256": "04d4a0c0d8ece37cd87e0425923f687b8009b0e1d2e0220a186693936177c659",
+    "runtime_manifest_sha256": "8494f80f5d0b7f4bd7f9a5e71731f810ae5f79d8faa71188fb7bb0ea3a045fdb",
+    "status": "unsupported",
+    "supported_profile": "dart-2.14-split-full-aot"
+  },
+  "limitations": [
+    "The raw REA result, APK, runtime directory, and build snapshot remain outside the repository.",
+    "The attached report and pinned runtime manifest hashes bind local evidence but do not authenticate the evidence producer.",
+    "No obfuscated candidate or BEFORE/AFTER comparison was run."
+  ],
+  "plan": {
+    "actions": 0,
+    "blockers": [
+      "Flutter obfuscation for build/app/outputs/flutter-apk/app-release.apk is blocked until REA confirms a supported arm64-v8a AOT profile for this exact baseline APK."
+    ],
+    "id": "loopweek-aot-blocked-001",
+    "record_bytes": 510,
+    "record_file_sha256": "3e2c21a880a3ccc266674cdcd4063582ec699cf9762f3d8cc59da86ad9befef9",
+    "sha256": "da127661aa19b263424fc9620d2d8d03ff2edc00371aab0d90bbd0d64e691607",
+    "status": "blocked"
+  },
+  "protection_claim": false,
+  "record_type": "anti_rea_loopweek_flutter_aot_readiness",
+  "schema_version": "1.0"
+}

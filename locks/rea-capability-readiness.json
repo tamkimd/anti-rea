@@ -1,0 +1,237 @@
+{
+  "evidence": {
+    "doctor": {
+      "check_count": 14,
+      "exit_code": 1,
+      "failed_check_names": [
+        "hopper",
+        "ghidra",
+        "ida-registration",
+        "jadx",
+        "kuna-installation",
+        "skill:identity",
+        "registration:antigravity",
+        "registration:claude_code",
+        "registration:codex",
+        "registration:copilot_cli",
+        "registration:gemini_cli",
+        "registration:vscode"
+      ],
+      "report_sha256": "f27e504bd5a419bc295f0e5bcde8e97e38dc1ab07c5f94e1dcac9b78190f132e",
+      "status": "incomplete"
+    },
+    "fixture_run": {
+      "cli_analysis_evidence_id": "ev_55e521996d394051806b08f7eda3a325c03a2f06c70e7a1d40c58434b8b66441",
+      "mcp_analysis_evidence_id": "ev_b3fb8e3052b56792e8ff734d8f708a60ec607bd0a96af503222b391b802c12aa",
+      "path": "evidence/rea/run.json",
+      "sha256": "0697f2077650454048837a2c46e8ef9d10bfcd0de3d752f1906d077da980b764",
+      "target": "owned synthetic JavaScript fixture"
+    },
+    "node_version": "24.22.1",
+    "observed_at": "2026-11-01",
+    "runtime_manifest_sha256": "8494f80f5d0b7f4bd7f9a5e71731f810ae5f79d8faa71188fb7bb0ea3a045fdb"
+  },
+  "id": "rea-6.8.0-capability-readiness-20261102",
+  "limitations": [
+    "Tool-name and prompt parity does not establish applicability, provider availability, or behavior.",
+    "The verified JavaScript analysis is limited to the owned fixture and does not prove application protection.",
+    "Provider-to-tool and provider-to-target dependency mappings remain unknown unless an explicit check is listed.",
+    "REA source-to-published-package equivalence is not verified.",
+    "Doctor results describe this host snapshot; harness registration checks do not establish Anti-REA harness compatibility."
+  ],
+  "provider_checks": [
+    {
+      "classification": "healthy",
+      "name": "node",
+      "ok": true
+    },
+    {
+      "classification": "healthy",
+      "name": "host",
+      "ok": true
+    },
+    {
+      "classification": "missing_analysis_engine",
+      "name": "hopper",
+      "ok": false
+    },
+    {
+      "classification": "missing_analysis_engine",
+      "name": "ghidra",
+      "ok": false
+    },
+    {
+      "classification": "missing_analysis_engine",
+      "name": "ida-registration",
+      "ok": false
+    },
+    {
+      "classification": "missing_analysis_engine",
+      "name": "jadx",
+      "ok": false
+    },
+    {
+      "classification": "missing_analysis_engine",
+      "name": "kuna-installation",
+      "ok": false
+    },
+    {
+      "classification": "config_drift",
+      "name": "skill:identity",
+      "ok": false
+    },
+    {
+      "classification": "config_drift",
+      "name": "registration:antigravity",
+      "ok": false
+    },
+    {
+      "classification": "config_drift",
+      "name": "registration:claude_code",
+      "ok": false
+    },
+    {
+      "classification": "config_drift",
+      "name": "registration:codex",
+      "ok": false
+    },
+    {
+      "classification": "config_drift",
+      "name": "registration:copilot_cli",
+      "ok": false
+    },
+    {
+      "classification": "config_drift",
+      "name": "registration:gemini_cli",
+      "ok": false
+    },
+    {
+      "classification": "config_drift",
+      "name": "registration:vscode",
+      "ok": false
+    }
+  ],
+  "providers": [
+    {
+      "available": false,
+      "doctor_check": "hopper",
+      "id": "hopper"
+    },
+    {
+      "available": false,
+      "doctor_check": "ghidra",
+      "id": "ghidra"
+    },
+    {
+      "available": false,
+      "doctor_check": "ida-registration",
+      "id": "ida"
+    },
+    {
+      "available": false,
+      "doctor_check": "jadx",
+      "id": "jadx"
+    },
+    {
+      "available": false,
+      "doctor_check": "kuna-installation",
+      "id": "kuna"
+    }
+  ],
+  "record_type": "upstream_capability_readiness",
+  "schema_version": "1.0",
+  "target_families": [
+    {
+      "anti_rea_status": "verified_fixture",
+      "capabilities": [
+        {
+          "evidence_ids": [
+            "ev_55e521996d394051806b08f7eda3a325c03a2f06c70e7a1d40c58434b8b66441",
+            "ev_b3fb8e3052b56792e8ff734d8f708a60ec607bd0a96af503222b391b802c12aa"
+          ],
+          "id": "static_javascript_analysis",
+          "provider_check_names": [],
+          "rea_tool_names": [
+            "analyze_javascript_application"
+          ],
+          "scope": "Owned fixture only; no provider dependency mapping is established.",
+          "status": "verified_fixture"
+        }
+      ],
+      "id": "javascript_or_typescript",
+      "upstream_applicability": "unknown"
+    },
+    {
+      "anti_rea_status": "not_supported",
+      "capabilities": [],
+      "id": "dart_or_flutter",
+      "reason": "No Anti-REA execution and acceptance lane is verified for this target family.",
+      "upstream_applicability": "unknown"
+    },
+    {
+      "anti_rea_status": "not_supported",
+      "capabilities": [],
+      "id": "rust",
+      "reason": "No Anti-REA execution and acceptance lane is verified for this target family.",
+      "upstream_applicability": "unknown"
+    },
+    {
+      "anti_rea_status": "not_supported",
+      "capabilities": [],
+      "id": "go",
+      "reason": "No Anti-REA execution and acceptance lane is verified for this target family.",
+      "upstream_applicability": "unknown"
+    },
+    {
+      "anti_rea_status": "not_supported",
+      "capabilities": [],
+      "id": "python",
+      "reason": "No Anti-REA execution and acceptance lane is verified for this target family.",
+      "upstream_applicability": "unknown"
+    },
+    {
+      "anti_rea_status": "not_supported",
+      "capabilities": [],
+      "id": "jvm",
+      "reason": "No Anti-REA execution and acceptance lane is verified for this target family.",
+      "upstream_applicability": "unknown"
+    },
+    {
+      "anti_rea_status": "not_supported",
+      "capabilities": [],
+      "id": "android_or_jvm",
+      "reason": "No Anti-REA execution and acceptance lane is verified for this target family.",
+      "upstream_applicability": "unknown"
+    },
+    {
+      "anti_rea_status": "not_supported",
+      "capabilities": [],
+      "id": "swift",
+      "reason": "No Anti-REA execution and acceptance lane is verified for this target family.",
+      "upstream_applicability": "unknown"
+    },
+    {
+      "anti_rea_status": "not_supported",
+      "capabilities": [],
+      "id": "dotnet",
+      "reason": "No Anti-REA execution and acceptance lane is verified for this target family.",
+      "upstream_applicability": "unknown"
+    },
+    {
+      "anti_rea_status": "not_supported",
+      "capabilities": [],
+      "id": "unknown",
+      "reason": "No Anti-REA execution and acceptance lane is verified for this target family.",
+      "upstream_applicability": "unknown"
+    }
+  ],
+  "upstream": {
+    "npm_integrity": "sha512-9QDeRnGqEDzABZyr04eLnBXBv/c6I9/TWu/6M0MD4pEfkySI/BIgwTODIbAReX3C1x6hjw9+Jlx4A2yUSPZ9ww==",
+    "package": "rea-agents",
+    "package_lock_sha256": "b6cb714948a7ec224fa6f676f0e9b6f570bbabf3518a1a187be571ac8ddfe232",
+    "runtime_tool_contracts_sha256": "3ecb259aae17dae686923a676ffc7b11bfd38b86aec99a8e5a448054e51645fd",
+    "source_commit": "160d821ac9a0310afcb8d1fc427862dd6508add5",
+    "source_runtime_ledger_sha256": "0eb0749989c3c99fd0476f8b997347e424a8ec8724ed5d637046ceb10af9a847",
+    "version": "6.8.0"
+  }
+}
