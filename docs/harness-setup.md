@@ -1,19 +1,26 @@
 # Harness setup reference
 
-This reference records host-documented setup locations checked on 2026-11-01. It describes where a host can discover a Skill or MCP server; it does not mean Anti-REA has been installed or run successfully in that host. The [compatibility matrix](harness-compatibility.md) remains the source of tested status.
+This reference records host setup paths checked on 2026-11-01. It explains how to install Anti-REA's portable Skill or connect its MCP server; the [compatibility matrix](harness-compatibility.md) remains the source of tested status.
 
-The Anti-REA installer manages only the Skill directory passed to it. It does not edit MCP or other harness configuration. Preserve existing host settings, review any command before adding it, and use the host's current official instructions if they change.
+## Install the Skill
 
-The destination's parent directory must already exist; create the host's Skill root first if needed.
-
-For example, from the repository root, a project-local installation into a host-supported Skill root is:
+From the application project where you want to use Anti-REA, run the community `skills` installer:
 
 ```sh
-mkdir -p .agents/skills
+npx skills add tamkimd/anti-rea --skill anti-rea
+```
+
+Choose the agent and project or user scope when prompted. To target Codex directly, add `--agent codex`; add `--global` for a user-level installation. The installer discovers the Skill in this repository and places it in the selected agent's supported Skill directory. It does not configure MCP. See the [`skills` CLI reference](https://github.com/vercel-labs/skills/blob/main/docs/commands.md) for options and supported agents.
+
+The `skills` CLI is a community installer, not an official command from Codex or other agent vendors. If you already have a checkout and prefer an explicit destination, Anti-REA also provides a guarded installer:
+
+```sh
 python3 interfaces/cli/anti_rea.py skill install .agents/skills/anti-rea
 ```
 
-The command previews changes and asks before applying them. Add `--preview` to inspect the plan without installation. The command's explicit destination can instead be a host-specific directory listed below.
+That command manages only the Skill directory at the given path, previews changes, and asks before applying them. Use `--preview` to review the planned changes without installing. Its destination's parent directory must already exist.
+
+For Codex, the standard project-local location is `.agents/skills/anti-rea/`; user-level Skills can be placed under `~/.agents/skills/anti-rea/`. Other host-specific locations are listed below.
 
 ## Documented host locations
 

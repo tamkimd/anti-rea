@@ -1,283 +1,99 @@
-# Anti-REA: Application Hardening Against AI Reverse Engineering
+# Anti-REA: Harden apps against AI reverse engineering
 
-**Assess and harden shipped software against AI reverse engineering with BLA defenses, evidence-based verification, and a Python CLI/MCP workflow.**
+**Make shipped software harder to analyze—and measure what changed.** Anti-REA helps teams assess application exposure, choose compatible hardening actions, and compare release artifacts before and after changes using [REA](https://github.com/morluto/rea) analysis and behavior checks.
 
-Anti-REA is an application-hardening and anti-reverse-engineering toolkit for developers who ship client-side software. It helps assess how much implementation detail AI reverse-engineering agents (REA) can recover, then evaluates defensive changes against the same baseline. Use its Python CLI, MCP server, or portable Agent Skill to inspect release artifacts, review BLA and other applicable hardening options, approve a plan, run isolated candidates, compare REA and behavior evidence, and retain acceptance or rollback records.
+Use it with an AI assistant through the portable Skill or MCP server, or run the same workflows from the terminal. Anti-REA shows applicable options and trade-offs before execution, keeps the original project intact, and reports evidence from the candidate.
 
-Anti-REA coordinates [REA](https://github.com/morluto/rea), a reverse-engineering analysis agent, with [BLA — Blind LLM Agents](https://github.com/qybaihe/bla), a counter-REA defense engine, and [tester-army/e2e](https://github.com/tester-army/e2e) for supported browser behavior checks. It provides a command-line interface, an [MCP](https://modelcontextprotocol.io/) server for compatible AI clients, and a portable Agent Skill for guided workflows. BLA's upstream project describes adversarial defenses such as decoys and analyzer-budget exhaustion; Anti-REA currently exposes only a limited subset through its adapter.
+## Try it with an AI assistant
 
-## Try Anti-REA with a web app
+With the [Anti-REA Skill or MCP server](docs/harness-setup.md) available to your assistant, try:
 
-Start with the MIT-licensed [Simple To-Do List](https://github.com/Serkanbyx/simple-to-do-list/tree/009c7880eaa62c4d73b9b0d7b19fa87f8bf71eff), a vanilla JavaScript app with no npm dependencies or build step. Its 17 KB `js/app.js` fits Anti-REA's current BLA JavaScript adapter. Anti-REA 0.1.32 captured its static artifacts, completed a REA 6.8.0 summary, passed a browser journey for adding, completing, and filtering a task, and produced a BLA candidate plan with no blockers. The plan has not been selected or executed, so this example makes no protection claim. See the [example guide and evidence summary](examples/simple-todo-list/README.md).
+> Inspect this app with Anti-REA. Show me what the release exposes, the compatible hardening options, and their trade-offs. Ask me to choose before making changes. Then verify the selected candidate against the same baseline and report the results.
 
-## Contents
+Anti-REA presents evidence-backed options before execution and waits for the user's plan-bound choice. Available actions depend on the target and the adapters that can verify it.
 
-- [Features](#features)
-- [Try Anti-REA with a web app](#try-anti-rea-with-a-web-app)
-- [How Anti-REA hardens applications](#how-anti-rea-hardens-applications)
-- [Quick start](#quick-start)
-- [How the workflow works](#how-the-workflow-works)
-- [Interfaces: CLI, MCP, and Agent Skill](#interfaces-cli-mcp-and-agent-skill)
-- [Integrations and platform coverage](#integrations-and-platform-coverage)
-- [Related reverse-engineering and application-protection projects](#related-reverse-engineering-and-application-protection-projects)
-- [Security and execution model](#security-and-execution-model)
-- [Known limitations](#known-limitations)
-- [Development and verification](#development-and-verification)
-- [Documentation and examples](#documentation-and-examples)
-- [Frequently asked questions](#frequently-asked-questions)
+## See measured examples
 
-## Features
+| Example | What Anti-REA did | Result |
+|---|---|---|
+| [Foodie Flutter app](examples/flutter-foodie/README.md) | Built an obfuscated Flutter 2.5.3 candidate and checked it with REA 6.8.0, an Android cold launch, and signature verification. | One accepted run. The [generated report](examples/flutter-foodie/effectiveness-report.md) shows BEFORE/AFTER artifact hashes and checks. Behavior coverage is one cold launch. |
+| [Simple To-Do List](examples/simple-todo-list/README.md) | Captured a browser baseline, ran a REA summary, and prepared a BLA plan for a small JavaScript app. | Plan is review-only; no candidate was executed. |
 
-- **Application and artifact discovery:** bounded, read-only inspection of project manifests and likely release artifacts.
-- **Evidence-bound baselines:** capture an explicit BEFORE build and selected artifacts in a private project snapshot.
-- **Plan-first hardening:** compare defensive options and review each action's mechanism, expected benefit, trade-offs, dependencies, verification, limitations, and rollback before choosing it.
-- **BLA counter-REA defense:** run the supported BLA JavaScript candidate path and compare analysis and behavior evidence before accepting a change.
-- **Additional release hardening:** create a source-map exclusion candidate for supported web release trees; platform-specific actions are offered only when their readiness and verification gates pass.
-- **Behavior and exposure comparison:** compare available behavior checks and REA reports over defined source and candidate snapshots.
-- **Acceptance and rollback records:** validate required evidence, reject failed or incomplete candidates, and retain authenticated candidate identity for rollback.
-- **Three portable interfaces:** use the Python CLI, connect an MCP client, or follow the portable Agent Skill.
-- **Pinned dependency preparation:** prepare supported upstream runtimes and hash-checked Python wheel locks in external caches.
+These examples show specific workflow results. They do not prove that an app is protected from all reverse engineering.
 
-Anti-REA is designed to make reverse engineering more difficult and less productive, not to promise that software can never be analyzed. Its current support is limited to the adapters and checks listed below.
+## How Anti-REA works
 
-## How Anti-REA hardens applications
+![Anti-REA hardening workflow: capture one fixed baseline, approve a plan, verify isolated candidates against the same baseline, and accept or revise with rollback evidence](docs/images/anti-rea-workflow.png)
 
-The goal is to reduce recoverable implementation detail and raise the cost of analysis while preserving intended application behavior. Depending on the target and available evidence, a hardening plan may combine:
+1. Inspect the target and capture a BEFORE release baseline.
+2. Present compatible defenses, expected benefits, trade-offs, and verification requirements.
+3. Wait for the user to choose actions in a plan bound to its exact hash.
+4. Apply the selected actions to an isolated candidate.
+5. Compare the candidate with the unchanged baseline. Accept only if required checks pass; otherwise reject and retain rollback evidence.
 
-- **BLA counter-REA defenses:** BLA (Blind LLM Agents) is the upstream adversarial defense engine intended to make AI reverse-engineering agents waste analysis effort or return incomplete results. BLA describes techniques such as decoys and analyzer-budget exhaustion. Anti-REA pins BLA and currently exposes a limited single-JavaScript-file candidate workflow; it does not yet expose every upstream format or action.
-- **Obfuscation:** transform code or symbols to make recovered logic harder to understand. The available adapter and verification requirements depend on the language and release format.
-- **Release artifact hygiene:** exclude selected source maps from a private release-tree candidate and verify that unrelated files remain byte-identical. This candidate operation does not change hosting or deployment configuration.
-- **Other platform controls:** platform-specific build settings and protections can be considered as adapters and evidence gates become available. Unsupported actions must remain blocked or unavailable rather than being presented as ready.
+Reports show artifact identities, check results, and candidate outcomes. A successful build alone is not evidence of protection.
 
-The workflow compares the original release with a selected candidate using REA and required behavior/integrity checks. REA results are a measurement of the configured analyzer, not proof that all reverse engineering has been prevented. No single technique makes client-side software impossible to inspect; sensitive secrets and authorization decisions should remain on trusted servers.
+## What Anti-REA does
 
-## Quick start
+| Workflow | What it does | Evidence boundary |
+|---|---|---|
+| Assess | Inspect a project, identify release artifacts, and capture a BEFORE baseline. | Discovery is bounded and does not infer a complete build graph or runtime behavior. |
+| Plan | Compare available hardening options, trade-offs, checks, and rollback steps. | A user must approve the exact plan before execution. |
+| Evaluate | Build an isolated candidate and compare it with the same baseline. | Applicable actions and checks depend on the target and verified adapters. |
+| Report | Show BEFORE/AFTER identities, verification results, and acceptance status. | Evidence applies to the tested artifact, environment, and behavior scope only. |
 
-### Requirements
+The repository currently includes selected adapters for JavaScript, Flutter Android, WebAssembly, browser behavior, and Python dependency workflows. This is today's implementation set, not the limit of the product's intended platform coverage. See the [adapter guide](docs/cli.md) and [acceptance audit](AUDIT.md) for exact status and open blockers.
 
-- Python 3.11 or newer.
-- macOS or Linux for the verified local workflow. Other operating systems and individual adapters have narrower, separately documented support.
-- Docker is required by default for supported pinned Node engine and baseline lanes; using the host runner is an explicit, unsandboxed choice. See [execution boundaries](#security-and-execution-model).
+## Set up
 
-### Install from a source checkout
+Install the portable Skill in an application project with the standard community installer:
+
+```sh
+npx skills add tamkimd/anti-rea --skill anti-rea
+```
+
+Choose your agent and installation scope when prompted. See [harness setup](docs/harness-setup.md) for Codex, MCP, and other host options. For direct terminal use, install Python 3.11 or newer:
 
 ```sh
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install .
 anti-rea doctor
-anti-rea --help
 ```
 
-To run the CLI directly from the checkout:
-
-```sh
-python3 interfaces/cli/anti_rea.py doctor
-python3 interfaces/cli/anti_rea.py inspect /path/to/project
-```
-
-`doctor` checks required Python packages, safe filesystem operations, and any configured pinned runtimes. It does not install dependencies or guarantee that optional engines and providers are available.
-
-### Inspect a project
+Then inspect a project without executing it:
 
 ```sh
 anti-rea inspect /path/to/project
 ```
 
-Discovery does not execute the inspected project. It records bounded artifact and manifest information, reports excluded dependency/generated directories, and identifies some likely worker and framework hints. A hint is not proof of runtime use, reachability, or a complete build graph.
+Start the MCP server with `anti-rea mcp serve`. Set `ANTI_REA_STATE_DIR` to keep local workflow records outside the target project. See [CLI usage](docs/cli.md) for commands and options.
 
-### Run the MCP server
+## Security and limitations
 
-```sh
-anti-rea mcp serve
-```
+- Anti-REA keeps source and candidate files separate, but a private copy is not automatically a security sandbox.
+- Supported Node and pinned REA/BLA lanes use the configured Docker profile by default. The Docker daemon is trusted, and staged output has no live disk quota.
+- Host-run commands and project-provided browser tests may execute with the user's privileges. Run workflows only for projects and dependencies you trust.
+- Keep state, raw reports, release artifacts, debug symbols, screenshots, caches, and secrets outside the source checkout.
+- BLA and obfuscation can increase analysis effort; neither encrypts client code or prevents determined reverse engineering.
 
-The package also installs the `anti-rea-mcp` entrypoint. Set `ANTI_REA_STATE_DIR` to choose where the local MCP server stores workflow state. Long-running MCP operations can return a run ID for polling. The server records a decision supplied by its client; it cannot establish that the decision came from a human.
+See [execution boundaries](docs/cli.md), the [release guide](docs/release.md), and the [acceptance audit](AUDIT.md).
 
-## How the workflow works
-
-![Anti-REA iterative hardening loop: capture one baseline, repeatedly review and approve a plan, harden a candidate, and verify it against the same baseline; accept when gates pass, or reject and roll back before revising the plan.](docs/images/anti-rea-workflow.png)
-
-The diagram shows the iterative hardening model. The BEFORE baseline is captured once and stays fixed while candidate configurations are compared. Each candidate moves through a plan review, hardening, and verification cycle; passing candidates can be accepted, while failed candidates are rejected and rolled back.
-
-1. **Check readiness and inspect** with `anti-rea doctor` and `anti-rea inspect`.
-2. **Capture the BEFORE baseline once** using an explicit build command, artifact list, and applicable behavior or REA checks. Preserve it as the comparison point for every candidate in the run.
-3. **Review and approve a plan.** Inspect the expected benefits, costs, compatibility, verification, limitations, and rollback steps. The user's decision binds to the exact plan hash; a blank selection rejects the plan.
-4. **Harden an isolated candidate** using only selected, supported actions. Examples include the integrated BLA JavaScript path and source-map release hygiene.
-5. **Verify against the same baseline** using the checks required by the plan, such as BLA invariants, behavior, REA comparison, performance, and artifact integrity.
-6. **Apply the gate result.** Accept a candidate only when all required checks pass. Otherwise reject it and retain rollback evidence.
-7. **Continue only within the approved scope.** In a bounded approved search, roll back a failed candidate and evaluate the next approved candidate against the unchanged baseline. If a new action or broader scope is needed, prepare a revised plan and obtain a new explicit decision.
-
-The loop is a workflow model, not a claim that every Anti-REA lane automatically retries candidates. Ordinary plan execution handles its selected action set; the optimization interface supports bounded approved BLA JavaScript candidate searches with separate review and confirmation gates. See the [optimization workflow](docs/optimization.md).
-
-Common commands include `baseline`, `recommend`, `choose`, `execute-plan`, `status`, `report`, `cancel`, and `rollback-candidate`. See the [CLI guide](docs/cli.md) for arguments, outputs, and exit codes.
-
-## Interfaces: CLI, MCP, and Agent Skill
-
-### Command-line interface
-
-The CLI is the direct terminal interface for project inspection, baseline capture, recommendations, decisions, execution, reports, cancellation, and rollback. Results are machine-readable JSON, with interactive prompts used for explicit user choices. Start with:
-
-```sh
-anti-rea --help
-anti-rea registry
-```
-
-### MCP server
-
-The MCP server exposes shared core operations to compatible AI clients, including project inspection, plan creation, decisions, asynchronous run tracking, evidence, and reports. MCP availability alone does not imply that a given host or client has been tested end to end.
-
-### Portable Agent Skill
-
-The packaged Skill guides an assistant through discovery, baseline, recommendation review, explicit selection, execution, and evidence-based reporting. It uses CLI or MCP capabilities available in the host. See [harness setup](docs/harness-setup.md), the [manual harness fallback](docs/harness-fallback.md), and the [compatibility matrix](docs/harness-compatibility.md).
-
-## Integrations and platform coverage
-
-| Area | Implemented workflow | Evidence boundary |
-|---|---|---|
-| Project discovery | Bounded manifest and artifact inventory, with selected JavaScript framework and worker hints. | Hints are path- or declaration-based; they do not establish a build graph, code reachability, or runtime behavior. |
-| BLA counter-REA defense | Pinned BLA 1.6.3 adapter can transform one selected JavaScript file into an isolated candidate and run BLA's invariant verifier. | Anti-REA's adapter does not yet expose the full upstream BLA format/action matrix. Owned fixture runs are not evidence of protection for another application. |
-| JavaScript release hygiene | Create a private build-tree candidate omitting one selected source map and verify the other files remain unchanged. | This does not change deployment configuration or prove which assets a production server exposes. |
-| Obfuscation | Flutter Android candidates are isolated and gated on comparable REA AOT inspection, same-target behavior, and signature continuity. | Foodie’s Flutter 2.5.3 obfuscated candidate passed the bound REA 6.8.0 AOT, same-emulator cold-launch, and apksigner checks. This single-case example is not a protection guarantee. |
-| REA analysis | Pinned REA CLI/MCP runtime, selected JavaScript analysis, and comparable BEFORE/AFTER summary flow. | Finding counts measure scanner output. They are not a measure of protection by themselves. |
-| Browser behavior | Pinned e2e checks for supported fixture-compatible web configurations. | Project browser configuration and test code may execute with host privileges; this is not general framework coverage. |
-| Flutter Android | Android release baseline capture, readiness checks, isolated Dart obfuscation candidates, hash-bound AOT analysis, same-device behavior, and signature verification. | Foodie’s Flutter 2.5.3 candidate passed the selected arm64 gates; behavior coverage is one cold launch. Flutter 3.47.8 Loopweek uses an unsupported unified snapshot in pinned REA 6.8.0. |
-| WebAssembly | Bounded import/export metadata inspection and a Node compile probe without module instantiation. | Does not prove host bindings, runtime use, or module behavior. |
-| Python dependencies | PEP 751 lock inspection and isolated, hash-checked wheel preparation. | Experimental pip support; tested installation and reuse are on macOS ARM64 only. |
-| Harness support | CLI, MCP, and portable Skill entrypoints. | A full approval-to-acceptance workflow has not been verified across representative harnesses. |
-
-The checked-in Python 3.11 wheel matrix includes macOS ARM64, Linux glibc x86_64/ARM64, and Windows x86_64 candidates. pip target selection passed on those targets, but Linux and Windows installation remain unverified. The Foodie example records one accepted Flutter 2.5.3 obfuscation candidate; its narrow cold-launch check does not establish broad app compatibility or protection.
-
-### Real Flutter BEFORE/AFTER example
-
-REA 6.8.0 compared Foodie's Flutter 2.5.3 release APK before and after Dart obfuscation on `arm64-v8a`:
-
-| Measured signal | BEFORE | AFTER | Result |
-|---|---:|---:|---|
-| Retained `package:` URI strings | 492 | 1 | 491 fewer in bounded extraction |
-| Retained `dart:` URI strings | 199 | 7 | 192 fewer in bounded extraction |
-| Class-like token lower bound | ≥4,000 | ≥1,326 | Reported lower bound is lower; extraction is partial |
-| AOT structural coverage | 4/4 sections | 4/4 sections | Preserved |
-| Same-emulator cold launch | Passed | Passed | Screenshots match byte-for-byte |
-| APK signature | Verified | Verified | Same certificate |
-
-The string counts are partial REA extraction signals, not a complete symbol inventory or proof of reverse-engineering resistance. See the full [BEFORE/AFTER size and hash table](examples/flutter-foodie/README.md#beforeafter-comparison) and [sanitized acceptance evidence](examples/flutter-foodie/evidence/anti-rea-acceptance.json).
-
-### Related reverse-engineering and application-protection projects
-
-Anti-REA is an evidence and orchestration layer; it does not replace the specialized tools it integrates with or the platform's own release hardening:
-
-| Project | Role in the ecosystem | Anti-REA relationship |
-|---|---|---|
-| [REA (Reverse Engineer Anything)](https://github.com/morluto/rea) | Uses AI-agent workflows to analyze applications and release artifacts. | Integrated as the analysis engine for supported, pinned workflows. |
-| [BLA (Blind LLM Agents)](https://github.com/qybaihe/bla) | Provides adversarial defenses intended to reduce the effectiveness of AI reverse-engineering agents. | Integrated as a defensive engine; Anti-REA currently exposes a limited single-JavaScript-file candidate workflow, not BLA's full upstream format matrix. |
-| [Android R8](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization) | Android's code shrinker and optimizer can also obfuscate class, field, and method names. | Relevant Android release hardening technology, but no general R8 adapter is currently implemented in Anti-REA. |
-| [ProGuard](https://github.com/Guardsquare/proguard) | Java bytecode shrinker, optimizer, and obfuscator. | Related ecosystem tool; not currently wired as an Anti-REA execution adapter. |
-
-This distinction matters: R8/ProGuard-style name obfuscation and BLA's counter-REA defenses address different parts of the exposure problem. Anti-REA's goal is to select applicable measures and compare their effect with analysis and behavior evidence, while keeping unsupported integrations visibly out of scope.
-
-For Python projects with a root-level PEP 751 `pylock.toml`, inspect or prepare dependencies with:
-
-```sh
-anti-rea inspect-python-dependencies /path/to/project
-anti-rea prepare-python-dependencies /path/to/project --cache-dir /path/outside/project/anti-rea-cache
-anti-rea prepare-python-dependencies /path/to/project --cache-dir /path/outside/project/anti-rea-cache --offline
-```
-
-Preparation supports exact-version, unconditional packages with SHA-256-pinned wheel sources. `--offline` checks an existing prepared cache entry without installing packages. More details and limitations are in [upstream integrations](docs/upstream-integrations.md).
-
-## Security and execution model
-
-Anti-REA stores baselines and candidates separately from the original project, but a private copy is not automatically a security sandbox.
-
-- Supported Node/npm/npx baseline commands and pinned REA/BLA engine operations use the configured Docker profile by default. The Docker daemon is trusted.
-- Docker Desktop does not enforce a live writable-disk quota for staged output. Some output size checks occur only after a process exits.
-- `ANTI_REA_NODE_SANDBOX=host` explicitly selects an unsandboxed host runner. Host-run commands use the user's OS privileges.
-- Project-provided e2e/browser configuration and tests can execute with host privileges, even when they operate on a private snapshot.
-- Snapshots omit selected dependency/generated directories and discovered symlinks. A command that relies on omitted inputs may fail. Host-run scripts can write outside a snapshot using absolute paths, `..`, or embedded code.
-- Build commands, project tests, and installed upstream tools execute code. Only run workflows for projects and dependencies you trust.
-- Store raw reports, APK/AAB files, symbols, screenshots, caches, and run state outside the source checkout. Keep secrets and private artifacts out of version control.
-- Evidence hashes and record relationships are validated, but every evidence producer and local state-store owner is not authenticated.
-
-The [release guide](docs/release.md) documents wheel integrity and detached Ed25519 signing. Signing uses an externally managed key; this repository does not configure a trusted release identity.
-
-## Known limitations
-
-- Anti-REA is experimental and does not meet all mandatory release acceptance criteria.
-- BLA, obfuscation, and source-map controls increase analysis cost or reduce selected exposure; they cannot guarantee that a determined analyst will not recover application behavior or logic.
-- Fixture tests establish tool behavior on those fixtures only. Real application protection needs comparable BEFORE/AFTER evidence, independent behavior checks, integrity verification, and claims supported by those results.
-- The Foodie Flutter 2.5.3 obfuscation candidate passed its selected REA AOT, same-emulator cold-launch, and signature gates. Coverage is one arm64 device launch, not a protection guarantee; pinned REA 6.8.0 still does not inspect the unified snapshot from the newer Flutter 3.47.8 Loopweek build.
-- Discovery is bounded and heuristic; it does not infer complete build graphs, trust boundaries, runtime reachability, or assets hidden in excluded directories.
-- Supported BLA and source-map workflows cover specific JavaScript cases, not every framework or deployment pipeline.
-- Platform adapters, durable workers, deployment rollback, representative harness verification, and trusted release signing remain incomplete.
-- Linux and Windows lock-wheel selection does not equal a tested runtime installation on those systems.
-
-## Development and verification
-
-Create a Python 3.11+ environment and install the package as described in [Quick start](#quick-start). Run the repository test suite with:
+## Development
 
 ```sh
 python -m unittest discover -s tests -p 'test_*.py'
-```
-
-Install the optional development tools and check Python formatting and lint:
-
-```sh
 python -m pip install -e '.[dev]'
 ruff format --check .
 ruff check .
 ```
 
-The latest recorded CPython 3.11.18 full-suite run passed **444 tests with 28 optional skips**. This is repository test evidence, not production readiness or proof of real-application protection. See the [full-suite record](verification/anti-rea-python-dependency-prepare-full-suite-20261102.json), [private package verification](verification/anti-rea-python-dependency-prepare-package-20261102.json), and [acceptance audit](AUDIT.md).
+Latest local verification: **447 tests passed, 28 optional skips**.
 
-The wheel includes the portable Skill, schemas, pinned upstream locks, integration adapters, and owned fixtures under its installation data directory. Locate the installed package data with:
+## More
 
-```sh
-python -c 'import sysconfig; print(sysconfig.get_path("data") + "/share/anti-rea")'
-```
-
-## Documentation and examples
-
-- [CLI reference](docs/cli.md)
-- [Upstream tools and dependency limits](docs/upstream-integrations.md)
-- [Flutter obfuscation candidate workflow](docs/flutter-obfuscation-candidate.md)
 - [Optimization workflow](docs/optimization.md)
-- [Workflow schema versioning](docs/schema-versioning.md)
-- [Harness setup](docs/harness-setup.md)
-- [Harness compatibility matrix](docs/harness-compatibility.md)
-- [Simple To-Do List example](examples/simple-todo-list/README.md): pinned MIT vanilla JavaScript app, passing baseline browser journey, REA summary, and a reviewable BLA plan.
-- [Foodie Flutter example](examples/flutter-foodie/README.md): Apache-2.0 app built with Flutter 2.5.3; its private obfuscated candidate passed pinned REA 6.8.0 AOT, same-emulator cold-launch, and signature checks. The example makes no general protection claim.
-- [Loopweek Flutter example](examples/loopweek-flutter/README.md): hash-bound Android analysis and a limited emulator behavior report; no transformation comparison or protection claim.
-- [Flutter Todo report](examples/flutter-todo/REA-RESULT.md): separate, limited-scope real application report.
-- [TodoMVC React example](examples/todomvc-react/README.md): historical dependency-backed example with limited source analysis; production-bundle analysis timed out and no action was executed.
-- [Acceptance audit](AUDIT.md): requirement-by-requirement status, evidence, and blockers.
-
-## Frequently asked questions
-
-### Does Anti-REA automatically protect my application?
-
-Anti-REA is built to help harden applications against reverse engineering, including AI REA tools, but it does not silently modify a project. It presents supported actions for review and runs only the selected plan. Claims about reduced exposure require comparable REA and behavior evidence from the target application; fixture results do not establish protection for your app.
-
-### What is BLA and how does Anti-REA use it?
-
-BLA means **Blind LLM Agents**. It is an upstream defensive engine that aims to make AI reverse-engineering agents less effective using adversarial techniques. Anti-REA pins BLA and currently supports a limited single-JavaScript-file candidate workflow with invariant verification. The full BLA upstream format and action coverage is not yet exposed by Anti-REA.
-
-### Can Anti-REA guarantee that REA cannot recover my code?
-
-No. Obfuscation and BLA-style adversarial defenses can increase analysis cost or reduce what a particular analyzer recovers, but they are not encryption and cannot guarantee that client-side logic remains secret. Keep credentials, keys, and security-critical authorization on trusted services.
-
-### Which programming language and interfaces does Anti-REA use?
-
-The shared core and CLI are Python-based and require Python 3.11 or newer. The project also provides an MCP server and a portable Agent Skill for compatible assistants.
-
-### Is Flutter Android obfuscation supported?
-
-The repository contains Flutter Android baseline and candidate workflows. Pinned REA 6.8.0 structurally inspected Foodie's Flutter 2.5.3 baseline and obfuscated candidate; the selected same-emulator cold-launch and signature gates also passed. This is a narrow example result, not broad compatibility or a protection guarantee. The unified snapshot emitted by a newer Flutter 3.47.8 Loopweek build remains unsupported by pinned REA 6.8.0.
-
-### Does Docker make every command safe to run?
-
-No. The Docker profile applies only to documented lanes, trusts the Docker daemon, and has a staged-output disk-quota limitation. Host overrides and project-provided browser tests execute with host privileges. Review the [security and execution model](#security-and-execution-model) before running code.
-
-### Where can I see current support and blockers?
-
-Check the [capability table](#integrations-and-platform-coverage), the [harness compatibility matrix](docs/harness-compatibility.md), and the [acceptance audit](AUDIT.md). Those records distinguish implemented behavior from partial or unverified support.
+- [Flutter obfuscation workflow](docs/flutter-obfuscation-candidate.md)
+- [Upstream tools and dependency limits](docs/upstream-integrations.md)
+- [Harness setup](docs/harness-setup.md) · [compatibility matrix](docs/harness-compatibility.md)
+- Examples: [Foodie](examples/flutter-foodie/README.md) · [Simple To-Do List](examples/simple-todo-list/README.md) · [Loopweek](examples/loopweek-flutter/README.md) · [Flutter Todo](examples/flutter-todo/REA-RESULT.md) · [TodoMVC React](examples/todomvc-react/README.md)

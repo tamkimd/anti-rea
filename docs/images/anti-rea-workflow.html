@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anti-REA hardening workflow</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f7f9fa; color: #172832; }
+    main { width: min(100%, 1680px); margin: 0 auto; padding: 52px 40px 36px; }
+    .eyebrow { margin: 0 0 14px; color: #456779; font-size: 14px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: 42px; line-height: 1.12; letter-spacing: -.035em; font-weight: 650; }
+    .intro { margin: 12px 0 26px; color: #526672; font-size: 17px; line-height: 1.5; }
+    .canvas { overflow-x: auto; }
+    svg { display: block; width: 100%; min-width: 1180px; height: auto; }
+    .baseline { fill: #edf3f6; stroke: #7692a0; stroke-width: 2; }
+    .node { fill: #fff; stroke: #9aabb3; stroke-width: 1.6; }
+    .node.approval { fill: #eff5f7; stroke: #456779; stroke-width: 2; }
+    .decision { fill: #fff; stroke: #456779; stroke-width: 2; }
+    .accept { fill: #e7f5f1; stroke: #087f68; stroke-width: 2; }
+    .revise { fill: #fff1ed; stroke: #bf4520; stroke-width: 2; }
+    .flow { fill: none; stroke: #456779; stroke-width: 2.5; marker-end: url(#arrow); }
+    .loop { fill: none; stroke: #bf4520; stroke-width: 2.5; marker-end: url(#arrow-coral); }
+    .compare { fill: none; stroke: #7692a0; stroke-width: 2; stroke-dasharray: 7 7; marker-end: url(#arrow-muted); }
+    .step { fill: #526672; font-size: 12px; font-weight: 750; letter-spacing: .12em; }
+    .title { fill: #172832; font-size: 20px; font-weight: 700; }
+    .body { fill: #526672; font-size: 15px; }
+    .label { fill: #456779; font-size: 13px; font-weight: 700; letter-spacing: .07em; }
+    .label-coral { fill: #a13a1e; font-size: 13px; font-weight: 700; }
+    .label-green { fill: #087f68; font-size: 13px; font-weight: 750; }
+    .caption { fill: #526672; font-size: 14px; }
+    footer { display: flex; justify-content: space-between; gap: 24px; margin-top: 10px; color: #526672; font-size: 14px; }
+    footer strong { color: #172832; font-weight: 650; }
+    @media (max-width: 700px) { main { padding: 32px 20px 24px; } h1 { font-size: 32px; } .intro { font-size: 15px; } footer { display: block; } footer span { display: block; margin-top: 8px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Anti-REA · Evidence-led hardening</p>
+    <h1>Anti-REA hardening workflow</h1>
+    <p class="intro">Review a concrete plan, harden an isolated candidate, then keep or revise it based on measured checks.</p>
+    <div class="canvas">
+      <svg viewBox="0 0 1600 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="anti-rea-workflow-title anti-rea-workflow-desc">
+        <title id="anti-rea-workflow-title">Anti-REA hardening workflow</title>
+        <desc id="anti-rea-workflow-desc">Capture one original baseline, review and approve a plan, harden an isolated candidate, verify behavior and integrity against the same baseline, then accept with a report or reject, roll back, and revise the plan for another candidate.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#456779"/></marker>
+          <marker id="arrow-coral" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#bf4520"/></marker>
+          <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#087f68"/></marker>
+          <marker id="arrow-muted" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#7692a0"/></marker>
+        </defs>
+
+        <text class="title" x="64" y="48" style="font-size:32px;letter-spacing:-.03em">One baseline. A controlled improvement loop.</text>
+        <text class="body" x="64" y="78">Approve a plan, verify isolated candidates, and accept or revise based on evidence.</text>
+        <g transform="translate(0 60)">
+        <!-- The baseline is captured once and remains the comparison reference for every pass. -->
+        <rect class="baseline" x="64" y="92" width="1472" height="112" rx="12"/>
+        <text class="step" x="96" y="128">START HERE · INSPECT &amp; CAPTURE ONCE</text>
+        <text class="title" x="96" y="164">Original release baseline</text>
+        <text class="body" x="474" y="164">Build identity · behavior · REA results · artifact hashes</text>
+        <text class="label" x="1288" y="150">FIXED REFERENCE</text>
+
+        <!-- Main path: plan → approval → isolated candidate → comparable verification. -->
+        <path class="flow" d="M288 394H348"/>
+        <path class="flow" d="M572 394H632"/>
+        <path class="flow" d="M856 394H916"/>
+        <path class="flow" d="M1140 394H1194"/>
+        <path class="compare" d="M136 204V294"/>
+        <path class="compare" d="M136 294H1028V320"/>
+        <text class="label" x="580" y="278" text-anchor="middle">COMPARE EVERY CANDIDATE TO THE SAME BEFORE</text>
+
+        <rect class="node" x="64" y="320" width="224" height="148" rx="10"/>
+        <text class="step" x="88" y="352">01 · PLAN</text>
+        <text class="title" x="88" y="390">Review &amp; plan</text>
+        <text class="body" x="88" y="421">Compare compatible actions,</text>
+        <text class="body" x="88" y="444">trade-offs and checks.</text>
+
+        <rect class="node approval" x="348" y="320" width="224" height="148" rx="10"/>
+        <text class="step" x="372" y="352">02 · USER GATE</text>
+        <text class="title" x="372" y="390">Approve the plan</text>
+        <text class="body" x="372" y="421">User selects actions</text>
+        <text class="body" x="372" y="444">before any changes.</text>
+
+        <rect class="node" x="632" y="320" width="224" height="148" rx="10"/>
+        <text class="step" x="656" y="352">03 · CANDIDATE</text>
+        <text class="title" x="656" y="390">Harden in isolation</text>
+        <text class="body" x="656" y="421">Keep the original source</text>
+        <text class="body" x="656" y="444">and candidate separate.</text>
+
+        <rect class="node" x="916" y="320" width="224" height="148" rx="10"/>
+        <text class="step" x="940" y="352">04 · VERIFY</text>
+        <text class="title" x="940" y="390">Run required checks</text>
+        <text class="body" x="940" y="421">Behavior · integrity</text>
+        <text class="body" x="940" y="444">· REA comparison</text>
+
+        <path class="decision" d="M1260 318 1328 394 1260 470 1192 394Z"/>
+        <text class="title" x="1260" y="386" text-anchor="middle" style="font-size:16px">All required</text>
+        <text class="title" x="1260" y="408" text-anchor="middle" style="font-size:16px">gates pass?</text>
+
+        <path d="M1328 394H1384" fill="none" stroke="#087f68" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+        <text class="label-green" x="1354" y="374" text-anchor="middle">YES</text>
+        <rect class="accept" x="1384" y="342" width="152" height="104" rx="10"/>
+        <text class="step" x="1406" y="372" style="fill:#087f68">ACCEPT</text>
+        <text class="title" x="1406" y="402" style="font-size:18px">Evidence</text>
+        <text class="body" x="1406" y="424">report</text>
+
+        <path class="loop" d="M1260 470V550"/>
+        <text class="label-coral" x="1280" y="518">NO</text>
+        <rect class="revise" x="916" y="550" width="344" height="88" rx="10"/>
+        <text class="step" x="944" y="580" style="fill:#a13a1e">REJECT · PRESERVE EVIDENCE</text>
+        <text class="title" x="944" y="612" style="font-size:18px">Rollback, revise, try next candidate</text>
+        <path class="loop" d="M916 594H176Q136 594 136 554V468"/>
+        <rect x="384" y="574" width="286" height="34" rx="17" fill="#f7f9fa"/>
+        <text class="label-coral" x="527" y="596" text-anchor="middle">REVIEW PLAN · SAME BASELINE</text>
+
+        <text class="caption" x="64" y="668">A successful build alone is not evidence of protection.</text>
+        <text class="caption" x="1536" y="668" text-anchor="end">Results apply to the tested artifact and checks.</text>
+        </g>
+      </svg>
+    </div>
+    <footer><strong>Anti-REA</strong><span>Measure change. Preserve user control. Keep evidence tied to the tested release.</span></footer>
+  </main>
+</body>
+</html>
