@@ -11,7 +11,11 @@ The `anti-rea` CLI writes command results as JSON on standard output. Most comma
 
 An interactive Skill installation that the user declines returns `0` with `status: "cancelled"`; no installation was applied. MCP tools report outcomes in their structured responses and do not use these process exit codes.
 
-`anti-rea report RUN_ID STORE` and MCP `get_report` use the same core assembler. It checks linked record IDs and target, baseline, plan, decision, execution, verification, and acceptance relationships. Terminal acceptance is replayed through the shared semantic acceptance gate before reporting. During baseline capture, the baseline record may not exist yet and is omitted from the report. These checks do not authenticate the evidence producer or the local state-store owner.
+`anti-rea report RUN_ID STORE` and MCP `get_report` use the same core assembler. It checks linked record IDs and target, baseline, plan, decision, execution, verification, and acceptance relationships. Terminal acceptance is replayed through the shared semantic acceptance gate before reporting. During baseline capture, the baseline record may not exist yet and is omitted from the report. Reports include an `effectiveness_table` with one row for a normal run or one row per approved optimization candidate; it shows the BEFORE record hash, AFTER artifact hash when recorded, verification check statuses, and candidate outcome. Search-bound reports read persisted candidate states, so the table can show progress while a search is running. `--format markdown` prints this table for people; JSON remains the default for scripts. These checks do not authenticate the evidence producer or the local state-store owner.
+
+```bash
+anti-rea report RUN_ID STORE --format markdown
+```
 
 The workflow record reader, project discovery, artifact hashing, upstream-pin review, REA report reads, and release-manifest verification fail closed if the platform lacks no-follow and required directory-relative opens. Windows workflows are currently unsupported until a native safe opener is implemented; `doctor` reports the filesystem prerequisite as blocked.
 
@@ -58,7 +62,7 @@ anti-rea recommend TARGET_ID BASELINE_ID PLAN_ID STATE --profile balanced
 anti-rea recommend TARGET_ID BASELINE_ID PLAN_ID STATE --profile custom --bla-intensity maximum
 ```
 
-`low-impact`, `balanced`, and `deep-protection` select BLA `stealth`, `balanced`, and `maximum` intensity for BLA JavaScript actions. `custom` requires `--bla-intensity` (`stealth`, `balanced`, `maximum`, or `bankrupt`). The plan records the profile and binds its intensity to each BLA action. These starting profiles only affect BLA JavaScript actions; they do not add platform recommendations or guarantee protection. Review the complete actions and trade-offs before making a plan-bound choice. MCP `create_plan` accepts the same `profile` and optional `bla_intensity` fields.
+`low-impact`, `balanced`, and `deep-protection` select BLA `stealth`, `balanced`, and `maximum` intensity for BLA JavaScript actions. `custom` requires `--bla-intensity` (`stealth`, `balanced`, `maximum`, or `bankrupt`). The plan records the profile and binds its intensity to each BLA action. These starting profiles only affect BLA JavaScript actions; they do not add platform recommendations or guarantee protection. If a compatible BLA action appears in the plan, ask the user explicitly whether to include it before execution; when no JavaScript action is eligible, report BLA as not applicable and do not ask an unusable choice. Review all actions and trade-offs, then bind the user's selected scope to the plan hash. MCP `create_plan` accepts the same `profile` and optional `bla_intensity` fields.
 
 For a Flutter Android release artifact, use the dedicated baseline command:
 

@@ -1,11 +1,11 @@
 import os
-from pathlib import Path
 import signal
 import subprocess
 import sys
 import tempfile
 import time
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from scripts import e2e_integration as e2e
@@ -17,7 +17,10 @@ from scripts import rea_integration as rea
 class UpstreamRunnerCancellationTests(unittest.TestCase):
     def test_interrupt_kills_term_ignoring_descendants_without_capture_pipes(self):
         for runner in (e2e, rea):
-            with self.subTest(runner=runner.__name__), tempfile.TemporaryDirectory() as directory:
+            with (
+                self.subTest(runner=runner.__name__),
+                tempfile.TemporaryDirectory() as directory,
+            ):
                 root = Path(directory)
                 child_pid_file = root / "child.pid"
                 child_ready_file = root / "child.ready"
@@ -38,7 +41,11 @@ class UpstreamRunnerCancellationTests(unittest.TestCase):
                     "time.sleep(60)"
                 )
                 command = [sys.executable, "-c", code]
-                real_popen, real_killpg, real_sleep = subprocess.Popen, os.killpg, time.sleep
+                real_popen, real_killpg, real_sleep = (
+                    subprocess.Popen,
+                    os.killpg,
+                    time.sleep,
+                )
                 processes, killed_groups = [], []
 
                 class InterruptingProcess:
@@ -48,7 +55,9 @@ class UpstreamRunnerCancellationTests(unittest.TestCase):
 
                     def interrupt_after_child_starts(self):
                         deadline = time.monotonic() + 5
-                        while not child_pid_file.exists() and time.monotonic() < deadline:
+                        while (
+                            not child_pid_file.exists() and time.monotonic() < deadline
+                        ):
                             real_sleep(0.01)
                         if not child_pid_file.exists():
                             raise AssertionError("nested process did not start")
@@ -78,8 +87,10 @@ class UpstreamRunnerCancellationTests(unittest.TestCase):
                     return real_killpg(group, sig)
 
                 previous_term = signal.getsignal(signal.SIGTERM)
-                with patch.object(runner.subprocess, "Popen", side_effect=start_process), \
-                        patch.object(runner.os, "killpg", side_effect=kill_group):
+                with (
+                    patch.object(runner.subprocess, "Popen", side_effect=start_process),
+                    patch.object(runner.os, "killpg", side_effect=kill_group),
+                ):
                     with self.assertRaises(KeyboardInterrupt):
                         if runner is e2e:
                             e2e.run_bounded(command, root, 30)
@@ -97,26 +108,38 @@ class UpstreamRunnerCancellationTests(unittest.TestCase):
                 while child_live and time.monotonic() < deadline:
                     state = subprocess.run(
                         ["ps", "-o", "stat=", "-p", str(child_pid)],
-                        capture_output=True, text=True, check=False,
+                        capture_output=True,
+                        text=True,
+                        check=False,
                     ).stdout.strip()
                     child_live = bool(state) and not state.startswith("Z")
                     if child_live:
                         real_sleep(0.05)
-                self.assertFalse(child_live, f"descendant {child_pid} remained live after cleanup")
+                self.assertFalse(
+                    child_live, f"descendant {child_pid} remained live after cleanup"
+                )
 
     def test_interrupts_stop_child_process_groups_and_restore_sigterm_handlers(self):
         for runner in (e2e, rea):
             for interruption in ("keyboard", "sigterm"):
-                with self.subTest(runner=runner.__name__, interruption=interruption), \
-                        tempfile.TemporaryDirectory() as directory:
+                with (
+                    self.subTest(runner=runner.__name__, interruption=interruption),
+                    tempfile.TemporaryDirectory() as directory,
+                ):
                     root = Path(directory)
                     child_pid_file = root / "child.pid"
-                    code = ("import pathlib, subprocess, sys, time; "
-                            "child=subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)']); "
-                            f"pathlib.Path({str(child_pid_file)!r}).write_text(str(child.pid)); "
-                            "time.sleep(60)")
+                    code = (
+                        "import pathlib, subprocess, sys, time; "
+                        "child=subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(60)']); "
+                        f"pathlib.Path({str(child_pid_file)!r}).write_text(str(child.pid)); "
+                        "time.sleep(60)"
+                    )
                     command = [sys.executable, "-c", code]
-                    real_popen, real_killpg, real_sleep = subprocess.Popen, os.killpg, time.sleep
+                    real_popen, real_killpg, real_sleep = (
+                        subprocess.Popen,
+                        os.killpg,
+                        time.sleep,
+                    )
                     processes, process_ids, killed_groups = [], [], []
 
                     class InterruptingProcess:
@@ -127,7 +150,10 @@ class UpstreamRunnerCancellationTests(unittest.TestCase):
 
                         def interrupt_after_child_starts(self):
                             deadline = time.monotonic() + 5
-                            while not child_pid_file.exists() and time.monotonic() < deadline:
+                            while (
+                                not child_pid_file.exists()
+                                and time.monotonic() < deadline
+                            ):
                                 real_sleep(0.01)
                             if not child_pid_file.exists():
                                 raise AssertionError("nested process did not start")
@@ -158,9 +184,17 @@ class UpstreamRunnerCancellationTests(unittest.TestCase):
                         return real_killpg(group, sig)
 
                     previous_term = signal.getsignal(signal.SIGTERM)
-                    expected = KeyboardInterrupt if interruption == "keyboard" else runner.IntegrationError
-                    with patch.object(runner.subprocess, "Popen", side_effect=start_process), \
-                            patch.object(runner.os, "killpg", side_effect=kill_group):
+                    expected = (
+                        KeyboardInterrupt
+                        if interruption == "keyboard"
+                        else runner.IntegrationError
+                    )
+                    with (
+                        patch.object(
+                            runner.subprocess, "Popen", side_effect=start_process
+                        ),
+                        patch.object(runner.os, "killpg", side_effect=kill_group),
+                    ):
                         with self.assertRaises(expected):
                             if runner is e2e:
                                 e2e.run_bounded(command, root, 30)
@@ -169,7 +203,9 @@ class UpstreamRunnerCancellationTests(unittest.TestCase):
 
                     self.assertEqual(signal.getsignal(signal.SIGTERM), previous_term)
                     self.assertTrue(process_ids)
-                    self.assertTrue(all(process.poll() is not None for process in processes))
+                    self.assertTrue(
+                        all(process.poll() is not None for process in processes)
+                    )
                     self.assertIn((process_ids[0], signal.SIGTERM), killed_groups)
 
     def test_timeout_results_remain_distinct_after_process_cleanup(self):

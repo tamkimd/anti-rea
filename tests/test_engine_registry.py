@@ -2,9 +2,9 @@ import contextlib
 import hashlib
 import io
 import json
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from core import registry, workflow
@@ -16,20 +16,45 @@ class EngineRegistryTests(unittest.TestCase):
         record = registry.get_registry()
         self.assertEqual(record["record_type"], "engine_registry")
         entries = {engine["id"]: engine for engine in record["engines"]}
-        self.assertEqual(set(entries), {"bla", "rea", "e2e", "source-map-candidate",
-                                        "flutter-android-build", "wasm-compile-probe"})
+        self.assertEqual(
+            set(entries),
+            {
+                "bla",
+                "rea",
+                "e2e",
+                "source-map-candidate",
+                "flutter-android-build",
+                "wasm-compile-probe",
+            },
+        )
         self.assertEqual(entries["bla"]["packages"]["bla-agents"]["version"], "1.6.3")
         self.assertEqual(entries["bla"]["operations"]["execute"]["status"], "partial")
         self.assertEqual(entries["rea"]["operations"]["plan"]["status"], "unavailable")
-        self.assertEqual(entries["e2e"]["supported_artifacts"], ["Owned fixture-compatible local web projects"])
-        self.assertIn("served release", " ".join(entries["source-map-candidate"]["limitations"]))
-        self.assertEqual(entries["flutter-android-build"]["operations"]["probe"]["status"], "partial")
-        self.assertIn("licenses", " ".join(entries["flutter-android-build"]["limitations"]))
-        self.assertEqual(entries["wasm-compile-probe"]["operations"]["execute"]["status"], "unavailable")
-        self.assertIn("host bindings", " ".join(entries["wasm-compile-probe"]["limitations"]))
+        self.assertEqual(
+            entries["e2e"]["supported_artifacts"],
+            ["Owned fixture-compatible local web projects"],
+        )
+        self.assertIn(
+            "served release", " ".join(entries["source-map-candidate"]["limitations"])
+        )
+        self.assertEqual(
+            entries["flutter-android-build"]["operations"]["probe"]["status"], "partial"
+        )
+        self.assertIn(
+            "licenses", " ".join(entries["flutter-android-build"]["limitations"])
+        )
+        self.assertEqual(
+            entries["wasm-compile-probe"]["operations"]["execute"]["status"],
+            "unavailable",
+        )
+        self.assertIn(
+            "host bindings", " ".join(entries["wasm-compile-probe"]["limitations"])
+        )
         for entry in (entries["bla"], entries["rea"], entries["e2e"]):
             self.assertEqual(set(entry["operations"]), set(registry._OPERATIONS))
-            self.assertIn("Source/package equivalence is not verified.", entry["limitations"])
+            self.assertIn(
+                "Source/package equivalence is not verified.", entry["limitations"]
+            )
 
     def test_registry_rejects_missing_or_unpinned_package_locks(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -37,17 +62,23 @@ class EngineRegistryTests(unittest.TestCase):
             (root / "locks").mkdir()
             (root / "integrations/bla").mkdir(parents=True)
             lock = root / "locks/upstreams.json"
-            source = json.loads((Path(__file__).parents[1] / "locks/upstreams.json").read_text())
+            source = json.loads(
+                (Path(__file__).parents[1] / "locks/upstreams.json").read_text()
+            )
             lock.write_text(json.dumps(source))
             with patch.object(registry, "_lock_root", return_value=root):
-                with self.assertRaisesRegex(workflow.WorkflowError, "identity is invalid"):
+                with self.assertRaisesRegex(
+                    workflow.WorkflowError, "identity is invalid"
+                ):
                     registry.get_registry()
 
     def test_registry_rejects_in_root_package_lock_symlink(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "locks").mkdir()
-            source = json.loads((Path(__file__).parents[1] / "locks/upstreams.json").read_text())
+            source = json.loads(
+                (Path(__file__).parents[1] / "locks/upstreams.json").read_text()
+            )
             for engine, pin in source["integrations"].items():
                 if engine not in {"bla", "rea", "e2e"}:
                     continue
@@ -63,7 +94,9 @@ class EngineRegistryTests(unittest.TestCase):
                     package_lock.write_bytes(raw)
             (root / "locks/upstreams.json").write_text(json.dumps(source))
             with patch.object(registry, "_lock_root", return_value=root):
-                with self.assertRaisesRegex(workflow.WorkflowError, "identity is invalid for bla"):
+                with self.assertRaisesRegex(
+                    workflow.WorkflowError, "identity is invalid for bla"
+                ):
                     registry.get_registry()
 
     def test_registry_rejects_symlinked_upstream_manifest(self):
@@ -72,10 +105,14 @@ class EngineRegistryTests(unittest.TestCase):
             locks = root / "locks"
             locks.mkdir()
             target = locks / "pinned.json"
-            target.write_text((Path(__file__).parents[1] / "locks/upstreams.json").read_text())
+            target.write_text(
+                (Path(__file__).parents[1] / "locks/upstreams.json").read_text()
+            )
             (locks / "upstreams.json").symlink_to(target.name)
             with patch.object(registry, "_lock_root", return_value=root):
-                with self.assertRaisesRegex(workflow.WorkflowError, "manifest must be a regular file"):
+                with self.assertRaisesRegex(
+                    workflow.WorkflowError, "manifest must be a regular file"
+                ):
                     registry.get_registry()
 
     def test_registry_rejects_symlinked_locks_directory(self):
@@ -84,10 +121,13 @@ class EngineRegistryTests(unittest.TestCase):
             external = root / "external"
             external.mkdir()
             (external / "upstreams.json").write_text(
-                (Path(__file__).parents[1] / "locks/upstreams.json").read_text())
+                (Path(__file__).parents[1] / "locks/upstreams.json").read_text()
+            )
             (root / "locks").symlink_to(external, target_is_directory=True)
             with patch.object(registry, "_lock_root", return_value=root):
-                with self.assertRaisesRegex(workflow.WorkflowError, "manifest must be a regular file"):
+                with self.assertRaisesRegex(
+                    workflow.WorkflowError, "manifest must be a regular file"
+                ):
                     registry.get_registry()
 
     def test_cli_registry_is_machine_readable(self):

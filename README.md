@@ -220,6 +220,14 @@ Create a Python 3.11+ environment and install the package as described in [Quick
 python -m unittest discover -s tests -p 'test_*.py'
 ```
 
+Install the optional development tools and check Python formatting and lint:
+
+```sh
+python -m pip install -e '.[dev]'
+ruff format --check .
+ruff check .
+```
+
 The latest recorded CPython 3.11.18 full-suite run passed **444 tests with 28 optional skips**. This is repository test evidence, not production readiness or proof of real-application protection. See the [full-suite record](verification/anti-rea-python-dependency-prepare-full-suite-20261102.json), [private package verification](verification/anti-rea-python-dependency-prepare-package-20261102.json), and [acceptance audit](AUDIT.md).
 
 The wheel includes the portable Skill, schemas, pinned upstream locks, integration adapters, and owned fixtures under its installation data directory. Locate the installed package data with:

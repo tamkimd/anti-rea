@@ -13,15 +13,30 @@ class ReportCLITests(unittest.TestCase):
     def test_report_includes_validated_target_context(self):
         with tempfile.TemporaryDirectory() as directory:
             store = Path(directory)
-            target = {"schema_version": workflow.SCHEMA_VERSION, "record_type": "target",
-                      "id": "target-report", "components": [{"id": "app", "kind": "fixture",
-                      "root": ".", "artifacts": []}],
-                      "manifests": [], "artifacts": [], "unassigned_artifacts": [], "files": [], "excluded": [],
-                      "unfollowed_symlinks": [], "inventory": {"file_count": 0, "total_bytes": 0,
-                      "sha256": "a" * 64}, "unknowns": []}
+            target = {
+                "schema_version": workflow.SCHEMA_VERSION,
+                "record_type": "target",
+                "id": "target-report",
+                "components": [
+                    {"id": "app", "kind": "fixture", "root": ".", "artifacts": []}
+                ],
+                "manifests": [],
+                "artifacts": [],
+                "unassigned_artifacts": [],
+                "files": [],
+                "excluded": [],
+                "unfollowed_symlinks": [],
+                "inventory": {"file_count": 0, "total_bytes": 0, "sha256": "a" * 64},
+                "unknowns": [],
+            }
             workflow.write_record(store / "records", target)
-            run = {"schema_version": workflow.SCHEMA_VERSION, "record_type": "run", "id": "report-run",
-                   "target_id": target["id"], "state": "discovered"}
+            run = {
+                "schema_version": workflow.SCHEMA_VERSION,
+                "record_type": "run",
+                "id": "report-run",
+                "target_id": target["id"],
+                "state": "discovered",
+            }
             workflow.write_run_state(store / "runs", run, None)
 
             output = io.StringIO()
