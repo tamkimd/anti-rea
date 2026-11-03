@@ -206,6 +206,14 @@ class FlutterAndroidCommandTests(unittest.TestCase):
         inspection = {"artifact_sha256": candidate["artifact"]["sha256"],
                       "artifact_size": candidate["artifact"]["size"], "abi": aot["abi"]}
         self.assertEqual(flutter_android._classify_aot_report(report, inspection), "supported")
+        cli_output = {"ok": True, "data": report, "meta": {"operation": "inspect_dart_aot"}}
+        self.assertEqual(flutter_android._classify_aot_report(cli_output, inspection), "supported")
+        mismatched_cli_output = json.loads(json.dumps(cli_output))
+        mismatched_cli_output["data"]["normalized_result"]["target"]["sha256"] = "0" * 64
+        with self.assertRaisesRegex(workflow.WorkflowError, "exact APK"):
+            flutter_android._classify_aot_report(mismatched_cli_output, inspection)
+        with self.assertRaisesRegex(workflow.WorkflowError, "successful analysis result"):
+            flutter_android._classify_aot_report({"ok": False, "data": report}, inspection)
         latest = json.loads((example.parent / "rea-pr3662-aot-clean-source-baseline-002.json").read_text())
         latest_aot = latest["aot"]
         latest_report = {

@@ -130,8 +130,18 @@ def attach_aot_inspection(baseline_record: dict, report_path: str | Path,
     return workflow.validate_baseline(updated)
 
 
+def _unwrap_rea_cli_result(report: dict) -> dict:
+    """Accept either a predicate or REA CLI's successful JSON envelope."""
+    if "ok" in report:
+        if report.get("ok") is not True or not isinstance(report.get("data"), dict):
+            raise workflow.WorkflowError("REA AOT CLI output does not contain a successful analysis result")
+        return report["data"]
+    return report
+
+
 def _classify_aot_report(report: dict, inspection: dict, expected_apk_path: str | None = None) -> str:
     """Recognize only hash/ABI-bound supported or explicit unsupported REA results."""
+    report = _unwrap_rea_cli_result(report)
     if report.get("operation") == "inspect_dart_aot" and report.get("is_error") is True:
         content = report.get("content")
         try:

@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "record_type": "sanitized_flutter_android_acceptance",
+  "run_id": "foodie-rea-obfuscation-001",
+  "acceptance_id": "accept-foodie-rea-obfuscation-001",
+  "outcome": "accepted",
+  "plan_sha256": "2e92760ffd8421d4c0846e24cf49034f67b02061107a37fcc1bc98ddc2da60cf",
+  "baseline": {
+    "apk_sha256": "bcfc184e3ab4525103fb730ad331482568bab1642825001d83ba533e7259456b",
+    "dependency_lock_sha256": "c49f5a3de22f6c00b2335d4ec4bfa5a23d8b3e750d0a19e1c66f3d7f65da6c8e"
+  },
+  "candidate": {
+    "apk_sha256": "b3a342e94b6cdffdf8135db28a9e37f016438562cb6feba7a3de5f193dc0fda1",
+    "size": 19666695,
+    "build_flags": ["--release", "--obfuscate", "--split-debug-info=<private path>"],
+    "symbols_retained_outside_repository": true
+  },
+  "toolchain": {
+    "flutter": "2.5.3",
+    "flutter_commit": "18116933e77adc82f80866c928266a5b4f1ed645",
+    "dart": "2.14.4",
+    "java": "Temurin 11.0.32.1+1",
+    "rea": "6.8.0",
+    "rea_runtime_manifest_sha256": "8494f80f5d0b7f4bd7f9a5e71731f810ae5f79d8faa71188fb7bb0ea3a045fdb"
+  },
+  "flutter_aot_comparison": {
+    "status": "passed",
+    "abi": "arm64-v8a",
+    "baseline_report_sha256": "ef8e58a6e6e303e7e780a997f8131fdb4457efbdd284c8468ff57a9d3a907686",
+    "candidate_report_sha256": "5219e3e13bf00460c036da2c6ebe6db558add046c5e49e948241582bc7d6a94b",
+    "baseline_libapp_sha256": "81b70f00f76c62fd72680e36efa00af184ed1e565306ea1d5f1ee4b342a2972d",
+    "candidate_libapp_sha256": "7bdb6edc3643be267ea1e63a459bac151da674a3b282fa1c5733adb0e30d384a",
+    "snapshot_hash_matches": true,
+    "libapp_hash_changed": true,
+    "structural_coverage": "complete",
+    "string_pool_coverage": "partial",
+    "raw_reports_retained_outside_repository": true
+  },
+  "flutter_android_behavior": {
+    "status": "passed",
+    "report_sha256": "bbac3a53d60fad837e3958d8c7339ad4c0a21946ba51ac770ff73f697d0de836",
+    "device": "Android 16 arm64 emulator, google/sdk_gphone64_arm64/emu64a",
+    "case": "cold launch of com.example.fooddelivery/.MainActivity",
+    "baseline_and_candidate_screenshot_sha256": "2ecd19140d15726903fa4ea40e695da6fb52d5516a483d7e59b1e4c3d2f08969",
+    "screenshots_identical": true,
+    "scope": "one launch case; checkout, network, payment, and broader regression behavior were not tested"
+  },
+  "signing": {
+    "status": "passed",
+    "baseline_report_sha256": "7744f0e984a8ee2ea5e5f3c54b38d34935c8fa508042e7687f8b157c792dd0d9",
+    "candidate_report_sha256": "9e5e3519862560cb9e85b29956846c0b225323ef7806416ce78356b799ce9461",
+    "signer_count": 1,
+    "certificate_sha256": "841acd06bcdca601e950d5d1819339fd9a28871cf1189ff8257e9cf8727a6089",
+    "same_certificate": true
+  },
+  "limitations": [
+    "The result is for this pinned Foodie source, Flutter toolchain, selected arm64 ABI, and tested emulator.",
+    "AOT inspection is structural and its string-pool extraction is partial; it is not semantic decompilation.",
+    "One cold launch does not demonstrate broad app compatibility or prevent reverse engineering.",
+    "APK files, raw reports, screenshots, and split-debug symbol files remain outside the repository."
+  ]
+}

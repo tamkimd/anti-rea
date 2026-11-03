@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_example_evidence",
+  "recorded_at": "2026-11-03",
+  "source": {
+    "repository": "https://github.com/Serkanbyx/simple-to-do-list",
+    "commit": "009c7880eaa62c4d73b9b0d7b19fa87f8bf71eff",
+    "license": "MIT",
+    "license_path": "LICENSE",
+    "working_tree_modified_for_harness": true,
+    "harness_files": [
+      "anti-rea-example/server.cjs",
+      "e2e.config.mjs",
+      "tests/behavior.e2e.ts"
+    ]
+  },
+  "anti_rea": {
+    "version": "0.1.32",
+    "source_commit": "304c60a01134ad2d1af2fa2f2c36780a64926531"
+  },
+  "baseline": {
+    "status": "captured",
+    "target_id": "target-ccba2d90f324b292cb37",
+    "baseline_id": "simple-todo-before-001",
+    "build_command": ["node", "-e", "process.exit(0)"],
+    "build_note": "Static upstream app has no build step; selected source artifacts were captured unchanged.",
+    "artifacts": {
+      "js/app.js": {
+        "size": 17460,
+        "sha256": "584d8503b3122ce6b8608074761fbd15a5407c533a8002b7d28ebd5b3646ef72"
+      },
+      "index.html": {
+        "size": 4052,
+        "sha256": "1ed6e5abe5051754ea09929ea63b22a7ef1c5070ce606762147ec623ec9461a7"
+      },
+      "css/style.css": {
+        "size": 14235,
+        "sha256": "45bac81118b50fcc20cdd25131238eda5f77de657168cc61899cb3ea7fb3b1bf"
+      }
+    },
+    "workflow_record_sha256": "639322fd1b1992202e4146307d1713b70aaf1298a3b7954fad48588ec4331494",
+    "capture_output_sha256": "c72b64f130fa553ce08dde98977af9b05621a1afdadb7a1117e9f87a5c008180"
+  },
+  "browser_behavior": {
+    "status": "passed",
+    "runner": "e2e@0.22.0",
+    "engine": "@e2e-dev/web@0.15.4",
+    "tests": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "scope": [
+      "reject empty submission",
+      "add one task",
+      "mark it complete",
+      "filter Active and Completed tasks"
+    ],
+    "report_sha256": "b13b19e89be137e4c957e8f391a67a0b7df41f6eaf8e5bcf15effa35b503f45a"
+  },
+  "rea": {
+    "status": "passed",
+    "package": "rea-agents@6.8.0",
+    "scope": "Summary view of the captured project snapshot, including the upstream app and example harness.",
+    "coverage": {
+      "status": "complete-within-view",
+      "examined": 21,
+      "total": 21
+    },
+    "statistics": {
+      "relevant_files": 5,
+      "parsed_javascript_files": 4,
+      "skipped_javascript_files": 0,
+      "parse_failures": 0,
+      "findings": 16
+    },
+    "report_sha256": "42331cad856b7027028d969c64be293fcfacc4e983bd17bfa3d7ee0d90d19e54",
+    "evidence_bundle_sha256": "6b60b2c734259655174074da683bf652b887918493e499c7de3d36f2a30d95b4"
+  },
+  "recommendation": {
+    "plan_id": "simple-todo-plan-001",
+    "plan_sha256": "376ab71f549fd117d6e6b06fafd8e26c7a3d2aa18d71863782acc6868b9f135c",
+    "status": "recommendations_ready",
+    "blockers": [],
+    "actions": [
+      {
+        "id": "bla-js-32cdce28ac54",
+        "engine": "BLA",
+        "source_path": "js/app.js",
+        "verification": [
+          "bla_invariants",
+          "rea_comparison",
+          "performance",
+          "e2e_behavior"
+        ]
+      }
+    ],
+    "candidate_executed": false
+  },
+  "limitations": [
+    "The browser journey checks only the listed interactions and is not a complete compatibility or security test.",
+    "The REA summary includes harness code and measures analyzer output, not protection effectiveness.",
+    "No BLA candidate has been transformed or behaviorally verified.",
+    "No protection claim is established for this example or other applications."
+  ]
+}

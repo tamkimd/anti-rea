@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0",
+  "record_type": "anti_rea_flutter_foodie_example_evidence",
+  "source": {
+    "repository": "https://github.com/this-kin/Foodie",
+    "license": "Apache-2.0",
+    "license_path": "LICENSE",
+    "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "commit": "583e50f0800b3bb8a1ee2988c64a5d2b39eafacc",
+    "flutter_version_declared_upstream": "2.5.3",
+    "dart_sdk_constraint": ">=2.12.0 <3.0.0",
+    "flutter_sdk_tag": "2.5.3",
+    "flutter_sdk_commit": "18116933e77adc82f80866c928266a5b4f1ed645"
+  },
+  "release_artifact": {
+    "filename": "app-release.apk",
+    "size": 21027456,
+    "sha256": "1fd3e5b915b616199dd7073d21447b4caa4bb53c7d54080e4574e21c07e69eda",
+    "stored_in_repository": false
+  },
+  "source_build": {
+    "status": "passed",
+    "command": "flutter build apk --release",
+    "flutter_version": "2.5.3",
+    "flutter_commit": "18116933e77adc82f80866c928266a5b4f1ed645",
+    "dart_version": "2.14.4",
+    "java": "Temurin 11.0.32.1+1",
+    "gradle": "6.5",
+    "android_platform": 30,
+    "android_build_tools": "29.0.2",
+    "pubspec_lock_sha256": "c49f5a3de22f6c00b2335d4ec4bfa5a23d8b3e750d0a19e1c66f3d7f65da6c8e",
+    "resolved_lock_changed": false,
+    "artifact": {
+      "filename": "app-release.apk",
+      "size": 21027639,
+      "sha256": "78d237281d59a0d82d29f48618493160c84728719f9819c2b73643a7fcdc5b2c",
+      "stored_in_repository": false
+    },
+    "foodie_source_checkout_clean_after_build": true
+  },
+  "analysis": {
+    "tool": "REA",
+    "version": "6.8.0",
+    "operation": "inspect_dart_aot",
+    "abi": "arm64-v8a",
+    "status": "passed_with_partial_string_pool",
+    "evidence_id": "ev_3a960fe641021a257678e689b6caa6de116bf1a552388715bba69b18f351c388",
+    "raw_report_sha256": "77db2579d88eae28cde7d9c5d718c89367a58150e7518b5c57d51218ceeb79a2",
+    "libapp": {
+      "coverage": "complete",
+      "size": 5620632,
+      "sha256": "416943a96947060250fec88415d36bf18c0a81a494814ad8e7b12889912da65b",
+      "snapshot_hash": "9cf77f4405212c45daf608e1cd646852",
+      "layout": "legacy_split_vm_isolate"
+    },
+    "string_pool": {
+      "coverage": "partial",
+      "package_uris_retained": 492,
+      "dart_uris_retained": 199,
+      "class_like_tokens_retained": 2000,
+      "class_like_tokens_lower_bound": 4000
+    }
+  },
+  "fresh_build_analysis": {
+    "tool": "REA",
+    "version": "6.8.0",
+    "operation": "inspect_dart_aot",
+    "abi": "arm64-v8a",
+    "status": "passed_with_partial_string_pool",
+    "evidence_id": "ev_1475c41e1a94e91e8a9c8d7d0e5dddedea16026cabc7c76f6f6b95c066e174b9",
+    "raw_report_sha256": "09153de749e197d054b3c352dff864e4474a1f92d28b950b1894bb408f71f4b3",
+    "artifact_sha256": "78d237281d59a0d82d29f48618493160c84728719f9819c2b73643a7fcdc5b2c",
+    "libapp": {
+      "coverage": "complete",
+      "size": 5620632,
+      "sha256": "81b70f00f76c62fd72680e36efa00af184ed1e565306ea1d5f1ee4b342a2972d",
+      "snapshot_hash": "9cf77f4405212c45daf608e1cd646852",
+      "layout": "legacy_split_vm_isolate"
+    },
+    "snapshot_data_sections": [
+      {
+        "name": "_kDartVmSnapshotData",
+        "size": 30192,
+        "magic_valid": true,
+        "kind": 3
+      },
+      {
+        "name": "_kDartIsolateSnapshotData",
+        "size": 2576640,
+        "magic_valid": true,
+        "kind": 3
+      }
+    ],
+    "string_pool": {
+      "coverage": "partial",
+      "package_uri_count_lower_bound": 492,
+      "dart_uri_count_lower_bound": 199,
+      "class_like_token_count_lower_bound": 4000,
+      "class_like_tokens_retained": 2000
+    }
+  },
+  "anti_rea_candidate": {
+    "selected": true,
+    "executed": true,
+    "accepted": true,
+    "run_id": "foodie-rea-obfuscation-001",
+    "acceptance_id": "accept-foodie-rea-obfuscation-001",
+    "plan_sha256": "2e92760ffd8421d4c0846e24cf49034f67b02061107a37fcc1bc98ddc2da60cf",
+    "baseline_apk_sha256": "bcfc184e3ab4525103fb730ad331482568bab1642825001d83ba533e7259456b",
+    "candidate_apk": {
+      "filename": "obfuscated-candidate.apk",
+      "size": 19666695,
+      "sha256": "b3a342e94b6cdffdf8135db28a9e37f016438562cb6feba7a3de5f193dc0fda1",
+      "stored_in_repository": false
+    },
+    "split_debug_symbols_stored_privately": true,
+    "protection_claim": false
+  },
+  "candidate_analysis": {
+    "tool": "REA",
+    "version": "6.8.0",
+    "operation": "inspect_dart_aot",
+    "abi": "arm64-v8a",
+    "status": "passed_with_partial_string_pool",
+    "raw_report_sha256": "5219e3e13bf00460c036da2c6ebe6db558add046c5e49e948241582bc7d6a94b",
+    "libapp": {
+      "size": 4490136,
+      "sha256": "7bdb6edc3643be267ea1e63a459bac151da674a3b282fa1c5733adb0e30d384a",
+      "snapshot_hash": "9cf77f4405212c45daf608e1cd646852",
+      "layout": "legacy_split_vm_isolate",
+      "coverage": "complete"
+    },
+    "comparison": {
+      "baseline_libapp_sha256": "81b70f00f76c62fd72680e36efa00af184ed1e565306ea1d5f1ee4b342a2972d",
+      "same_snapshot_hash": true,
+      "libapp_sha256_changed": true,
+      "verification": "passed"
+    }
+  },
+  "acceptance": {
+    "status": "accepted",
+    "sanitized_report": "evidence/anti-rea-acceptance.json",
+    "verification_checks": {
+      "flutter_aot_comparison": "passed",
+      "flutter_android_behavior": "passed"
+    },
+    "behavior_scope": "one cold launch on the same Android 16 arm64 emulator; matching screenshots and foreground MainActivity",
+    "behavior_report_sha256": "bbac3a53d60fad837e3958d8c7339ad4c0a21946ba51ac770ff73f697d0de836",
+    "baseline_and_candidate_screenshot_sha256": "2ecd19140d15726903fa4ea40e695da6fb52d5516a483d7e59b1e4c3d2f08969",
+    "signing": {
+      "status": "verified",
+      "signer_count": 1,
+      "certificate_sha256": "841acd06bcdca601e950d5d1819339fd9a28871cf1189ff8257e9cf8727a6089",
+      "same_certificate": true
+    }
+  },
+  "limitations": [
+    "REA inspection and device behavior evidence cover only arm64-v8a.",
+    "String-pool extraction is bounded and partial; it does not decode Dart semantics.",
+    "Behavior acceptance covers a single cold launch only; checkout navigation, network, payment, and broader regression coverage were not rerun on the candidate.",
+    "Acceptance demonstrates this gated obfuscation workflow on this example; it does not establish confidentiality or prevent reverse engineering.",
+    "APKs, raw REA/signature/behavior reports, symbols, screenshots, source checkout, Flutter SDK, JDK, Gradle cache, and build output remain outside this repository."
+  ],
+  "machine_side_effects": [
+    "The Flutter build installed Android Platform 30 and Android Build Tools 29.0.2 into the user's Android SDK."
+  ]
+}

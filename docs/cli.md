@@ -76,7 +76,7 @@ anti-rea attach-flutter-aot --store /private/anti-rea-state --baseline-id before
   --rea-runtime /private/rea/runtime --abi arm64-v8a
 ```
 
-`recommend` returns an explicit blocker when the report is missing, unsupported, or bound to another artifact or ABI. A supported result must cover exactly one complete recognized AOT profile (the legacy four-section layout or renamed single-snapshot layout) and stay bound to its pinned REA manifest. The original baseline record is preserved. An unsupported result remains useful evidence, but does not enable candidate execution.
+`recommend` returns an explicit blocker when the report is missing, unsupported, or bound to another artifact or ABI. Pass the complete JSON output from REA's CLI; Anti-REA accepts its successful `{ "ok": true, "data": ..., "meta": ... }` envelope and validates the hash-bound predicate inside `data`. A supported result must cover exactly one complete recognized AOT profile (the legacy four-section layout or renamed single-snapshot layout) and stay bound to its pinned REA manifest. The original baseline record is preserved. An unsupported result remains useful evidence, but does not enable candidate execution.
 
 MCP clients can call `start_flutter_android_baseline_async` with the project, baseline/run IDs, target, Flutter executable, and a new split-debug-info path that is a direct child of Anti-REA state. It uses the same private snapshot capture and returns a run ID for `get_run` polling. It has the same SDK, signing, device, and real-app limitations.
 

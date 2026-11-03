@@ -1457,7 +1457,7 @@ def refresh_blocked_flutter_verification(store: str | Path, run_id: str,
 def _verify_flutter_check(plan: dict, baseline: dict, execution: dict, check_id: str,
                           raw_checks: list[bytes], evidence: list[dict]) -> None:
     """Validate package observations and behavior reports against the private candidate."""
-    from core import baseline as baseline_capture
+    from core import baseline as baseline_capture, flutter_android
     from core.execution import _snapshot_tree_identity
 
     action = next((item for item in plan["actions"] if item["id"] == execution.get("action_id")), None)
@@ -1528,7 +1528,7 @@ def _verify_flutter_check(plan: dict, baseline: dict, execution: dict, check_id:
                     raise WorkflowError("Flutter AOT evidence changed after it was authenticated")
                 if reference.get("kind") != "rea-inspect-dart-aot":
                     raise WorkflowError("Flutter AOT evidence must reference raw REA inspect_dart_aot output")
-                report = json.loads(raw)
+                report = flutter_android._unwrap_rea_cli_result(json.loads(raw))
                 runtime_ref = reference.get("rea_runtime_manifest")
                 if not isinstance(runtime_ref, dict):
                     raise WorkflowError("REA inspection reference lacks its pinned runtime manifest")

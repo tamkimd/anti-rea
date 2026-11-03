@@ -6,11 +6,14 @@ Anti-REA is an application-hardening and anti-reverse-engineering toolkit for de
 
 Anti-REA coordinates [REA](https://github.com/morluto/rea), a reverse-engineering analysis agent, with [BLA — Blind LLM Agents](https://github.com/qybaihe/bla), a counter-REA defense engine, and [tester-army/e2e](https://github.com/tester-army/e2e) for supported browser behavior checks. It provides a command-line interface, an [MCP](https://modelcontextprotocol.io/) server for compatible AI clients, and a portable Agent Skill for guided workflows. BLA's upstream project describes adversarial defenses such as decoys and analyzer-budget exhaustion; Anti-REA currently exposes only a limited subset through its adapter.
 
-> **Project status: experimental.** Anti-REA is not ready for production use. Current adapters cover specific workflows and platforms; passing a fixture or build check does not prove that a real application is protected. Flutter Android obfuscation is held because pinned REA 6.8.0 cannot inspect the example application's unified Dart AOT snapshot. See the [acceptance audit](AUDIT.md) for evidence, open requirements, and blockers.
+## Try Anti-REA with a web app
+
+Start with the MIT-licensed [Simple To-Do List](https://github.com/Serkanbyx/simple-to-do-list/tree/009c7880eaa62c4d73b9b0d7b19fa87f8bf71eff), a vanilla JavaScript app with no npm dependencies or build step. Its 17 KB `js/app.js` fits Anti-REA's current BLA JavaScript adapter. Anti-REA 0.1.32 captured its static artifacts, completed a REA 6.8.0 summary, passed a browser journey for adding, completing, and filtering a task, and produced a BLA candidate plan with no blockers. The plan has not been selected or executed, so this example makes no protection claim. See the [example guide and evidence summary](examples/simple-todo-list/README.md).
 
 ## Contents
 
 - [Features](#features)
+- [Try Anti-REA with a web app](#try-anti-rea-with-a-web-app)
 - [How Anti-REA hardens applications](#how-anti-rea-hardens-applications)
 - [Quick start](#quick-start)
 - [How the workflow works](#how-the-workflow-works)
@@ -135,15 +138,15 @@ The packaged Skill guides an assistant through discovery, baseline, recommendati
 | Project discovery | Bounded manifest and artifact inventory, with selected JavaScript framework and worker hints. | Hints are path- or declaration-based; they do not establish a build graph, code reachability, or runtime behavior. |
 | BLA counter-REA defense | Pinned BLA 1.6.3 adapter can transform one selected JavaScript file into an isolated candidate and run BLA's invariant verifier. | Anti-REA's adapter does not yet expose the full upstream BLA format/action matrix. Owned fixture runs are not evidence of protection for another application. |
 | JavaScript release hygiene | Create a private build-tree candidate omitting one selected source map and verify the other files remain unchanged. | This does not change deployment configuration or prove which assets a production server exposes. |
-| Obfuscation | Flutter Android candidate workflow is documented and gated on a supported AOT inspection. | The pinned REA snapshot gate currently blocks Flutter candidate execution; no Flutter obfuscation result is available. |
+| Obfuscation | Flutter Android candidates are isolated and gated on comparable REA AOT inspection, same-target behavior, and signature continuity. | Foodie’s Flutter 2.5.3 obfuscated candidate passed the bound REA 6.8.0 AOT, same-emulator cold-launch, and apksigner checks. This single-case example is not a protection guarantee. |
 | REA analysis | Pinned REA CLI/MCP runtime, selected JavaScript analysis, and comparable BEFORE/AFTER summary flow. | Finding counts measure scanner output. They are not a measure of protection by themselves. |
 | Browser behavior | Pinned e2e checks for supported fixture-compatible web configurations. | Project browser configuration and test code may execute with host privileges; this is not general framework coverage. |
-| Flutter Android | Android release baseline capture, readiness checks, and limited hash-bound example analysis and emulator behavior reports. | Pinned REA 6.8.0 reports the example's unified Dart AOT snapshot as unsupported. No obfuscated candidate has been run. |
+| Flutter Android | Android release baseline capture, readiness checks, isolated Dart obfuscation candidates, hash-bound AOT analysis, same-device behavior, and signature verification. | Foodie’s Flutter 2.5.3 candidate passed the selected arm64 gates; behavior coverage is one cold launch. Flutter 3.47.8 Loopweek uses an unsupported unified snapshot in pinned REA 6.8.0. |
 | WebAssembly | Bounded import/export metadata inspection and a Node compile probe without module instantiation. | Does not prove host bindings, runtime use, or module behavior. |
 | Python dependencies | PEP 751 lock inspection and isolated, hash-checked wheel preparation. | Experimental pip support; tested installation and reuse are on macOS ARM64 only. |
 | Harness support | CLI, MCP, and portable Skill entrypoints. | A full approval-to-acceptance workflow has not been verified across representative harnesses. |
 
-The checked-in Python 3.11 wheel matrix includes macOS ARM64, Linux glibc x86_64/ARM64, and Windows x86_64 candidates. pip target selection passed on those targets, but Linux and Windows installation remain unverified. The Android AOT gate remains deliberately held until the pinned REA inspection can pass and acceptance evidence can be collected.
+The checked-in Python 3.11 wheel matrix includes macOS ARM64, Linux glibc x86_64/ARM64, and Windows x86_64 candidates. pip target selection passed on those targets, but Linux and Windows installation remain unverified. The Foodie example records one accepted Flutter 2.5.3 obfuscation candidate; its narrow cold-launch check does not establish broad app compatibility or protection.
 
 ### Related reverse-engineering and application-protection projects
 
@@ -188,7 +191,7 @@ The [release guide](docs/release.md) documents wheel integrity and detached Ed25
 - Anti-REA is experimental and does not meet all mandatory release acceptance criteria.
 - BLA, obfuscation, and source-map controls increase analysis cost or reduce selected exposure; they cannot guarantee that a determined analyst will not recover application behavior or logic.
 - Fixture tests establish tool behavior on those fixtures only. Real application protection needs comparable BEFORE/AFTER evidence, independent behavior checks, integrity verification, and claims supported by those results.
-- Flutter Android AOT obfuscation is blocked at the pinned REA snapshot-inspection gate. No Flutter candidate or protection result is available.
+- The Foodie Flutter 2.5.3 obfuscation candidate passed its selected REA AOT, same-emulator cold-launch, and signature gates. Coverage is one arm64 device launch, not a protection guarantee; pinned REA 6.8.0 still does not inspect the unified snapshot from the newer Flutter 3.47.8 Loopweek build.
 - Discovery is bounded and heuristic; it does not infer complete build graphs, trust boundaries, runtime reachability, or assets hidden in excluded directories.
 - Supported BLA and source-map workflows cover specific JavaScript cases, not every framework or deployment pipeline.
 - Platform adapters, durable workers, deployment rollback, representative harness verification, and trusted release signing remain incomplete.
@@ -219,9 +222,11 @@ python -c 'import sysconfig; print(sysconfig.get_path("data") + "/share/anti-rea
 - [Workflow schema versioning](docs/schema-versioning.md)
 - [Harness setup](docs/harness-setup.md)
 - [Harness compatibility matrix](docs/harness-compatibility.md)
+- [Simple To-Do List example](examples/simple-todo-list/README.md): pinned MIT vanilla JavaScript app, passing baseline browser journey, REA summary, and a reviewable BLA plan.
+- [Foodie Flutter example](examples/flutter-foodie/README.md): Apache-2.0 app built with Flutter 2.5.3; its private obfuscated candidate passed pinned REA 6.8.0 AOT, same-emulator cold-launch, and signature checks. The example makes no general protection claim.
 - [Loopweek Flutter example](examples/loopweek-flutter/README.md): hash-bound Android analysis and a limited emulator behavior report; no transformation comparison or protection claim.
 - [Flutter Todo report](examples/flutter-todo/REA-RESULT.md): separate, limited-scope real application report.
-- [TodoMVC React example](examples/todomvc-react/README.md): read-only plan review; no action was executed.
+- [TodoMVC React example](examples/todomvc-react/README.md): historical dependency-backed example with limited source analysis; production-bundle analysis timed out and no action was executed.
 - [Acceptance audit](AUDIT.md): requirement-by-requirement status, evidence, and blockers.
 
 ## Frequently asked questions
@@ -244,7 +249,7 @@ The shared core and CLI are Python-based and require Python 3.11 or newer. The p
 
 ### Is Flutter Android obfuscation supported?
 
-The repository contains Flutter Android baseline and readiness workflows. The obfuscation candidate workflow is held because pinned REA 6.8.0 cannot inspect the example's unified Dart AOT snapshot. No transformed Flutter candidate has been accepted.
+The repository contains Flutter Android baseline and candidate workflows. Pinned REA 6.8.0 structurally inspected Foodie's Flutter 2.5.3 baseline and obfuscated candidate; the selected same-emulator cold-launch and signature gates also passed. This is a narrow example result, not broad compatibility or a protection guarantee. The unified snapshot emitted by a newer Flutter 3.47.8 Loopweek build remains unsupported by pinned REA 6.8.0.
 
 ### Does Docker make every command safe to run?
 

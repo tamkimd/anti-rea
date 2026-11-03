@@ -533,7 +533,7 @@ class FlutterCandidateTests(unittest.TestCase):
                             "snapshot_hash": "same-dart-build",
                             "sections": [{"name": name, "offset": index * 10, "size": 5}
                                          for index, name in enumerate(sections)]}}}
-                raw = json.dumps(report).encode()
+                raw = json.dumps({"ok": True, "data": report, "meta": {"operation": "inspect_dart_aot"}}).encode()
                 report_path = store / "evidence" / f"{side}-aot.json"
                 report_path.write_bytes(raw)
                 refs.append({"path": str(report_path), "sha256": hashlib.sha256(raw).hexdigest(),
