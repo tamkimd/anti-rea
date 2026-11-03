@@ -148,6 +148,21 @@ The packaged Skill guides an assistant through discovery, baseline, recommendati
 
 The checked-in Python 3.11 wheel matrix includes macOS ARM64, Linux glibc x86_64/ARM64, and Windows x86_64 candidates. pip target selection passed on those targets, but Linux and Windows installation remain unverified. The Foodie example records one accepted Flutter 2.5.3 obfuscation candidate; its narrow cold-launch check does not establish broad app compatibility or protection.
 
+### Real Flutter BEFORE/AFTER example
+
+REA 6.8.0 compared Foodie's Flutter 2.5.3 release APK before and after Dart obfuscation on `arm64-v8a`:
+
+| Measured signal | BEFORE | AFTER | Result |
+|---|---:|---:|---|
+| Retained `package:` URI strings | 492 | 1 | 491 fewer in bounded extraction |
+| Retained `dart:` URI strings | 199 | 7 | 192 fewer in bounded extraction |
+| Class-like token lower bound | ≥4,000 | ≥1,326 | Reported lower bound is lower; extraction is partial |
+| AOT structural coverage | 4/4 sections | 4/4 sections | Preserved |
+| Same-emulator cold launch | Passed | Passed | Screenshots match byte-for-byte |
+| APK signature | Verified | Verified | Same certificate |
+
+The string counts are partial REA extraction signals, not a complete symbol inventory or proof of reverse-engineering resistance. See the full [BEFORE/AFTER size and hash table](examples/flutter-foodie/README.md#beforeafter-comparison) and [sanitized acceptance evidence](examples/flutter-foodie/evidence/anti-rea-acceptance.json).
+
 ### Related reverse-engineering and application-protection projects
 
 Anti-REA is an evidence and orchestration layer; it does not replace the specialized tools it integrates with or the platform's own release hardening:

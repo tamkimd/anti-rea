@@ -130,8 +130,25 @@
       "layout": "legacy_split_vm_isolate",
       "coverage": "complete"
     },
+    "string_pool": {
+      "coverage": "partial",
+      "package_uri_count_lower_bound": 1,
+      "dart_uri_count_lower_bound": 7,
+      "class_like_token_count_lower_bound": 1326,
+      "class_like_tokens_retained": 1326
+    },
     "comparison": {
       "baseline_libapp_sha256": "81b70f00f76c62fd72680e36efa00af184ed1e565306ea1d5f1ee4b342a2972d",
+      "baseline_libapp_bytes": 5620632,
+      "candidate_libapp_bytes": 4490136,
+      "baseline_package_uri_count_lower_bound": 492,
+      "candidate_package_uri_count_lower_bound": 1,
+      "baseline_dart_uri_count_lower_bound": 199,
+      "candidate_dart_uri_count_lower_bound": 7,
+      "baseline_class_like_token_count_lower_bound": 4000,
+      "baseline_class_like_tokens_retained": 2000,
+      "candidate_class_like_token_count_lower_bound": 1326,
+      "candidate_class_like_tokens_retained": 1326,
       "same_snapshot_hash": true,
       "libapp_sha256_changed": true,
       "verification": "passed"

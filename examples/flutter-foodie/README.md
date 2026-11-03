@@ -10,6 +10,22 @@ REA 6.8.0 inspected the baseline and candidate `arm64-v8a` APKs with complete st
 
 Both APK signatures passed the captured Android SDK `apksigner` check and use the same certificate digest. On the same Android 16 arm64 emulator, the baseline and candidate both cold-launched `com.example.fooddelivery/.MainActivity`; the captured screenshots were byte-identical. These reports passed Anti-REA's bound AOT and behavior acceptance checks.
 
+### BEFORE/AFTER comparison
+
+| Measured result | BEFORE: release, no Dart obfuscation | AFTER: Anti-REA obfuscation | Observed difference |
+|---|---:|---:|---|
+| APK size | 21,027,639 bytes | 19,666,695 bytes | −1,360,944 bytes (−6.5%); package size only |
+| `libapp.so` size | 5,620,632 bytes | 4,490,136 bytes | −1,130,496 bytes (−20.1%) |
+| Retained `package:` URI strings | 492 | 1 | 491 fewer in this bounded extraction |
+| Retained `dart:` URI strings | 199 | 7 | 192 fewer in this bounded extraction |
+| Class-like string tokens | ≥4,000 (2,000 retained) | ≥1,326 (1,326 retained) | Reported lower-bound value fell by 2,674; total counts remain unknown |
+| AOT structural coverage | Complete, 4/4 sections | Complete, 4/4 sections | Preserved |
+| Dart snapshot hash | `9cf77f4405212c45daf608e1cd646852` | Same | Snapshot identity matched |
+| Cold launch on same emulator | Passed | Passed | Screenshots byte-identical |
+| APK signature | Verified | Verified | Same certificate |
+
+REA reports partial string-pool coverage. URI and class-like token counts are bounded extraction signals, not a complete inventory of app symbols. Smaller APK/`libapp.so` sizes are measured outcomes, not proof of security or runtime performance improvement.
+
 The behavior gate in this example covers **one cold launch only**. It does not cover login, checkout, network requests, payments, or a broad regression suite. The result demonstrates that the gated Anti-REA workflow can build and verify this compatible Flutter example; Dart obfuscation does not encrypt assets or stop reverse engineering, and this result is not a general protection guarantee.
 
 ## Evidence and reproducibility

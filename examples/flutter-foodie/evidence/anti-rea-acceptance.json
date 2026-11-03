@@ -36,6 +36,65 @@
     "string_pool_coverage": "partial",
     "raw_reports_retained_outside_repository": true
   },
+  "before_after_comparison": [
+    {
+      "metric": "apk_size_bytes",
+      "before": 21027639,
+      "after": 19666695,
+      "difference": -1360944,
+      "difference_percent": -6.5,
+      "interpretation": "Measured package size change; not a security or performance measure."
+    },
+    {
+      "metric": "libapp_so_bytes",
+      "before": 5620632,
+      "after": 4490136,
+      "difference": -1130496,
+      "difference_percent": -20.1,
+      "interpretation": "Measured ELF size change for selected ABI."
+    },
+    {
+      "metric": "retained_package_uri_strings",
+      "before": 492,
+      "after": 1,
+      "difference": -491,
+      "interpretation": "Bounded, partial string-pool extraction."
+    },
+    {
+      "metric": "retained_dart_uri_strings",
+      "before": 199,
+      "after": 7,
+      "difference": -192,
+      "interpretation": "Bounded, partial string-pool extraction."
+    },
+    {
+      "metric": "class_like_string_tokens_lower_bound",
+      "before": 4000,
+      "before_retained": 2000,
+      "after": 1326,
+      "after_retained": 1326,
+      "reported_lower_bound_difference": -2674,
+      "interpretation": "Heuristic token counts; partial extraction does not establish a complete symbol inventory."
+    },
+    {
+      "metric": "aot_structural_sections",
+      "before": "4/4 complete",
+      "after": "4/4 complete",
+      "interpretation": "The selected legacy snapshot profile remained structurally inspectable."
+    },
+    {
+      "metric": "cold_launch_same_emulator",
+      "before": "passed",
+      "after": "passed",
+      "interpretation": "Both screenshots have the same SHA-256; one launch case only."
+    },
+    {
+      "metric": "apk_signature",
+      "before": "verified",
+      "after": "verified",
+      "interpretation": "Both APKs verified with the same certificate."
+    }
+  ],
   "flutter_android_behavior": {
     "status": "passed",
     "report_sha256": "bbac3a53d60fad837e3958d8c7339ad4c0a21946ba51ac770ff73f697d0de836",
