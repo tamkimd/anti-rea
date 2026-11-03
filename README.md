@@ -1,6 +1,6 @@
 # Anti-REA: Harden apps against AI reverse engineering
 
-**Make shipped software harder to analyze—and measure what changed.** Anti-REA helps teams assess application exposure, choose compatible hardening actions, and compare release artifacts before and after changes using [REA](https://github.com/morluto/rea) analysis and behavior checks.
+**Assess software exposure to AI reverse engineering, apply compatible defenses, and measure the results.** Anti-REA helps teams compare release artifacts before and after changes using [REA (reverse-engineering agent)](https://github.com/morluto/rea) analysis and behavior checks.
 
 Use it with an AI assistant through the portable Skill or MCP server, or run the same workflows from the terminal. Anti-REA shows applicable options and trade-offs before execution, keeps the original project intact, and reports evidence from the candidate.
 
@@ -12,12 +12,12 @@ With the [Anti-REA Skill or MCP server](docs/harness-setup.md) available to your
 
 Anti-REA presents evidence-backed options before execution and waits for the user's plan-bound choice. Available actions depend on the target and the adapters that can verify it.
 
-## See measured examples
+## See example results
 
 | Example | What Anti-REA did | Result |
 |---|---|---|
 | [Foodie Flutter app](examples/flutter-foodie/README.md) | Built an obfuscated Flutter 2.5.3 candidate and checked it with REA 6.8.0, an Android cold launch, and signature verification. | One accepted run. The [generated report](examples/flutter-foodie/effectiveness-report.md) shows BEFORE/AFTER artifact hashes and checks. Behavior coverage is one cold launch. |
-| [Simple To-Do List](examples/simple-todo-list/README.md) | Captured a browser baseline, ran a REA summary, and prepared a BLA plan for a small JavaScript app. | Plan is review-only; no candidate was executed. |
+| [Simple To-Do List](examples/simple-todo-list/README.md) | Captured a browser baseline, ran a REA summary, and prepared a BLA (Blind LLM Agents) plan for a small JavaScript app. | Plan is review-only; no candidate was executed. |
 
 These examples show specific workflow results. They do not prove that an app is protected from all reverse engineering.
 
@@ -52,12 +52,12 @@ Install the portable Skill in an application project with the standard community
 npx skills add tamkimd/anti-rea --skill anti-rea
 ```
 
-Choose your agent and installation scope when prompted. See [harness setup](docs/harness-setup.md) for Codex, MCP, and other host options. For direct terminal use, install Python 3.11 or newer:
+Choose your agent and installation scope when prompted. See [harness setup](docs/harness-setup.md) for Codex, MCP, and other host options. To use Anti-REA directly from the terminal, install Python 3.11 or newer and the published PyPI package:
 
 ```sh
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install .
+python -m pip install anti-rea
 anti-rea doctor
 ```
 
@@ -75,9 +75,9 @@ Start the MCP server with `anti-rea mcp serve`. Set `ANTI_REA_STATE_DIR` to keep
 - Supported Node and pinned REA/BLA lanes use the configured Docker profile by default. The Docker daemon is trusted, and staged output has no live disk quota.
 - Host-run commands and project-provided browser tests may execute with the user's privileges. Run workflows only for projects and dependencies you trust.
 - Keep state, raw reports, release artifacts, debug symbols, screenshots, caches, and secrets outside the source checkout.
-- BLA and obfuscation can increase analysis effort; neither encrypts client code or prevents determined reverse engineering.
+- Blind LLM Agents (BLA) defenses and obfuscation can increase analysis effort; neither encrypts client code or prevents determined reverse engineering.
 
-See [execution boundaries](docs/cli.md), [Anti-REA package signing](docs/release.md), and the [acceptance audit](AUDIT.md).
+See [execution boundaries](docs/cli.md), the [release workflow](docs/release.md), and the [acceptance audit](AUDIT.md).
 
 ## Development
 
@@ -87,8 +87,6 @@ python -m pip install -e '.[dev]'
 ruff format --check .
 ruff check .
 ```
-
-Latest local verification: **447 tests passed, 28 optional skips**.
 
 ## More
 

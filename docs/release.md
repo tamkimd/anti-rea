@@ -1,21 +1,31 @@
-# Verify Anti-REA's Python package before distribution
+# Release Anti-REA with GitHub Actions
 
-This page is for maintainers distributing **Anti-REA itself**. It creates a SHA-256 manifest for Anti-REA's Python wheel, optionally signs that manifest with Ed25519, and verifies that the wheel still matches. It does not sign, harden, or verify an application that Anti-REA analyzes. If you only use Anti-REA on your app, you can skip this page.
+This release flow runs from GitHub Actions. It tests the selected `main` commit, builds the Python wheel and source distribution, publishes them to PyPI with Trusted Publishing, and creates a GitHub Release with the same files and checksums. It does not read a local `.env` file or copy a PyPI token to GitHub.
 
-The repository does not currently publish a trusted signing identity. Until maintainers configure one and consumers trust its public key, these commands do not establish an authenticated release; an unsigned manifest is only a checksum record.
+## One-time setup
 
-Create a detached manifest after building the exact wheel that will be distributed:
+Anti-REA 0.1.32 is already registered on PyPI. In [PyPI project settings](https://pypi.org/manage/project/anti-rea/settings/publishing/), add a GitHub Trusted Publisher with:
 
-```sh
-anti-rea release-manifest create releases/0.1.32/anti_rea-0.1.32-py3-none-any.whl releases/0.1.32/manifest.json
-anti-rea release-manifest sign releases/0.1.32/manifest.json /secure/release-ed25519-private.pem releases/0.1.32/manifest.sig
-anti-rea release-manifest verify releases/0.1.32/manifest.json releases/0.1.32/anti_rea-0.1.32-py3-none-any.whl
-```
+| Setting | Value |
+|---|---|
+| Owner | `tamkimd` |
+| Repository | `anti-rea` |
+| Workflow filename | `release.yml` |
+| GitHub environment | `pypi` |
 
-The manifest records wheel filename, SHA-256, size, wheel tags, `Requires-Python`, product version, and the hashes of the dependency locks embedded in the wheel. Verification checks the detached Ed25519 signature and independently inspects the supplied wheel bytes and embedded lockfiles. Output files are created without overwriting existing files.
+The workflow grants OIDC permission only to its PyPI publishing job. PyPI uses this publisher identity to issue a short-lived upload credential; no long-lived API token is required in GitHub secrets. See [PyPI's setup instructions](https://docs.pypi.org/trusted-publishers/adding-a-publisher/) and [security model](https://docs.pypi.org/trusted-publishers/security-model/).
 
-Manifest creation, signing, and verification require no-follow, directory-relative opens for every input file; they fail closed when the platform cannot provide them.
+## Publish a new version
 
-Keep the private signing key outside the repository and restrict access through the organization's key or CI secret-management system. Distribute the public key through a channel independent of the wheel and manifest. A signature made with an untrusted key proves only possession of that key; this repository does not provide a trusted release identity or signing key. Do not describe a release as authenticated until its public key is trusted by the consumer.
+1. Set the new `MAJOR.MINOR.PATCH` version in `pyproject.toml` and commit the release changes to `main`.
+2. In GitHub, open **Actions → Release → Run workflow**, select `main`, and run it.
+3. The workflow verifies the selected commit is still the latest `main`, runs unit tests and Ruff, builds and checks the distributions, and smoke-tests the built wheel.
+4. On success, it creates the `v<version>` tag, publishes the wheel and source distribution to PyPI, then creates a GitHub Release with those files and `SHA256SUMS`.
 
-`release-manifest create` is useful before a signing identity is configured, but an unsigned manifest only provides a comparison value when obtained through a trusted channel. Release acceptance remains incomplete until the release owner signs and verifies the exact final artifact using the trusted key.
+The workflow reads the version from `pyproject.toml`; it rejects reused or older versions and tags that point to another commit. Re-running the same workflow can resume an interrupted release while the selected commit is still the latest `main`: existing PyPI and GitHub files are accepted only when their SHA-256 hashes match the tested artifacts. If `main` has moved, update the release commit and start a new run. Fix a failed run before starting another version.
+
+Run the Actions workflow only after the version change is committed to `main`. The GitHub release job uses the same artifacts built and tested earlier in the run; it does not rebuild them.
+
+## Optional detached manifest signature
+
+The `anti-rea release-manifest` commands create and verify an additional manifest for a wheel. This signature is separate from PyPI publishing and does not sign an application that Anti-REA analyzes. The repository has no configured trusted Ed25519 release key, so the workflow does not claim or attach a signed manifest. Do not treat an unsigned manifest or an untrusted signing key as release authentication.

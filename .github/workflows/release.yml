@@ -1,0 +1,278 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: anti-rea-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Test and build distributions
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.metadata.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.11"
+
+      - name: Validate release source and read version
+        id: metadata
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "Run releases from the main branch." >&2
+            exit 1
+          fi
+          python - <<'PY'
+          import os
+          import re
+          import tomllib
+          from pathlib import Path
+
+          project = tomllib.loads(Path("pyproject.toml").read_text())["project"]
+          version = project["version"]
+          if project["name"] != "anti-rea":
+              raise SystemExit("Unexpected package name in pyproject.toml")
+          if not re.fullmatch(r"\d+\.\d+\.\d+", version):
+              raise SystemExit("Release version must use MAJOR.MINOR.PATCH")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"version={version}\n")
+          PY
+
+      - name: Set reproducible build timestamp
+        run: echo "SOURCE_DATE_EPOCH=$(git show -s --format=%ct "$GITHUB_SHA")" >> "$GITHUB_ENV"
+
+      - name: Install build and development tools
+        run: |
+          python -m pip install --upgrade build twine
+          python -m pip install -e '.[dev]'
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -p 'test_*.py'
+
+      - name: Check formatting and lint
+        run: |
+          python -m ruff format --check .
+          python -m ruff check .
+
+      - name: Build wheel and source distribution
+        run: python -m build --outdir dist
+
+      - name: Validate package metadata
+        run: python -m twine check dist/*
+
+      - name: Smoke-test the built wheel
+        run: |
+          smoke_dir="$(mktemp -d)"
+          trap 'rm -rf "$smoke_dir"' EXIT
+          python -m venv "$smoke_dir/venv"
+          "$smoke_dir/venv/bin/python" -m pip install dist/*.whl
+          "$smoke_dir/venv/bin/anti-rea" --help >/dev/null
+
+      - name: Write distribution checksums
+        run: cd dist && sha256sum *.whl *.tar.gz > SHA256SUMS
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-distributions
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  create-tag:
+    name: Tag the tested commit
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    env:
+      RELEASE_VERSION: ${{ needs.build.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Create or verify release tag
+        run: |
+          set -euo pipefail
+          release_tag="v$RELEASE_VERSION"
+          git fetch origin --tags
+          remote_main="$(git ls-remote origin refs/heads/main | cut -f1)"
+          if [ "$remote_main" != "$GITHUB_SHA" ]; then
+            echo "main changed while the release was running; start again from the current main." >&2
+            exit 1
+          fi
+
+          if git show-ref --verify --quiet "refs/tags/$release_tag"; then
+            tagged_commit="$(git rev-list -n 1 "$release_tag")"
+            if [ "$tagged_commit" != "$GITHUB_SHA" ]; then
+              echo "Tag $release_tag already points to a different commit." >&2
+              exit 1
+            fi
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$release_tag" -m "Anti-REA $RELEASE_VERSION"
+          fi
+
+          if ! git ls-remote --exit-code --tags origin "refs/tags/$release_tag" >/dev/null; then
+            git push origin "$release_tag"
+          fi
+
+  publish-pypi:
+    name: Publish to PyPI
+    needs: [build, create-tag]
+    runs-on: ubuntu-24.04
+    environment:
+      name: pypi
+      url: https://pypi.org/project/anti-rea/
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      RELEASE_VERSION: ${{ needs.build.outputs.version }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-distributions
+          path: dist/
+
+      - name: Check existing PyPI files
+        id: pypi
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          from urllib.error import HTTPError
+          from urllib.request import urlopen
+
+          base = "https://pypi.org/pypi/anti-rea"
+          version = os.environ["RELEASE_VERSION"]
+          expected = {
+              path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+              for path in sorted(Path("dist").iterdir())
+              if path.suffix == ".whl" or path.name.endswith(".tar.gz")
+          }
+          if len(expected) != 2:
+              raise SystemExit("Expected exactly one wheel and one source distribution")
+
+          try:
+              with urlopen(f"{base}/{version}/json", timeout=20) as response:
+                  release = json.load(response)
+          except HTTPError as error:
+              if error.code != 404:
+                  raise
+              release = None
+
+          if release is None:
+              try:
+                  with urlopen(f"{base}/json", timeout=20) as response:
+                      latest = json.load(response)["info"]["version"]
+              except HTTPError as error:
+                  if error.code != 404:
+                      raise
+                  latest = None
+              if latest and tuple(map(int, version.split("."))) <= tuple(map(int, latest.split("."))):
+                  raise SystemExit(f"Version {version} is not newer than the current PyPI version {latest}")
+              publish = True
+          else:
+              existing = {file["filename"]: file for file in release["urls"]}
+              for name, digest in expected.items():
+                  remote = existing.get(name)
+                  if remote and remote["digests"]["sha256"] != digest:
+                      raise SystemExit(f"PyPI already has different bytes for {name}; refusing to continue")
+                  if remote and remote["yanked"]:
+                      raise SystemExit(f"PyPI file {name} is yanked; refusing to continue")
+              publish = any(name not in existing for name in expected)
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"publish={'true' if publish else 'false'}\n")
+          PY
+
+      - name: Publish distributions
+        if: steps.pypi.outputs.publish == 'true'
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
+        with:
+          packages-dir: dist/
+          skip-existing: true
+          print-hash: true
+
+      - name: Verify published PyPI hashes
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          from urllib.request import urlopen
+
+          version = os.environ["RELEASE_VERSION"]
+          with urlopen(f"https://pypi.org/pypi/anti-rea/{version}/json", timeout=20) as response:
+              release = json.load(response)
+          existing = {file["filename"]: file for file in release["urls"]}
+          for path in Path("dist").iterdir():
+              if path.suffix != ".whl" and not path.name.endswith(".tar.gz"):
+                  continue
+              remote = existing.get(path.name)
+              if not remote or remote["digests"]["sha256"] != hashlib.sha256(path.read_bytes()).hexdigest():
+                  raise SystemExit(f"PyPI artifact hash does not match {path.name}")
+          PY
+
+  create-github-release:
+    name: Create GitHub Release
+    needs: [build, create-tag, publish-pypi]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    env:
+      RELEASE_VERSION: ${{ needs.build.outputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-distributions
+          path: dist/
+
+      - name: Create or complete GitHub Release
+        run: |
+          set -euo pipefail
+          release_tag="v$RELEASE_VERSION"
+          verify_dir="$(mktemp -d)"
+          trap 'rm -rf "$verify_dir"' EXIT
+
+          if ! gh release view "$release_tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$release_tag" --repo "$GITHUB_REPOSITORY" \
+              --draft --verify-tag --title "Anti-REA $RELEASE_VERSION" --generate-notes
+          fi
+
+          existing_names="$(gh release view "$release_tag" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name')"
+          for file in dist/*; do
+            name="$(basename "$file")"
+            if printf '%s\n' "$existing_names" | grep -Fxq "$name"; then
+              gh release download "$release_tag" --repo "$GITHUB_REPOSITORY" \
+                --pattern "$name" --dir "$verify_dir"
+              if ! cmp -s "$file" "$verify_dir/$name"; then
+                echo "GitHub Release already contains different bytes for $name." >&2
+                exit 1
+              fi
+            else
+              gh release upload "$release_tag" --repo "$GITHUB_REPOSITORY" "$file"
+              existing_names="$(printf '%s\n%s' "$existing_names" "$name")"
+            fi
+          done
+
+          is_draft="$(gh release view "$release_tag" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)"
+          if [ "$is_draft" = "true" ]; then
+            gh release edit "$release_tag" --repo "$GITHUB_REPOSITORY" --draft=false
+          fi
