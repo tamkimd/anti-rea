@@ -302,6 +302,10 @@ def main(argv=None):
         "--rea-runtime",
         help="capture BEFORE REA analysis using a prepared pinned runtime",
     )
+    baseline.add_argument(
+        "--craft-anything-cli",
+        help="capture BEFORE Craft Anything triage using an installed CLI (or ANTI_REA_CRAFT_ANYTHING_CLI)",
+    )
     flutter_baseline = commands.add_parser(
         "flutter-android-baseline",
         help="build and hash a Flutter Android release artifact in a private snapshot",
@@ -422,6 +426,13 @@ def main(argv=None):
         help="BLA intensity required with --profile custom",
     )
     recommend.add_argument(
+        "--analysis-gate",
+        action="append",
+        choices=["rea", "craft-anything"],
+        dest="analysis_gates",
+        help="require this analysis engine for acceptance; repeat to select multiple gates",
+    )
+    recommend.add_argument(
         "--performance-max-ms",
         type=int,
         default=30000,
@@ -460,6 +471,10 @@ def main(argv=None):
         "--e2e-runtime",
         default=None,
         help="pinned e2e runtime (or ANTI_REA_E2E_RUNTIME)",
+    )
+    execute_plan.add_argument(
+        "--craft-anything-cli",
+        help="installed Craft Anything CLI (or ANTI_REA_CRAFT_ANYTHING_CLI)",
     )
     resume = commands.add_parser(
         "resume",
@@ -954,6 +969,7 @@ def main(argv=None):
             else:
                 emit(target)
         elif args.command in {"baseline", "flutter-android-baseline"}:
+            craft_anything_cli = os.environ.get("ANTI_REA_CRAFT_ANYTHING_CLI")
             if args.command == "baseline" and not baseline_command:
                 raise workflow.WorkflowError("Pass the baseline command after --")
             if args.command == "flutter-android-baseline":
@@ -1007,6 +1023,7 @@ def main(argv=None):
                 e2e_config = args.e2e_config
                 e2e_test_file = args.e2e_test_file
                 rea_runtime = args.rea_runtime or os.environ.get("ANTI_REA_REA_RUNTIME")
+                craft_anything_cli = args.craft_anything_cli or craft_anything_cli
             cancel_event = threading.Event()
             previous_handlers = {}
             for signum in (signal.SIGINT, signal.SIGTERM):
@@ -1027,6 +1044,7 @@ def main(argv=None):
                     rea_runtime,
                     cancel_event,
                     build_time_trials=build_time_trials,
+                    craft_anything_cli=craft_anything_cli,
                 )
             except workflow.WorkflowError:
                 if cancel_event.is_set():
@@ -1146,6 +1164,7 @@ def main(argv=None):
                 e2e_behavior=args.e2e_behavior,
                 profile=args.profile,
                 bla_intensity=args.bla_intensity,
+                analysis_gates=args.analysis_gates,
                 performance_budget={
                     "trials": 3,
                     "max_elapsed_ms": args.performance_max_ms,
@@ -1162,6 +1181,7 @@ def main(argv=None):
                     "plan_sha256": workflow.record_hash(plan),
                     "profile": plan["profile"],
                     "actions": plan["actions"],
+                    "analysis_policy": plan.get("analysis_policy"),
                     "blockers": plan.get("blockers", []),
                     "record": str(path),
                 }
@@ -1170,6 +1190,9 @@ def main(argv=None):
             runtime = args.bla_runtime or os.environ.get("ANTI_REA_BLA_RUNTIME")
             rea_runtime = args.rea_runtime or os.environ.get("ANTI_REA_REA_RUNTIME")
             e2e_runtime = args.e2e_runtime or os.environ.get("ANTI_REA_E2E_RUNTIME")
+            craft_anything_cli = args.craft_anything_cli or os.environ.get(
+                "ANTI_REA_CRAFT_ANYTHING_CLI"
+            )
             emit(
                 execution.execute_bla_action(
                     args.store,
@@ -1178,6 +1201,7 @@ def main(argv=None):
                     runtime,
                     rea_runtime=rea_runtime,
                     e2e_runtime=e2e_runtime,
+                    craft_anything_cli=craft_anything_cli,
                 )
             )
         elif args.command == "resume":

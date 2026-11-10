@@ -507,7 +507,12 @@ class MCPInterfaceTests(unittest.TestCase):
             flutter.chmod(0o700)
             with (
                 patch.dict(os.environ, {"ANTI_REA_STATE_DIR": str(state)}),
-                patch("core.flutter_android.shutil.which", return_value=str(flutter)),
+                patch(
+                    "core.flutter_android.shutil.which",
+                    side_effect=lambda name: (
+                        str(flutter) if Path(name).name == "flutter" else None
+                    ),
+                ),
                 patch(
                     "core.flutter_android.capture_toolchain_identity",
                     side_effect=lambda command, cwd: {
@@ -593,7 +598,12 @@ class MCPInterfaceTests(unittest.TestCase):
                         "ANTI_REA_ARGS_OUTPUT": str(args_file),
                     },
                 ),
-                patch("core.flutter_android.shutil.which", return_value=str(flutter)),
+                patch(
+                    "core.flutter_android.shutil.which",
+                    side_effect=lambda name: (
+                        str(flutter) if Path(name).name == "flutter" else None
+                    ),
+                ),
                 patch(
                     "core.flutter_android.capture_toolchain_identity",
                     side_effect=lambda command, cwd: {
@@ -1234,6 +1244,7 @@ class MCPInterfaceTests(unittest.TestCase):
                 on_process,
                 rea_runtime=None,
                 e2e_runtime=None,
+                craft_anything_cli=None,
             ):
                 path = Path(store) / "runs" / f"run-{run_id}.json"
                 current = workflow.read_record(path, "run")

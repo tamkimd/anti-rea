@@ -15,6 +15,7 @@ import sys
 import tempfile
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from core import discovery, workflow
@@ -40,6 +41,7 @@ def capture(
     cancel_event=None,
     on_process=None,
     build_time_trials: int = 1,
+    craft_anything_cli: str | Path | None = None,
 ) -> tuple[dict, Path]:
     """Run an explicit baseline command, retaining bounded output and artifact hashes.
 
@@ -334,6 +336,7 @@ def capture(
     behavior_identity = None
     e2e_identity = None
     rea_identity = None
+    analysis_engines = {}
     evidence_paths = [str(output_path), *(str(path) for path in trial_output_paths)]
     if behavior_command is not None:
         relative = javascript_artifacts[0]
@@ -429,18 +432,67 @@ def capture(
             on_process,
         )
         evidence_paths.append(str(report_path))
-    if rea_runtime is not None:
-        rea_identity, rea_report, rea_bundle = _capture_rea(
+    analysis_jobs = {}
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        analysis_jobs["craft-anything"] = pool.submit(
+            _capture_craft_anything,
             build_snapshot,
             state,
-            target,
-            identities,
             baseline_id,
-            rea_runtime,
+            craft_anything_cli,
+            timeout,
             cancel_event,
             on_process,
         )
-        evidence_paths.extend((str(rea_report), str(rea_bundle)))
+        if rea_runtime is not None:
+            analysis_jobs["rea"] = pool.submit(
+                _capture_rea,
+                build_snapshot,
+                state,
+                target,
+                identities,
+                baseline_id,
+                rea_runtime,
+                cancel_event,
+                on_process,
+            )
+        for engine, future in analysis_jobs.items():
+            try:
+                captured = future.result()
+            except Exception as error:
+                analysis_engines[engine] = {
+                    "engine": engine,
+                    "status": "failed",
+                    "reason": str(error),
+                }
+            else:
+                if engine == "rea":
+                    rea_identity, rea_report, rea_bundle = captured
+                    analysis_engines[engine] = {
+                        "engine": engine,
+                        "status": "passed",
+                        "mode": "javascript-static-analysis",
+                        "version": "6.8.0",
+                        "input_sha256": rea_identity["tree_sha256"],
+                        "coverage": rea_identity["coverage"],
+                        "report_path": str(rea_report),
+                        "report_sha256": rea_identity["report_sha256"],
+                        "evidence_path": str(rea_bundle),
+                        "evidence_sha256": rea_identity["bundle_sha256"],
+                    }
+                    evidence_paths.extend((str(rea_report), str(rea_bundle)))
+                else:
+                    engine_record, report_paths = captured
+                    analysis_engines[engine] = engine_record
+                    if isinstance(report_paths, (str, Path)):
+                        report_paths = [report_paths]
+                    evidence_paths.extend(str(path) for path in report_paths)
+    if "rea" not in analysis_engines:
+        analysis_engines["rea"] = {
+            "engine": "rea",
+            "status": "unavailable",
+            "reason": "No REA runtime was selected for this baseline.",
+        }
     flutter_lock = None
     flutter_toolchain = None
     if any(
@@ -486,6 +538,7 @@ def capture(
             **({"behavior": behavior_identity} if behavior_identity else {}),
             **({"e2e_behavior": e2e_identity} if e2e_identity else {}),
             **({"rea_analysis": rea_identity} if rea_identity else {}),
+            "analysis_engines": analysis_engines,
         },
         "evidence": evidence_paths,
     }
@@ -498,6 +551,85 @@ def capture(
         output_path.unlink(missing_ok=True)
         raise
     return baseline, evidence
+
+
+def _capture_craft_anything(
+    root: Path,
+    state: Path,
+    baseline_id: str,
+    cli: str | Path | None,
+    timeout: float,
+    cancel_event=None,
+    on_process=None,
+) -> tuple[dict, list[Path]]:
+    """Capture Craft Anything triage in an external per-baseline project."""
+    from core import craft_anything_integration
+
+    report_path = state / "evidence" / f"baseline-{baseline_id}-craft-anything.json"
+    result = craft_anything_integration.analyze(
+        root,
+        state / "evidence" / f"baseline-{baseline_id}-craft-anything",
+        timeout=min(timeout, 600),
+        cli=str(cli) if cli is not None else None,
+        report_path=report_path,
+        cancel_event=cancel_event,
+        on_process=on_process,
+    )
+    status = result["status"]
+    if status == "supported":
+        status = "passed"
+    raw_evidence_ref = None
+    evidence_path = result.get("evidence_path")
+    if isinstance(evidence_path, str) and Path(evidence_path).is_file():
+        raw_evidence_ref = {
+            "path": evidence_path,
+            "sha256": hashlib.sha256(Path(evidence_path).read_bytes()).hexdigest(),
+        }
+    record_path = report_path.with_name(report_path.stem + "-record.json")
+    report = {
+        "schema_version": "1.0",
+        "engine": "craft-anything",
+        "status": status,
+        "mode": result.get("mode", "deep"),
+        "version": result.get("version"),
+        "input": result.get("input"),
+        "coverage": (
+            result.get("evidence", {}).get("coverage")
+            if isinstance(result.get("evidence"), dict)
+            else None
+        ),
+        "evidence": result.get("evidence"),
+        "upstream_evidence": raw_evidence_ref,
+        "reason": result.get("error"),
+    }
+    record_path.write_bytes(workflow.canonical(report) + b"\n")
+    if os.name != "nt":
+        record_path.chmod(0o600)
+    report_ref = {
+        "path": str(record_path),
+        "sha256": hashlib.sha256(record_path.read_bytes()).hexdigest(),
+    }
+    engine = {
+        "engine": "craft-anything",
+        "status": status,
+        "mode": result.get("mode", "deep"),
+        "version": result.get("version"),
+        "input_sha256": result.get("input", {}).get("sha256"),
+        "coverage": (
+            result.get("evidence", {}).get("coverage")
+            if isinstance(result.get("evidence"), dict)
+            else None
+        ),
+        "evidence": report_ref,
+        "upstream_evidence": raw_evidence_ref,
+        "project": result.get("project"),
+        "reason": result.get("error"),
+    }
+    return engine, [
+        path
+        for path in (Path(evidence_path) if raw_evidence_ref else None, record_path)
+        if path is not None
+    ]
 
 
 def _capture_e2e(

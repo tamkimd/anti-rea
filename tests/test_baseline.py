@@ -65,6 +65,66 @@ class BaselineCaptureTests(unittest.TestCase):
         )
         self.assertFalse(self.store.is_relative_to(self.project))
 
+    def test_baseline_runs_rea_and_craft_concurrently_and_keeps_partial_results(self):
+        rea_started = threading.Event()
+        craft_started = threading.Event()
+        report_path = self.store / "evidence" / "craft-before.json"
+
+        def fake_rea(*args, **kwargs):
+            rea_started.set()
+            self.assertTrue(craft_started.wait(2))
+            raise workflow.WorkflowError("fake REA provider failed")
+
+        def fake_craft(
+            snapshot,
+            state,
+            baseline_id,
+            cli,
+            timeout,
+            cancel_event=None,
+            on_process=None,
+        ):
+            craft_started.set()
+            self.assertTrue(rea_started.wait(2))
+            report_path.parent.mkdir(parents=True, exist_ok=True)
+            report_path.write_text('{"summary":"triaged"}')
+            return (
+                {
+                    "engine": "craft-anything",
+                    "status": "passed",
+                    "mode": "deep",
+                    "version": "0.6.0",
+                    "input_sha256": "c" * 64,
+                    "coverage": {"files": 1},
+                    "evidence": {
+                        "path": str(report_path),
+                        "sha256": hashlib.sha256(report_path.read_bytes()).hexdigest(),
+                    },
+                },
+                report_path,
+            )
+
+        with (
+            patch.object(baseline, "_capture_rea", side_effect=fake_rea),
+            patch.object(baseline, "_capture_craft_anything", side_effect=fake_craft),
+        ):
+            (self.project / "build.py").write_text(
+                "from pathlib import Path\nPath('dist.js').write_text('built')\n"
+            )
+            record, _ = baseline.capture(
+                self.project,
+                self.store,
+                [sys.executable, "build.py"],
+                ["dist.js"],
+                "parallel-engines",
+                rea_runtime="pinned-rea-runtime",
+            )
+        engines = record["identity"]["analysis_engines"]
+        self.assertEqual(engines["rea"]["status"], "failed")
+        self.assertEqual(engines["craft-anything"]["status"], "passed", engines)
+        self.assertEqual(engines["craft-anything"]["input_sha256"], "c" * 64)
+        self.assertIn(str(report_path), record["evidence"])
+
     def test_build_command_writes_only_to_private_snapshot(self):
         (self.project / "settings.json").write_text('{"mode":"original"}')
         (self.project / "build.py").write_text(

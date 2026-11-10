@@ -1,6 +1,6 @@
 # Anti-REA: Harden apps against AI reverse engineering
 
-**Assess software exposure to AI reverse engineering, apply compatible defenses, and measure the results.** Anti-REA helps teams compare release artifacts before and after changes using [REA (reverse-engineering agent)](https://github.com/morluto/rea) analysis and behavior checks.
+**Assess software exposure to AI reverse engineering, apply compatible defenses, and measure the results.** Anti-REA can run [REA](https://github.com/morluto/rea) and [Craft Anything](https://github.com/storytold/craft-anything) analysis in parallel, then connect their separate findings to supported hardening actions and behavior checks.
 
 Use it with an AI assistant through the portable Skill or MCP server, or run the same workflows from the terminal. Anti-REA shows applicable options and trade-offs before execution, keeps the original project intact, and reports evidence from the candidate.
 
@@ -25,24 +25,25 @@ These examples show specific workflow results. They do not prove that an app is 
 
 ![Anti-REA hardening workflow: capture one fixed baseline, approve a plan, verify isolated candidates against the same baseline, and accept or revise with rollback evidence](docs/images/anti-rea-workflow.png)
 
-1. Inspect the target and capture a BEFORE release baseline.
-2. Present compatible defenses, expected benefits, trade-offs, and verification requirements.
-3. Wait for the user to choose actions in a plan bound to its exact hash.
-4. Apply the selected actions to an isolated candidate.
-5. Compare the candidate with the unchanged baseline. Accept only if required checks pass; otherwise reject and retain rollback evidence.
+1. Inspect the target and capture one BEFORE release baseline.
+2. Run selected analysis engines against that same baseline in parallel; show coverage and missing/partial results separately.
+3. Present only supported defenses, expected benefits, trade-offs, and verification requirements.
+4. Wait for the user to choose actions and acceptance gates in a plan bound to its exact hash.
+5. Apply the selected actions once to an isolated candidate.
+6. Run AFTER analysis and checks against the unchanged baseline. Keep engine evidence and measurements separate; accept only when selected gates pass.
 
-Reports show artifact identities, check results, and candidate outcomes. A successful build alone is not evidence of protection.
+Reports show per-engine BEFORE/AFTER status, input hashes, coverage, evidence, check results, and candidate outcomes. Failed or unavailable non-gating engines remain visible without changing acceptance; a successful build alone is not evidence of protection.
 
 ## What Anti-REA does
 
 | Workflow | What it does | Evidence boundary |
 |---|---|---|
-| Assess | Inspect a project, identify release artifacts, and capture a BEFORE baseline. | Discovery is bounded and does not infer a complete build graph or runtime behavior. |
+| Assess | Inspect a project, identify release artifacts, and capture a BEFORE baseline for available analysis engines. | Discovery is bounded; an unavailable engine is recorded and does not imply complete coverage. |
 | Plan | Compare available hardening options, trade-offs, checks, and rollback steps. | A user must approve the exact plan before execution. |
 | Evaluate | Build an isolated candidate and compare it with the same baseline. | Applicable actions and checks depend on the target and verified adapters. |
 | Report | Show BEFORE/AFTER identities, verification results, and acceptance status. | Evidence applies to the tested artifact, environment, and behavior scope only. |
 
-The repository currently includes selected adapters for JavaScript, Flutter Android, WebAssembly, browser behavior, and Python dependency workflows. This is today's implementation set, not the limit of the product's intended platform coverage. See the [adapter guide](docs/cli.md) and [acceptance audit](AUDIT.md) for exact status and open blockers.
+The repository currently includes selected adapters for JavaScript, Flutter Android, WebAssembly, browser behavior, Python dependency workflows, REA analysis, and read-only Craft Anything triage. Craft Anything findings inform plans but its rebuilding tools are never used as hardening. See the [adapter guide](docs/cli.md), [upstream integration notes](docs/upstream-integrations.md), and [acceptance audit](AUDIT.md) for exact status and open blockers.
 
 ## Set up
 

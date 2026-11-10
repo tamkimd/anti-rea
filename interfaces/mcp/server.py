@@ -301,6 +301,7 @@ def start_baseline(
     e2e_test_file: str = "tests/behavior.e2e.ts",
     rea_runtime: str | None = None,
     build_time_trials: int = 1,
+    craft_anything_cli: str | None = None,
 ) -> dict[str, Any]:
     """Run an explicit BEFORE command and hash selected project artifacts.
 
@@ -320,6 +321,7 @@ def start_baseline(
         e2e_test_file,
         rea_runtime,
         build_time_trials=build_time_trials,
+        craft_anything_cli=craft_anything_cli,
     )
     return {
         "status": "captured",
@@ -334,6 +336,11 @@ def start_baseline(
         .get("evidence_path"),
         "e2e_evidence": baseline["identity"].get("e2e_behavior", {}).get("report_path"),
         "rea_evidence": baseline["identity"].get("rea_analysis", {}).get("report_path"),
+        "craft_anything_evidence": baseline["identity"]
+        .get("analysis_engines", {})
+        .get("craft-anything", {})
+        .get("evidence", {})
+        .get("path"),
     }
 
 
@@ -351,6 +358,7 @@ def start_baseline_async(
     e2e_test_file: str = "tests/behavior.e2e.ts",
     rea_runtime: str | None = None,
     build_time_trials: int = 1,
+    craft_anything_cli: str | None = None,
 ) -> dict[str, Any]:
     """Schedule a BEFORE capture; poll get_run and pass its run id to submit_plan."""
     workflow._reference_id(baseline_id, "baseline id")
@@ -399,6 +407,7 @@ def start_baseline_async(
                 cancel_event,
                 lambda process: control.update(process=process),
                 build_time_trials=build_time_trials,
+                craft_anything_cli=craft_anything_cli,
             )
         except BaseException as error:
             if not (
@@ -918,6 +927,7 @@ def create_plan(
     e2e_behavior: bool = False,
     profile: str = "balanced",
     bla_intensity: str | None = None,
+    analysis_gates: list[str] | None = None,
     performance_max_ms: int = 30000,
     performance_max_bytes: int = 64 * 1024 * 1024,
     performance_max_journey_regression_percent: float = 25,
@@ -938,6 +948,7 @@ def create_plan(
         e2e_behavior=e2e_behavior,
         profile=profile,
         bla_intensity=bla_intensity,
+        analysis_gates=analysis_gates,
         performance_budget={
             "trials": 3,
             "max_elapsed_ms": performance_max_ms,
@@ -954,6 +965,7 @@ def create_plan(
         "plan": plan,
         "actions": plan["actions"],
         "blockers": plan.get("blockers", []),
+        "analysis_policy": plan.get("analysis_policy"),
         "record": path.name,
     }
 
@@ -965,11 +977,15 @@ def execute_plan(
     bla_runtime: str | None = None,
     rea_runtime: str | None = None,
     e2e_runtime: str | None = None,
+    craft_anything_cli: str | None = None,
 ) -> dict[str, Any]:
     """Schedule the approved selection; action_id must be one selected action; poll get_run."""
     runtime = bla_runtime or os.environ.get("ANTI_REA_BLA_RUNTIME")
     rea_runtime = rea_runtime or os.environ.get("ANTI_REA_REA_RUNTIME")
     e2e_runtime = e2e_runtime or os.environ.get("ANTI_REA_E2E_RUNTIME")
+    craft_anything_cli = craft_anything_cli or os.environ.get(
+        "ANTI_REA_CRAFT_ANYTHING_CLI"
+    )
     run_file = run_path(run_id)
     current = workflow.validate_run(workflow.read_json(run_file))
     if current["state"] != "preparing":
@@ -995,6 +1011,7 @@ def execute_plan(
                 lambda process: control.update(process=process),
                 rea_runtime=rea_runtime,
                 e2e_runtime=e2e_runtime,
+                craft_anything_cli=craft_anything_cli,
             )
         except BaseException as error:
             if not (

@@ -18,6 +18,7 @@ def create_plan(
     performance_budget: dict | None = None,
     profile: str = "balanced",
     bla_intensity: str | None = None,
+    analysis_gates: list[str] | None = None,
 ) -> dict:
     """Create limited evidence-derived recommendations and a BLA starting profile."""
     workflow._reference_id(plan_id, "plan id")
@@ -90,6 +91,44 @@ def create_plan(
         performance_budget.setdefault("max_journey_regression_pct", 25)
     workflow.validate_performance_budget(performance_budget)
     baseline_rea = captured["identity"].get("rea_analysis")
+    baseline_engines = captured["identity"].get("analysis_engines", {})
+    craft_before = baseline_engines.get("craft-anything")
+    if "analysis_engines" in captured["identity"]:
+        selected_engines = [
+            name
+            for name in ("rea", "craft-anything")
+            if isinstance(baseline_engines.get(name), dict)
+            and baseline_engines[name].get("status") in {"passed", "partial"}
+        ]
+        default_gates = [
+            name
+            for name in selected_engines
+            if baseline_engines[name].get("status") == "passed"
+        ]
+    else:
+        # Plans created from older baseline records preserve their existing REA gate.
+        selected_engines = ["rea"]
+        default_gates = ["rea"]
+    if analysis_gates is None:
+        acceptance_gates = default_gates
+    elif (
+        not isinstance(analysis_gates, list)
+        or any(engine not in selected_engines for engine in analysis_gates)
+        or len(set(analysis_gates)) != len(analysis_gates)
+    ):
+        raise workflow.WorkflowError(
+            "Analysis gates must be unique selected engines with completed BEFORE evidence"
+        )
+    else:
+        acceptance_gates = analysis_gates
+    if any(
+        baseline_engines.get(engine, {}).get("status") != "passed"
+        for engine in acceptance_gates
+        if engine in baseline_engines
+    ):
+        raise workflow.WorkflowError(
+            "An analysis engine can gate acceptance only after complete BEFORE analysis"
+        )
     if isinstance(baseline_rea, dict):
         rea_report = workflow.verify_evidence_file(
             {
@@ -205,6 +244,21 @@ def create_plan(
             continue
         if path.lower().endswith(".apk"):
             continue
+        engine_evidence = []
+        if (
+            "craft-anything" in selected_engines
+            and isinstance(craft_before, dict)
+            and isinstance(craft_before.get("evidence"), dict)
+        ):
+            engine_evidence.append(
+                {
+                    "baseline_id": captured["id"],
+                    "path": craft_before["evidence"]["path"],
+                    "sha256": craft_before["evidence"]["sha256"],
+                    "kind": "craft-anything-before",
+                    "input_sha256": craft_before["input_sha256"],
+                }
+            )
         common = {
             "evidence": [
                 {
@@ -224,7 +278,8 @@ def create_plan(
                 ]
                 if baseline_rea and baseline_rea["source_path"] == path
                 else []
-            ),
+            )
+            + engine_evidence,
             "cost": "Review and verification time; BLA requires an isolated pinned runtime.",
             "tradeoffs": [
                 "Protected output may be larger or slower.",
@@ -238,7 +293,10 @@ def create_plan(
                 "Adapter accepts one JavaScript file up to 1 MiB.",
                 "Retain the original and verify application behavior before acceptance.",
             ],
-            "verification": ["bla_invariants", "rea_comparison", "performance"]
+            "verification": ["bla_invariants"]
+            + (["rea_comparison"] if "rea" in acceptance_gates else [])
+            + (["craft_analysis"] if "craft-anything" in acceptance_gates else [])
+            + ["performance"]
             + (
                 ["application_behavior"]
                 if behavior_command is not None
@@ -411,6 +469,17 @@ def create_plan(
         "target_id": discovered["id"],
         "baseline_id": captured["id"],
         "actions": actions,
+        **(
+            {
+                "analysis_policy": {
+                    "engines": selected_engines,
+                    "acceptance_gates": acceptance_gates,
+                }
+            }
+            if selected_engines
+            and any(action.get("engine") == "bla" for action in actions)
+            else {}
+        ),
         "profile": {
             "name": profile,
             "bla_intensity": selected_intensity,

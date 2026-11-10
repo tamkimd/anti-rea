@@ -45,6 +45,7 @@ ACCEPTANCE_CLAIM_CHECKS = {
     "application_behavior_passed": "application_behavior",
     "e2e_behavior_passed": "e2e_behavior",
     "rea_comparison_passed": "rea_comparison",
+    "craft_anything_analysis_passed": "craft_analysis",
     "performance_budget_met": "performance",
     "source_map_omitted_from_private_candidate": "public_source_map_absent",
     "flutter_aot_candidate_inspected": "flutter_aot_comparison",
@@ -706,6 +707,58 @@ def validate_baseline(record: Any) -> dict[str, Any]:
         or any(not isinstance(item, str) or not item for item in value["evidence"])
     ):
         raise WorkflowError("Baseline requires retained evidence references")
+    engines = value["identity"].get("analysis_engines")
+    if engines is not None:
+        if not isinstance(engines, dict) or set(engines) - {"rea", "craft-anything"}:
+            raise WorkflowError("Baseline analysis engine records are invalid")
+        for name, engine in engines.items():
+            status = engine.get("status") if isinstance(engine, dict) else None
+            if (
+                engine.get("engine") != name
+                or status not in {"passed", "partial", "unavailable", "failed"}
+                or (
+                    "input_sha256" in engine
+                    and not _SHA256.fullmatch(str(engine["input_sha256"]))
+                )
+                or (
+                    engine.get("evidence") is not None
+                    and (
+                        not isinstance(engine["evidence"], dict)
+                        or not isinstance(engine["evidence"].get("path"), str)
+                        or not Path(engine["evidence"]["path"]).is_absolute()
+                        or not _SHA256.fullmatch(
+                            str(engine["evidence"].get("sha256", ""))
+                        )
+                        or engine["evidence"]["path"] not in value["evidence"]
+                    )
+                )
+                or (
+                    status == "passed"
+                    and (
+                        not isinstance(engine.get("mode"), str)
+                        or not isinstance(engine.get("version"), str)
+                        or not engine.get("version")
+                        or not isinstance(engine.get("input_sha256"), str)
+                    )
+                )
+                or (
+                    engine.get("reason") is not None
+                    and not isinstance(engine["reason"], str)
+                )
+                or (
+                    engine.get("upstream_evidence") is not None
+                    and (
+                        not isinstance(engine["upstream_evidence"], dict)
+                        or not isinstance(engine["upstream_evidence"].get("path"), str)
+                        or not Path(engine["upstream_evidence"]["path"]).is_absolute()
+                        or not _SHA256.fullmatch(
+                            str(engine["upstream_evidence"].get("sha256", ""))
+                        )
+                        or engine["upstream_evidence"]["path"] not in value["evidence"]
+                    )
+                )
+            ):
+                raise WorkflowError(f"Baseline {name} engine result is malformed")
     flutter_aot = value["identity"].get("flutter_aot_inspection")
     if flutter_aot is not None:
         from core import baseline as baseline_capture
@@ -1112,6 +1165,28 @@ def validate_baseline_target(
                 raise WorkflowError(
                     "Flutter AOT report and REA runtime manifest must remain outside the target tree"
                 )
+    craft_analysis = (
+        captured_baseline["identity"].get("analysis_engines", {}).get("craft-anything")
+    )
+    if isinstance(craft_analysis, dict) and isinstance(source_root, str):
+        target_root = Path(source_root).resolve(strict=False)
+        paths = []
+        for key in ("evidence", "upstream_evidence"):
+            reference = craft_analysis.get(key)
+            if isinstance(reference, dict):
+                paths.append(reference.get("path"))
+        if isinstance(craft_analysis.get("project"), str):
+            paths.append(craft_analysis["project"])
+        for value in paths:
+            path = Path(value).resolve(strict=False)
+            if (
+                path == target_root
+                or path in target_root.parents
+                or target_root in path.parents
+            ):
+                raise WorkflowError(
+                    "Craft Anything project and evidence must remain outside the target tree"
+                )
     return captured_baseline
 
 
@@ -1194,6 +1269,39 @@ def validate_plan(record: Any) -> dict[str, Any]:
                     raise WorkflowError(
                         "BLA action intensity does not match the bound plan profile"
                     )
+    analysis_policy = value.get("analysis_policy")
+    if analysis_policy is not None:
+        if (
+            not isinstance(analysis_policy, dict)
+            or set(analysis_policy) != {"engines", "acceptance_gates"}
+            or not isinstance(analysis_policy.get("engines"), list)
+            or not isinstance(analysis_policy.get("acceptance_gates"), list)
+            or not analysis_policy["engines"]
+            or any(
+                engine not in {"rea", "craft-anything"}
+                for engine in analysis_policy["engines"]
+            )
+            or len(set(analysis_policy["engines"])) != len(analysis_policy["engines"])
+            or any(
+                gate not in analysis_policy["engines"]
+                for gate in analysis_policy["acceptance_gates"]
+            )
+            or len(set(analysis_policy["acceptance_gates"]))
+            != len(analysis_policy["acceptance_gates"])
+        ):
+            raise WorkflowError("Plan analysis policy is invalid")
+        if "craft-anything" in analysis_policy["acceptance_gates"] and not any(
+            "craft_analysis" in action["verification"] for action in actions
+        ):
+            raise WorkflowError(
+                "Craft Anything acceptance gate requires a craft_analysis action check"
+            )
+        if "rea" in analysis_policy["acceptance_gates"] and not any(
+            "rea_comparison" in action["verification"] for action in actions
+        ):
+            raise WorkflowError(
+                "REA acceptance gate requires a rea_comparison action check"
+            )
     for action in actions:
         if "performance" in action["verification"]:
             if action.get("engine") != "bla" or not isinstance(
@@ -1699,6 +1807,7 @@ def _validate_composite_actions(
         "performance",
         "application_behavior",
         "rea_comparison",
+        "craft_analysis",
         "e2e_behavior",
     }
     if (
@@ -2103,6 +2212,14 @@ def accept_run(
                 plan,
                 captured,
                 discovered,
+                executed,
+                raw_checks,
+                check["evidence"],
+            )
+        elif check["id"] == "craft_analysis":
+            _verify_craft_analysis_check(
+                approved_plan,
+                captured,
                 executed,
                 raw_checks,
                 check["evidence"],
@@ -3623,6 +3740,100 @@ def _verify_behavior_check(
         )
 
 
+def _verify_craft_analysis_check(
+    plan: dict[str, Any],
+    baseline: dict[str, Any],
+    execution: dict[str, Any],
+    raw_checks: list[bytes],
+    evidence: list[dict[str, Any]],
+) -> None:
+    """Require complete, hash-bound Craft triage only when the approved plan gates on it."""
+    policy = plan.get("analysis_policy", {})
+    pair = execution.get("analysis_engines", {}).get("craft-anything")
+    before = pair.get("before") if isinstance(pair, dict) else None
+    after = pair.get("after") if isinstance(pair, dict) else None
+    baseline_engine = (
+        baseline["identity"].get("analysis_engines", {}).get("craft-anything")
+    )
+    if (
+        "craft-anything" not in policy.get("acceptance_gates", [])
+        or not isinstance(pair, dict)
+        or pair.get("status") != "passed"
+        or not isinstance(before, dict)
+        or not isinstance(after, dict)
+        or before.get("status") != "passed"
+        or after.get("status") != "passed"
+        or before.get("version") != "0.6.0"
+        or after.get("version") != "0.6.0"
+        or before.get("mode") != "deep"
+        or after.get("mode") != "deep"
+        or not isinstance(baseline_engine, dict)
+        or baseline_engine.get("status") != "passed"
+        or before.get("input_sha256") != baseline_engine.get("input_sha256")
+        or not isinstance(after.get("input_sha256"), str)
+        or not _SHA256.fullmatch(after["input_sha256"])
+        or before.get("input_sha256") == after.get("input_sha256")
+        or len(evidence) != 2
+        or len(raw_checks) != 2
+    ):
+        raise WorkflowError(
+            "Craft Anything gate requires matching complete BEFORE/AFTER evidence"
+        )
+    sides = {before.get("side"): before, after.get("side"): after}
+    if set(sides) != {"before", "after"}:
+        raise WorkflowError("Craft Anything evidence sides are invalid")
+    references = {item.get("path"): item for item in evidence}
+    execution_references = {
+        item.get("path"): item
+        for item in execution.get("evidence", [])
+        if isinstance(item, dict)
+    }
+    if any(
+        not isinstance(side.get("evidence"), dict)
+        or references.get(side["evidence"].get("path"), {}).get("sha256")
+        != side["evidence"].get("sha256")
+        or side["evidence"].get("kind") != f"craft-anything-{name}"
+        for name, side in sides.items()
+    ):
+        raise WorkflowError(
+            "Craft Anything check does not reference its paired reports"
+        )
+    for raw, name in zip(raw_checks, ("before", "after")):
+        try:
+            record = json.loads(raw)
+        except (json.JSONDecodeError, UnicodeDecodeError) as error:
+            raise WorkflowError("Craft Anything evidence is invalid JSON") from error
+        side = sides[name]
+        input_identity = record.get("input") if isinstance(record, dict) else None
+        if (
+            not isinstance(record, dict)
+            or record.get("engine") != "craft-anything"
+            or record.get("side") != name
+            or record.get("status") != "passed"
+            or record.get("version") != "0.6.0"
+            or record.get("mode") != "deep"
+            or not isinstance(input_identity, dict)
+            or input_identity.get("sha256") != side.get("input_sha256")
+            or input_identity.get("sha256_after") != side.get("input_sha256")
+            or record.get("upstream_evidence") != side.get("upstream_evidence")
+            or record.get("evidence") is None
+        ):
+            raise WorkflowError(
+                "Craft Anything report does not bind its side, version, input hash, and output"
+            )
+        upstream = side.get("upstream_evidence")
+        if not isinstance(upstream, dict):
+            raise WorkflowError("Craft Anything upstream evidence reference is missing")
+        authenticated = execution_references.get(upstream.get("path"))
+        if (
+            not isinstance(authenticated, dict)
+            or authenticated.get("sha256") != upstream.get("sha256")
+            or authenticated.get("kind") != f"craft-anything-{name}-upstream"
+        ):
+            raise WorkflowError("Craft Anything upstream evidence is not authenticated")
+        verify_evidence_file(upstream)
+
+
 def _verify_rea_check(
     run: dict[str, Any],
     plan: dict[str, Any],
@@ -4359,6 +4570,29 @@ def validate_plan_baseline(
         raise WorkflowError("Plan does not match its saved target baseline")
     if approved_plan.get("blockers") and not approved_plan["actions"]:
         raise WorkflowError("Blocked plan cannot be submitted for a user decision")
+    analysis_policy = approved_plan.get("analysis_policy", {})
+    baseline_engines = captured_baseline["identity"].get("analysis_engines")
+    if isinstance(baseline_engines, dict):
+        for engine in analysis_policy.get("engines", []):
+            result = baseline_engines.get(engine)
+            if not isinstance(result, dict) or result.get("status") not in {
+                "passed",
+                "partial",
+            }:
+                raise WorkflowError(
+                    f"{engine} can only be selected when baseline analysis produced evidence"
+                )
+            if (
+                engine in analysis_policy.get("acceptance_gates", [])
+                and result.get("status") != "passed"
+            ):
+                raise WorkflowError(
+                    f"{engine} acceptance gate requires complete baseline analysis"
+                )
+    elif "craft-anything" in analysis_policy.get("engines", []):
+        raise WorkflowError(
+            "Craft Anything can only be selected when baseline analysis produced evidence"
+        )
     for action in approved_plan["actions"]:
         config = action.get("execution")
         if (
@@ -5112,6 +5346,83 @@ def assemble_run_report(records_dir: str | Path, run_record: Any) -> dict[str, A
     ):
         if value is not None:
             report[kind] = value
+    baseline_engines = (baseline or {}).get("identity", {}).get("analysis_engines", {})
+    execution_engines = (execution_record or {}).get("analysis_engines", {})
+    analysis_table = []
+    engine_names = set(baseline_engines) | set(execution_engines)
+    if plan:
+        engine_names.update(plan.get("analysis_policy", {}).get("engines", []))
+    for engine_name in sorted(engine_names):
+        before = baseline_engines.get(engine_name, {})
+        after = execution_engines.get(engine_name, {})
+        comparison_ref = (
+            execution_record.get("rea_comparison")
+            if isinstance(execution_record, dict)
+            else None
+        )
+        if (
+            engine_name == "rea"
+            and isinstance(comparison_ref, dict)
+            and isinstance(comparison_ref.get("path"), str)
+        ):
+            try:
+                comparison = read_json(comparison_ref["path"])
+            except (OSError, WorkflowError):
+                comparison = {}
+            analysis_table.append(
+                {
+                    "engine": engine_name,
+                    "before_status": before.get("status", "unavailable"),
+                    "after_status": (
+                        "passed" if comparison.get("status") == "measured" else "failed"
+                    ),
+                    "before_version": before.get("version"),
+                    "after_version": comparison.get("rea_version")
+                    or comparison.get("engine_version")
+                    or before.get("version"),
+                    "before_coverage": before.get("coverage"),
+                    "after_coverage": comparison.get("coverage"),
+                    "before_input_sha256": comparison.get("before_tree_sha256"),
+                    "after_input_sha256": comparison.get("after_tree_sha256"),
+                    "before_evidence": comparison.get("before", {}).get("report"),
+                    "after_evidence": comparison.get("after", {}).get("report"),
+                }
+            )
+            continue
+        after_after = after.get("after", {}) if isinstance(after, dict) else {}
+        before_evidence = before.get("evidence")
+        analysis_table.append(
+            {
+                "engine": engine_name,
+                "before_status": before.get("status", "unavailable"),
+                "after_status": (
+                    after_after.get("status", "pending") if after else "pending"
+                ),
+                "before_version": before.get("version"),
+                "after_version": after_after.get("version"),
+                "before_coverage": before.get("coverage"),
+                "after_coverage": after_after.get("coverage"),
+                "before_input_sha256": before.get("input_sha256"),
+                "after_input_sha256": after_after.get("input_sha256"),
+                "before_evidence": (
+                    before_evidence.get("path")
+                    if isinstance(before_evidence, dict)
+                    else before.get("report_path")
+                ),
+                "after_evidence": (
+                    after_after.get("evidence", {}).get("path")
+                    if isinstance(after_after.get("evidence"), dict)
+                    else None
+                ),
+                "reason": (
+                    after_after.get("reason")
+                    or before.get("reason")
+                    or after.get("reason")
+                ),
+            }
+        )
+    if analysis_table:
+        report["analysis_table"] = analysis_table
     report["rollbacks"] = []
     for path in records.glob("rollback-*.json"):
         rollback = validate_evidence_record(read_record(path, "rollback"), "rollback")
@@ -5347,4 +5658,36 @@ def format_effectiveness_markdown(report: dict[str, Any]) -> str:
             f"| {row['iteration']} | {cell(row['candidate_id'])} | {cell(row['engine'])} | "
             f"{before} | {after} | {cell(check_summary)} | {cell(row['status'])} |"
         )
+    analyses = report.get("analysis_table", [])
+    if analyses:
+        lines.extend(
+            [
+                "",
+                "## Analysis engines",
+                "",
+                "| Engine | BEFORE | AFTER | BEFORE input SHA-256 | AFTER input SHA-256 | Coverage | Evidence |",
+                "|---|---|---|---|---|---|---|",
+            ]
+        )
+        for item in analyses:
+            coverage = item.get("after_coverage", item.get("before_coverage"))
+            evidence = (
+                ", ".join(
+                    value
+                    for value in (
+                        item.get("before_evidence"),
+                        item.get("after_evidence"),
+                    )
+                    if isinstance(value, str)
+                )
+                or "—"
+            )
+            lines.append(
+                f"| {cell(item.get('engine', 'unknown'))} | "
+                f"{cell(item.get('before_status', 'unknown'))} | "
+                f"{cell(item.get('after_status', 'unknown'))} | "
+                f"{cell(item.get('before_input_sha256') or '—')} | "
+                f"{cell(item.get('after_input_sha256') or '—')} | "
+                f"{cell(coverage if coverage is not None else '—')} | {cell(evidence)} |"
+            )
     return "\n".join(lines)

@@ -1123,6 +1123,24 @@
             "minimum": 0
           }
         },
+        "analysis_policy": {
+          "type": "object",
+          "required": ["engines", "acceptance_gates"],
+          "properties": {
+            "engines": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {"enum": ["rea", "craft-anything"]}
+            },
+            "acceptance_gates": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"enum": ["rea", "craft-anything"]}
+            }
+          },
+          "additionalProperties": false
+        },
         "rollback": {
           "type": "string",
           "minLength": 1
@@ -1811,6 +1829,7 @@
               "application_behavior_passed",
               "e2e_behavior_passed",
               "rea_comparison_passed",
+              "craft_anything_analysis_passed",
               "performance_budget_met",
               "source_map_omitted_from_private_candidate"
             ]

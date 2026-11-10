@@ -277,6 +277,134 @@ class WorkflowContractTests(unittest.TestCase):
         with self.assertRaisesRegex(w.WorkflowError, "safe BLA JavaScript"):
             w.start_execution(self.run, multi_plan, multi_decision)
 
+    def test_craft_analysis_gate_authenticates_paired_engine_evidence(self):
+        before_input = "a" * 64
+        after_input = "b" * 64
+        before_upstream = self.evidence_ref("upstream-before.json", b"raw before")
+        after_upstream = self.evidence_ref("upstream-after.json", b"raw after")
+        before_raw = w.canonical(
+            {
+                "engine": "craft-anything",
+                "side": "before",
+                "status": "passed",
+                "version": "0.6.0",
+                "mode": "deep",
+                "input": {"sha256": before_input, "sha256_after": before_input},
+                "upstream_evidence": before_upstream,
+                "evidence": {"summary": "before"},
+            }
+        )
+        after_raw = w.canonical(
+            {
+                "engine": "craft-anything",
+                "side": "after",
+                "status": "passed",
+                "version": "0.6.0",
+                "mode": "deep",
+                "input": {"sha256": after_input, "sha256_after": after_input},
+                "upstream_evidence": after_upstream,
+                "evidence": {"summary": "after"},
+            }
+        )
+        before_ref = self.evidence_ref("craft-before.json", before_raw)
+        after_ref = self.evidence_ref("craft-after.json", after_raw)
+        baseline = {
+            **self.baseline,
+            "identity": {
+                **self.baseline["identity"],
+                "analysis_engines": {
+                    "craft-anything": {
+                        "engine": "craft-anything",
+                        "status": "passed",
+                        "input_sha256": before_input,
+                    }
+                },
+            },
+        }
+        plan = {
+            **self.plan,
+            "analysis_policy": {
+                "engines": ["craft-anything"],
+                "acceptance_gates": ["craft-anything"],
+            },
+        }
+        execution = {
+            "evidence": [
+                {**before_upstream, "kind": "craft-anything-before-upstream"},
+                {**after_upstream, "kind": "craft-anything-after-upstream"},
+            ],
+            "analysis_engines": {
+                "craft-anything": {
+                    "status": "passed",
+                    "before": {
+                        "side": "before",
+                        "status": "passed",
+                        "version": "0.6.0",
+                        "mode": "deep",
+                        "input_sha256": before_input,
+                        "upstream_evidence": before_upstream,
+                        "evidence": {**before_ref, "kind": "craft-anything-before"},
+                    },
+                    "after": {
+                        "side": "after",
+                        "status": "passed",
+                        "version": "0.6.0",
+                        "mode": "deep",
+                        "input_sha256": after_input,
+                        "upstream_evidence": after_upstream,
+                        "evidence": {**after_ref, "kind": "craft-anything-after"},
+                    },
+                }
+            },
+        }
+        w._verify_craft_analysis_check(
+            plan,
+            baseline,
+            execution,
+            [before_raw, after_raw],
+            [
+                {**before_ref, "kind": "craft-anything-before"},
+                {**after_ref, "kind": "craft-anything-after"},
+            ],
+        )
+        with self.assertRaisesRegex(
+            w.WorkflowError, "upstream evidence is not authenticated"
+        ):
+            w._verify_craft_analysis_check(
+                plan,
+                baseline,
+                {**execution, "evidence": []},
+                [before_raw, after_raw],
+                [
+                    {**before_ref, "kind": "craft-anything-before"},
+                    {**after_ref, "kind": "craft-anything-after"},
+                ],
+            )
+        unavailable = {
+            **execution,
+            "analysis_engines": {
+                "craft-anything": {
+                    **execution["analysis_engines"]["craft-anything"],
+                    "status": "partial",
+                    "after": {
+                        **execution["analysis_engines"]["craft-anything"]["after"],
+                        "status": "unavailable",
+                    },
+                }
+            },
+        }
+        with self.assertRaisesRegex(w.WorkflowError, "complete BEFORE/AFTER"):
+            w._verify_craft_analysis_check(
+                plan,
+                baseline,
+                unavailable,
+                [before_raw, after_raw],
+                [
+                    {**before_ref, "kind": "craft-anything-before"},
+                    {**after_ref, "kind": "craft-anything-after"},
+                ],
+            )
+
     def test_submit_plan_binds_matching_baseline_and_advances_for_review(self):
         run = {
             "schema_version": "2.0",

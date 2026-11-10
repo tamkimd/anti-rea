@@ -1554,6 +1554,7 @@ class SourceMapCandidateTests(unittest.TestCase):
                 )
             result = json.loads(output.getvalue())
             self.assertEqual(result["status"], "verifying")
+
             candidate = Path(result["candidate"])
             self.assertFalse((candidate / "dist/app.js.map").exists())
             self.assertEqual((candidate / "dist/app.js").read_text(), "bundle")
@@ -1762,3 +1763,91 @@ class SourceMapCandidateTests(unittest.TestCase):
             self.assertEqual(
                 (baseline_tree / "dist/app.js.map").read_text(), "private map"
             )
+
+
+class CraftAnythingAfterAnalysisTests(unittest.TestCase):
+    def test_paired_analysis_runs_both_snapshots_and_binds_envelope_hashes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            before = root / "before"
+            after = root / "after"
+            before.mkdir()
+            after.mkdir()
+            (before / "app.js").write_text("const state = 'before';")
+            (after / "app.js").write_text("const state = 'after';")
+            state = root / "state"
+            evidence = state / "evidence"
+            evidence.mkdir(parents=True)
+            cli = root / "craft-anything-cli"
+            cli.write_text(
+                "#!/usr/bin/env python3\n"
+                "import json, pathlib, sys\n"
+                "if '--version' in sys.argv:\n"
+                " print('craft-anything-cli 0.6.0')\n"
+                "else:\n"
+                " print(json.dumps({'result': {'files': len(list(pathlib.Path(sys.argv[-1]).rglob('*')))}, 'coverage': 1.0}))\n"
+            )
+            cli.chmod(0o700)
+            before_hash = __import__(
+                "core.craft_anything_integration", fromlist=["_tree_hash"]
+            )._tree_hash(before)
+            baseline = {
+                "identity": {
+                    "analysis_engines": {
+                        "craft-anything": {
+                            "status": "passed",
+                            "input_sha256": before_hash,
+                        }
+                    }
+                }
+            }
+            result = execution._capture_craft_analysis_pair(
+                before,
+                after,
+                state=state,
+                evidence_dir=evidence,
+                stem="paired-test",
+                cli=cli,
+                baseline=baseline,
+            )
+            self.assertEqual(result["status"], "passed")
+            self.assertEqual(result["before"]["input_sha256"], before_hash)
+            self.assertNotEqual(
+                result["before"]["input_sha256"],
+                result["after"]["input_sha256"],
+            )
+            for side in ("before", "after"):
+                ref = result[side]["evidence"]
+                self.assertTrue(Path(ref["path"]).is_file())
+                envelope = workflow.read_json(ref["path"])
+                self.assertEqual(envelope["side"], side)
+                self.assertEqual(
+                    envelope["input"]["sha256"], result[side]["input_sha256"]
+                )
+                self.assertEqual(envelope["status"], "passed")
+
+    def test_non_gating_rea_failure_is_retained_as_partial(self):
+        pair, comparison = execution._capture_rea_analysis_pair(
+            None,
+            None,
+            None,
+            None,
+            {
+                "identity": {
+                    "analysis_engines": {
+                        "rea": {
+                            "status": "passed",
+                            "version": "6.8.0",
+                            "input_sha256": "a" * 64,
+                        }
+                    }
+                }
+            },
+            Path("/tmp"),
+            "rea-partial-test",
+            1,
+        )
+        self.assertEqual(pair["status"], "partial")
+        self.assertEqual(pair["before"]["status"], "passed")
+        self.assertEqual(pair["after"]["status"], "failed")
+        self.assertIsNone(comparison)

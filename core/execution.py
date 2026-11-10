@@ -13,6 +13,7 @@ import sys
 import sysconfig
 import tempfile
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from core import baseline as baseline_capture
@@ -137,6 +138,7 @@ def execute_bla_action(
     rea_runtime: str | Path | None = None,
     e2e_runtime: str | Path | None = None,
     optimization_search: dict | None = None,
+    craft_anything_cli: str | Path | None = None,
 ) -> dict:
     root = workflow._private_directory(store).resolve(strict=True)
     records = root / "records"
@@ -189,7 +191,14 @@ def execute_bla_action(
                 "BLA action was not selected by the recorded decision"
             )
         return execute_selected_composite(
-            store, run_id, runtime, rea_runtime, e2e_runtime, cancel_event, on_process
+            store,
+            run_id,
+            runtime,
+            rea_runtime,
+            e2e_runtime,
+            cancel_event,
+            on_process,
+            craft_anything_cli,
         )
     if action_id not in decision["selected_action_ids"]:
         raise workflow.WorkflowError(
@@ -589,13 +598,24 @@ def execute_bla_action(
                 ]
             )
         behavior_command = config.get("behavior_command")
+        analysis_policy = plan.get(
+            "analysis_policy",
+            {"engines": ["rea"], "acceptance_gates": ["rea"]},
+        )
+        selected_analysis_engines = analysis_policy.get("engines", [])
+        craft_selected = "craft-anything" in selected_analysis_engines
+        craft_cli = craft_anything_cli or os.environ.get("ANTI_REA_CRAFT_ANYTHING_CLI")
         behavior_evidence = None
         behavior_result = None
         snapshot_identity = None
         before_snapshot = after_snapshot = None
-        if {"rea_comparison", "e2e_behavior", "application_behavior"} & set(
-            action["verification"]
-        ) or behavior_command is not None:
+        if (
+            {"rea_comparison", "e2e_behavior", "application_behavior"}
+            & set(action["verification"])
+            or behavior_command is not None
+            or "rea" in selected_analysis_engines
+            or craft_selected
+        ):
             snapshots = workflow._private_directory(root / "behavior-snapshots")
             snapshot_root = snapshots / stem
             if snapshot_root.exists() or snapshot_root.is_symlink():
@@ -978,63 +998,61 @@ def execute_bla_action(
             else []
         )
         rea_comparison = None
-        if "rea_comparison" in action["verification"]:
-            if (
-                rea_runtime_path is None
-                or before_snapshot is None
-                or after_snapshot is None
-            ):
-                raise workflow.WorkflowError(
-                    "REA comparison requires a verified runtime and paired snapshots"
-                )
-            rea_output_dir = workflow._private_directory(evidence_dir / f"{stem}-rea")
-            rea_result = _invoke_rea(
-                _rea_script(),
-                [
-                    "compare-javascript",
-                    str(rea_runtime_path),
-                    str(before_snapshot),
-                    str(after_snapshot),
-                    str(rea_output_dir),
-                ],
+        craft_analysis = None
+        craft_pool = ThreadPoolExecutor(max_workers=1) if craft_selected else None
+        craft_future = (
+            craft_pool.submit(
+                _capture_craft_analysis_pair,
+                before_snapshot,
+                after_snapshot,
+                state=root,
+                evidence_dir=evidence_dir,
+                stem=stem,
+                cli=craft_cli,
+                baseline=baseline,
+                cancel_event=cancel_event,
+                on_process=on_process,
+            )
+            if craft_pool is not None and before_snapshot and after_snapshot
+            else None
+        )
+        rea_selected = "rea" in selected_analysis_engines
+        rea_gate = "rea_comparison" in action["verification"]
+        rea_analysis = None
+        if rea_selected or rea_gate:
+            rea_analysis, rea_comparison = _capture_rea_analysis_pair(
+                rea_runtime_path,
+                before_snapshot,
+                after_snapshot,
+                snapshot_identity,
+                baseline,
+                evidence_dir,
+                stem,
                 1200,
                 cancel_event,
                 on_process,
             )
-            comparison_path = Path(rea_result["report"])
-            comparison_hash = rea_result["report_sha256"]
-            comparison_report = json.loads(
-                workflow.verify_evidence_file(
-                    {"path": str(comparison_path), "sha256": comparison_hash}
-                )
-            )
-            if (
-                comparison_report.get("status") != "measured"
-                or comparison_report.get("before_tree_sha256")
-                != snapshot_identity["before_tree_sha256"]
-                or comparison_report.get("after_tree_sha256")
-                != snapshot_identity["after_tree_sha256"]
-            ):
+            if rea_gate and rea_analysis["status"] != "passed":
+                if craft_future:
+                    craft_future.result()
+                if craft_pool:
+                    craft_pool.shutdown(wait=True, cancel_futures=True)
                 raise workflow.WorkflowError(
-                    "REA comparison does not match this run's project snapshots"
+                    rea_analysis.get("reason") or "REA comparison gate failed"
                 )
-            rea_comparison = {
-                "path": str(comparison_path),
-                "sha256": comparison_hash,
-                "before_snapshot": str(before_snapshot),
-                "after_snapshot": str(after_snapshot),
-                "snapshot_root": str(snapshot_root),
-                **snapshot_identity,
-                "runtime_manifest_sha256": comparison_report["runtime_manifest_sha256"],
-            }
-            commands.append(
-                [
-                    "rea-compare",
-                    str(rea_runtime_path),
-                    str(before_snapshot),
-                    str(after_snapshot),
-                ]
-            )
+            if rea_comparison:
+                commands.append(
+                    [
+                        "rea-compare",
+                        str(rea_runtime_path),
+                        str(before_snapshot),
+                        str(after_snapshot),
+                    ]
+                )
+        if craft_future:
+            craft_analysis = craft_future.result()
+        if craft_pool:
+            craft_pool.shutdown(wait=True, cancel_futures=True)
         execution_id = (
             "exec-" + hashlib.sha256(f"{run_id}:{action_id}".encode()).hexdigest()[:24]
         )
@@ -1063,6 +1081,12 @@ def execute_bla_action(
         }
         if rea_comparison:
             execution["rea_comparison"] = rea_comparison
+        if rea_analysis:
+            execution.setdefault("analysis_engines", {})["rea"] = rea_analysis
+        if craft_analysis:
+            execution.setdefault("analysis_engines", {})["craft-anything"] = (
+                craft_analysis
+            )
         if e2e_behavior:
             execution["e2e_behavior"] = e2e_behavior
         if performance_budget:
@@ -1106,6 +1130,31 @@ def execute_bla_action(
                                 "sha256": rea_comparison["sha256"],
                                 "kind": "rea-comparison",
                             }
+                        ],
+                    }
+                )
+            elif check_id == "craft_analysis" and craft_analysis:
+                evidence = [
+                    side["evidence"]
+                    for side in (craft_analysis["before"], craft_analysis["after"])
+                    if isinstance(side.get("evidence"), dict)
+                ]
+                checks.append(
+                    {
+                        "id": check_id,
+                        "status": (
+                            "passed"
+                            if craft_analysis["status"] == "passed"
+                            else "failed"
+                        ),
+                        "evidence": evidence
+                        or [
+                            side.get("reason")
+                            or f"{side['side']} Craft Anything unavailable"
+                            for side in (
+                                craft_analysis["before"],
+                                craft_analysis["after"],
+                            )
                         ],
                     }
                 )
@@ -1159,6 +1208,20 @@ def execute_bla_action(
             *performance_candidate_refs,
             *(behavior_evidence or []),
         ]
+        if craft_analysis:
+            execution["evidence"].extend(
+                side["evidence"]
+                for side in (
+                    craft_analysis["before"],
+                    craft_analysis["after"],
+                )
+                if isinstance(side.get("evidence"), dict)
+            )
+            execution["evidence"].extend(
+                side["upstream_evidence"]
+                for side in (craft_analysis["before"], craft_analysis["after"])
+                if isinstance(side.get("upstream_evidence"), dict)
+            )
         if rea_comparison:
             comparison = workflow.read_json(rea_comparison["path"])
             execution["evidence"].append(
@@ -1285,6 +1348,7 @@ def execute_approved_candidate_set(
     cancel_event=None,
     on_process=None,
     direct: bool = False,
+    craft_anything_cli: str | Path | None = None,
 ) -> dict:
     """Compose one preflighted approved set of distinct BLA JavaScript actions privately."""
     root = workflow._private_directory(store).resolve(strict=True)
@@ -1334,6 +1398,10 @@ def execute_approved_candidate_set(
         search, plan, baseline, candidate, actions = (
             state[key] for key in ("search", "plan", "baseline", "candidate", "actions")
         )
+    analysis_policy = plan.get("analysis_policy", {})
+    rea_selected = "rea" in analysis_policy.get("engines", [])
+    craft_selected = "craft-anything" in analysis_policy.get("engines", [])
+    craft_cli = craft_anything_cli or os.environ.get("ANTI_REA_CRAFT_ANYTHING_CLI")
     if len(actions) < 2:
         raise workflow.WorkflowError(
             "Composite execution requires at least two actions; use the single-action executor"
@@ -1827,7 +1895,11 @@ def execute_approved_candidate_set(
             snapshot_root / "before",
             snapshot_root / "after",
         )
-        if {"application_behavior", "rea_comparison", "e2e_behavior"} & set(checks):
+        if (
+            {"application_behavior", "rea_comparison", "e2e_behavior"} & set(checks)
+            or rea_selected
+            or craft_selected
+        ):
             snapshot_identity = _create_composite_snapshots(
                 baseline_root,
                 baseline,
@@ -1839,6 +1911,24 @@ def execute_approved_candidate_set(
         else:
             snapshot_identity = None
         behavior_refs, rea_comparison, e2e_behavior = [], None, None
+        craft_analysis = None
+        craft_pool = ThreadPoolExecutor(max_workers=1) if craft_selected else None
+        craft_future = (
+            craft_pool.submit(
+                _capture_craft_analysis_pair,
+                before_snapshot,
+                after_snapshot,
+                state=root,
+                evidence_dir=evidence_dir,
+                stem=stem,
+                cli=craft_cli,
+                baseline=baseline,
+                cancel_event=cancel_event,
+                on_process=on_process,
+            )
+            if craft_pool is not None and snapshot_identity is not None
+            else None
+        )
         first_stage = stages[0]
         if "application_behavior" in checks:
             behavior = baseline["identity"]["behavior"]
@@ -1899,73 +1989,63 @@ def execute_approved_candidate_set(
             )
         else:
             stable_behavior = True
-        if "rea_comparison" in checks:
-            rea_dir = workflow._private_directory(evidence_dir / f"{stem}-rea")
-            result = _invoke_rea(
-                _rea_script(),
-                [
-                    "compare-javascript",
-                    str(rea_runtime_path),
-                    str(before_snapshot),
-                    str(after_snapshot),
-                    str(rea_dir),
-                ],
+        rea_analysis = None
+        if rea_selected or "rea_comparison" in checks:
+            rea_analysis, rea_comparison = _capture_rea_analysis_pair(
+                rea_runtime_path,
+                before_snapshot,
+                after_snapshot,
+                snapshot_identity,
+                baseline,
+                evidence_dir,
+                stem,
                 remaining_timeout(1200),
                 cancel_event,
                 on_process,
+                source_path=first_stage["source_path"],
+                source_sha256=first_stage["input_sha256"],
+                candidate_sha256=first_stage["candidate_sha256"],
             )
-            report_ref = {
-                "path": result["report"],
-                "sha256": result["report_sha256"],
-                "kind": "rea-comparison",
-            }
-            report = json.loads(workflow.verify_evidence_file(report_ref))
-            if (
-                report.get("status") != "measured"
-                or report.get("before_tree_sha256")
-                != snapshot_identity["before_tree_sha256"]
-                or report.get("after_tree_sha256")
-                != snapshot_identity["after_tree_sha256"]
-            ):
+            if "rea_comparison" in checks and rea_analysis["status"] != "passed":
+                if craft_future:
+                    craft_future.result()
+                if craft_pool:
+                    craft_pool.shutdown(wait=True, cancel_futures=True)
                 raise workflow.WorkflowError(
-                    "Composite REA report does not match the final candidate tree"
+                    rea_analysis.get("reason") or "Composite REA comparison gate failed"
                 )
-            rea_comparison = {
-                **snapshot_identity,
-                "path": report_ref["path"],
-                "sha256": report_ref["sha256"],
-                "before_snapshot": str(before_snapshot),
-                "after_snapshot": str(after_snapshot),
-                "snapshot_root": str(snapshot_root),
-                "source_path": first_stage["source_path"],
-                "source_sha256": first_stage["input_sha256"],
-                "candidate_sha256": first_stage["candidate_sha256"],
-                "runtime_manifest_sha256": report["runtime_manifest_sha256"],
-            }
-            stage_evidence.append(report_ref)
-            for side in ("before", "after"):
-                stage_evidence.extend(
+            if rea_comparison:
+                report = workflow.read_json(rea_comparison["path"])
+                stage_evidence.append(
+                    {
+                        "path": rea_comparison["path"],
+                        "sha256": rea_comparison["sha256"],
+                        "kind": "rea-comparison",
+                    }
+                )
+                for side in ("before", "after"):
+                    stage_evidence.extend(
+                        [
+                            {
+                                "path": report[side]["report"],
+                                "sha256": report[side]["report_sha256"],
+                                "kind": f"rea-{side}-report",
+                            },
+                            {
+                                "path": report[side]["evidence_bundle"],
+                                "sha256": report[side]["evidence_bundle_sha256"],
+                                "kind": f"rea-{side}-bundle",
+                            },
+                        ]
+                    )
+                commands.append(
                     [
-                        {
-                            "path": report[side]["report"],
-                            "sha256": report[side]["report_sha256"],
-                            "kind": f"rea-{side}-report",
-                        },
-                        {
-                            "path": report[side]["evidence_bundle"],
-                            "sha256": report[side]["evidence_bundle_sha256"],
-                            "kind": f"rea-{side}-bundle",
-                        },
+                        "rea-compare",
+                        str(rea_runtime_path),
+                        str(before_snapshot),
+                        str(after_snapshot),
                     ]
                 )
-            commands.append(
-                [
-                    "rea-compare",
-                    str(rea_runtime_path),
-                    str(before_snapshot),
-                    str(after_snapshot),
-                ]
-            )
         elif snapshot_identity:
             rea_comparison = {
                 **snapshot_identity,
@@ -1976,6 +2056,20 @@ def execute_approved_candidate_set(
                 "source_sha256": first_stage["input_sha256"],
                 "candidate_sha256": first_stage["candidate_sha256"],
             }
+        if craft_future:
+            craft_analysis = craft_future.result()
+            stage_evidence.extend(
+                side["evidence"]
+                for side in (craft_analysis["before"], craft_analysis["after"])
+                if isinstance(side.get("evidence"), dict)
+            )
+            stage_evidence.extend(
+                side["upstream_evidence"]
+                for side in (craft_analysis["before"], craft_analysis["after"])
+                if isinstance(side.get("upstream_evidence"), dict)
+            )
+        if craft_pool:
+            craft_pool.shutdown(wait=True, cancel_futures=True)
         if "e2e_behavior" in checks:
             baseline_e2e = baseline["identity"]["e2e_behavior"]
             e2e_before = {
@@ -2163,6 +2257,12 @@ def execute_approved_candidate_set(
         }
         if rea_comparison:
             execution_record["rea_comparison"] = rea_comparison
+        if rea_analysis:
+            execution_record.setdefault("analysis_engines", {})["rea"] = rea_analysis
+        if craft_analysis:
+            execution_record.setdefault("analysis_engines", {})["craft-anything"] = (
+                craft_analysis
+            )
         if e2e_behavior:
             execution_record["e2e_behavior"] = e2e_behavior
         verification_checks = [
@@ -2226,6 +2326,34 @@ def execute_approved_candidate_set(
                             "sha256": rea_comparison["sha256"],
                             "kind": "rea-comparison",
                         }
+                    ],
+                }
+            )
+        if "craft_analysis" in checks:
+            evidence = [
+                side["evidence"]
+                for side in (
+                    (craft_analysis or {}).get("before", {}),
+                    (craft_analysis or {}).get("after", {}),
+                )
+                if isinstance(side.get("evidence"), dict)
+            ]
+            verification_checks.append(
+                {
+                    "id": "craft_analysis",
+                    "status": (
+                        "passed"
+                        if craft_analysis and craft_analysis["status"] == "passed"
+                        else "failed"
+                    ),
+                    "evidence": evidence
+                    or [
+                        side.get("reason")
+                        or f"{side.get('side', 'unknown')} Craft Anything unavailable"
+                        for side in (
+                            (craft_analysis or {}).get("before", {}),
+                            (craft_analysis or {}).get("after", {}),
+                        )
                     ],
                 }
             )
@@ -2344,6 +2472,7 @@ def execute_selected_composite(
     e2e_runtime: str | Path | None = None,
     cancel_event=None,
     on_process=None,
+    craft_anything_cli: str | Path | None = None,
 ) -> dict:
     root = workflow._private_directory(store).resolve(strict=True)
     run = workflow.validate_run(
@@ -2375,6 +2504,7 @@ def execute_selected_composite(
         cancel_event,
         on_process,
         direct=True,
+        craft_anything_cli=craft_anything_cli,
     )
 
 
@@ -2921,6 +3051,21 @@ def prepare_resume(store: str | Path, run_id: str, new_run_id: str) -> dict:
                 ),
             )
         )
+    captured_engines = baseline["identity"].get("analysis_engines", {})
+    captured_craft = (
+        captured_engines.get("craft-anything")
+        if isinstance(captured_engines, dict)
+        else None
+    )
+    if isinstance(captured_craft, dict):
+        for reference in (
+            captured_craft.get("upstream_evidence"),
+            captured_craft.get("evidence"),
+        ):
+            if isinstance(reference, dict):
+                evidence_specs.append(
+                    (reference.get("path"), reference.get("sha256"), None, "engine")
+                )
     if (
         not isinstance(evidence_hash, str)
         or len(baseline["evidence"]) != len(evidence_specs)
@@ -2956,7 +3101,7 @@ def prepare_resume(store: str | Path, run_id: str, new_run_id: str) -> dict:
                 raise workflow.WorkflowError(
                     "Resume baseline behavior snapshot changed"
                 )
-        elif kind in {"rea-report", "rea-bundle"}:
+        elif kind in {"rea-report", "rea-bundle", "engine"}:
             pass
         elif (
             not isinstance(baseline_output, dict)
@@ -4001,6 +4146,266 @@ def _create_rea_snapshots(
         "source_sha256": source_sha256,
         "candidate_sha256": hashlib.sha256(candidate_bytes).hexdigest(),
     }
+
+
+def _capture_craft_analysis_pair(
+    before: Path,
+    after: Path,
+    *,
+    state: Path,
+    evidence_dir: Path,
+    stem: str,
+    cli: str | Path | None,
+    baseline: dict,
+    cancel_event=None,
+    on_process=None,
+) -> dict:
+    """Run read-only Craft triage concurrently on the exact paired snapshots."""
+    from core import craft_anything_integration
+
+    def capture(side: str, snapshot: Path) -> dict:
+        report_path = evidence_dir / f"{stem}-craft-{side}.json"
+        try:
+            result = craft_anything_integration.analyze(
+                snapshot,
+                state / "craft-anything" / stem / side,
+                timeout=600,
+                cli=str(cli) if cli is not None else None,
+                report_path=report_path,
+                cancel_event=cancel_event,
+                on_process=on_process,
+            )
+        except Exception as error:
+            return {
+                "side": side,
+                "status": "failed",
+                "reason": str(error),
+                "input_sha256": None,
+                "evidence": None,
+            }
+        status = result.get("status")
+        if status == "supported":
+            status = "passed"
+        raw_report = result.get("evidence_path")
+        upstream_evidence = (
+            {
+                "path": raw_report,
+                "sha256": hashlib.sha256(Path(raw_report).read_bytes()).hexdigest(),
+                "kind": f"craft-anything-{side}-upstream",
+            }
+            if isinstance(raw_report, str) and Path(raw_report).is_file()
+            else None
+        )
+        evidence_path = evidence_dir / f"{stem}-craft-{side}-record.json"
+        envelope = {
+            "schema_version": "1.0",
+            "engine": "craft-anything",
+            "side": side,
+            "status": status,
+            "version": result.get("version"),
+            "mode": result.get("mode"),
+            "input": result.get("input"),
+            "coverage": (
+                result.get("evidence", {}).get("coverage")
+                if isinstance(result.get("evidence"), dict)
+                else None
+            ),
+            "evidence": result.get("evidence"),
+            "upstream_evidence": upstream_evidence,
+            "reason": result.get("error"),
+        }
+        _write_snapshot_file(evidence_path, workflow.canonical(envelope) + b"\n")
+        evidence = {
+            "path": str(evidence_path.resolve()),
+            "sha256": hashlib.sha256(evidence_path.read_bytes()).hexdigest(),
+            "kind": f"craft-anything-{side}",
+        }
+        return {
+            "side": side,
+            "status": status,
+            "version": result.get("version"),
+            "mode": result.get("mode"),
+            "input_sha256": result.get("input", {}).get("sha256"),
+            "coverage": (
+                result.get("evidence", {}).get("coverage")
+                if isinstance(result.get("evidence"), dict)
+                else None
+            ),
+            "evidence": evidence,
+            "upstream_evidence": upstream_evidence,
+            "reason": result.get("error"),
+        }
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        before_future = pool.submit(capture, "before", before)
+        after_future = pool.submit(capture, "after", after)
+        before_result = before_future.result()
+        after_result = after_future.result()
+    captured_before = (
+        baseline.get("identity", {})
+        .get("analysis_engines", {})
+        .get("craft-anything", {})
+    )
+    if captured_before.get("status") == "passed" and before_result.get(
+        "input_sha256"
+    ) != captured_before.get("input_sha256"):
+        before_result.update(
+            status="failed",
+            reason="Paired BEFORE triage does not match the saved baseline input hash",
+        )
+    status = (
+        "passed"
+        if before_result["status"] == after_result["status"] == "passed"
+        else "partial"
+    )
+    return {
+        "engine": "craft-anything",
+        "status": status,
+        "before": before_result,
+        "after": after_result,
+    }
+
+
+def _capture_rea_analysis_pair(
+    runtime: Path | None,
+    before: Path | None,
+    after: Path | None,
+    snapshot_identity: dict | None,
+    baseline: dict,
+    evidence_dir: Path,
+    stem: str,
+    timeout: float,
+    cancel_event=None,
+    on_process=None,
+    *,
+    source_path: str | None = None,
+    source_sha256: str | None = None,
+    candidate_sha256: str | None = None,
+) -> tuple[dict, dict | None]:
+    """Capture a paired REA analysis; non-gating failures stay reportable and partial."""
+    baseline_engine = (
+        baseline.get("identity", {}).get("analysis_engines", {}).get("rea", {})
+    )
+    if not baseline_engine:
+        legacy = baseline.get("identity", {}).get("rea_analysis", {})
+        baseline_engine = {
+            "status": "passed" if legacy else "unavailable",
+            "version": "6.8.0" if legacy else None,
+            "input_sha256": legacy.get("input_sha256") if legacy else None,
+            "coverage": legacy.get("coverage") if legacy else None,
+            "evidence": (
+                {
+                    "path": legacy.get("report_path"),
+                    "sha256": legacy.get("report_sha256"),
+                }
+                if legacy.get("report_path") and legacy.get("report_sha256")
+                else None
+            ),
+        }
+    before_result = {
+        "side": "before",
+        "status": baseline_engine.get("status", "unavailable"),
+        "version": baseline_engine.get("version"),
+        "input_sha256": baseline_engine.get("input_sha256"),
+        "coverage": baseline_engine.get("coverage"),
+        "evidence": baseline_engine.get("evidence"),
+    }
+    try:
+        if (
+            runtime is None
+            or before is None
+            or after is None
+            or snapshot_identity is None
+        ):
+            raise workflow.WorkflowError(
+                "REA comparison requires a verified runtime and paired snapshots"
+            )
+        output_dir = workflow._private_directory(evidence_dir / f"{stem}-rea")
+        result = _invoke_rea(
+            _rea_script(),
+            [
+                "compare-javascript",
+                str(runtime),
+                str(before),
+                str(after),
+                str(output_dir),
+            ],
+            timeout,
+            cancel_event,
+            on_process,
+        )
+        comparison_path = Path(result["report"])
+        comparison_hash = result["report_sha256"]
+        report = json.loads(
+            workflow.verify_evidence_file(
+                {"path": str(comparison_path), "sha256": comparison_hash}
+            )
+        )
+        if (
+            report.get("status") != "measured"
+            or report.get("before_tree_sha256")
+            != snapshot_identity["before_tree_sha256"]
+            or report.get("after_tree_sha256") != snapshot_identity["after_tree_sha256"]
+        ):
+            raise workflow.WorkflowError(
+                "REA comparison does not match this run's project snapshots"
+            )
+        comparison = {
+            "path": str(comparison_path),
+            "sha256": comparison_hash,
+            "before_snapshot": str(before),
+            "after_snapshot": str(after),
+            **snapshot_identity,
+            "runtime_manifest_sha256": report["runtime_manifest_sha256"],
+        }
+        if source_path is not None:
+            comparison.update(
+                source_path=source_path,
+                source_sha256=source_sha256,
+                candidate_sha256=candidate_sha256,
+            )
+        pair = {
+            "engine": "rea",
+            "status": "passed",
+            "before": before_result,
+            "after": {
+                "side": "after",
+                "status": "passed",
+                "version": baseline_engine.get("version", "6.8.0"),
+                "input_sha256": report.get("after_tree_sha256"),
+                "coverage": report.get("coverage"),
+                "evidence": {
+                    "path": str(comparison_path),
+                    "sha256": comparison_hash,
+                    "kind": "rea-comparison",
+                },
+            },
+        }
+        return pair, comparison
+    except Exception as error:
+        if cancel_event is not None and cancel_event.is_set():
+            raise
+        if (
+            isinstance(error, workflow.WorkflowError)
+            and "cancelled" in str(error).lower()
+        ):
+            raise
+        return (
+            {
+                "engine": "rea",
+                "status": "partial",
+                "before": before_result,
+                "after": {
+                    "side": "after",
+                    "status": "failed",
+                    "version": baseline_engine.get("version"),
+                    "input_sha256": None,
+                    "reason": str(error),
+                },
+                "reason": str(error),
+            },
+            None,
+        )
 
 
 def _create_composite_snapshots(

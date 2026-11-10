@@ -11,6 +11,11 @@ from core import workflow
 
 _OPERATIONS = ("probe", "supports", "plan", "execute", "verify", "collect", "cleanup")
 _STATUS = {"implemented", "partial", "unavailable"}
+_CRAFT_ANYTHING = {
+    "repository": "https://github.com/storytold/craft-anything",
+    "version": "0.6.0",
+    "source_commit": "899b4ebd24ca17d4a84af1e1b9ef9c0304de08ab",
+}
 
 
 def _lock_root() -> Path:
@@ -208,6 +213,61 @@ def get_registry() -> dict:
                 "limitations": limitations,
             }
         )
+
+    items.append(
+        {
+            "id": "craft-anything",
+            "kind": "analysis_engine",
+            "repository": _CRAFT_ANYTHING["repository"],
+            "source_commit": _CRAFT_ANYTHING["source_commit"],
+            "source_package_equivalence": "not_verified",
+            "installation": {
+                "method": "use a preinstalled craft-anything-cli; Anti-REA does not download it"
+            },
+            "packages": {"craft-anything-cli": {"version": _CRAFT_ANYTHING["version"]}},
+            "license": {
+                "declared": "MIT OR Apache-2.0",
+                "independent_review": "unverified",
+            },
+            "supported_artifacts": [
+                "Regular files or directories accepted by Craft Anything triage; per-target coverage is reported by the upstream engine"
+            ],
+            "supported_runtimes": ["craft-anything-cli 0.6.0"],
+            "operations": {
+                "probe": _operation(
+                    "partial", "Installed CLI identity and exact version only."
+                ),
+                "supports": _operation(
+                    "partial", "Delegated to upstream triage and its coverage evidence."
+                ),
+                "plan": _operation(
+                    "unavailable",
+                    "Craft Anything provides findings, not Anti-REA hardening actions.",
+                ),
+                "execute": _operation(
+                    "unavailable",
+                    "Analysis only; rebuild and target-changing tools are never invoked.",
+                ),
+                "verify": _operation(
+                    "partial",
+                    "CLI result, input identity, and read-only input stability.",
+                ),
+                "collect": _operation(
+                    "partial",
+                    "Structured triage output is retained in private Anti-REA state.",
+                ),
+                "cleanup": _operation(
+                    "partial",
+                    "Project data is isolated from the target; automatic cleanup and retention are not verified.",
+                ),
+            },
+            "limitations": [
+                "Craft Anything findings do not establish protection or replace REA measurement.",
+                "Input is static triage only; behavior, runtime protection, and rebuild are not tested.",
+                "Source/package equivalence and independent license review are unverified.",
+            ],
+        }
+    )
 
     items.append(
         {
@@ -410,6 +470,7 @@ def validate_registry(value: dict) -> dict:
         "bla",
         "rea",
         "e2e",
+        "craft-anything",
         "source-map-candidate",
         "flutter-android-build",
         "wasm-compile-probe",

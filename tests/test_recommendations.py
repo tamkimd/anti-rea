@@ -399,6 +399,71 @@ class RecommendationTests(unittest.TestCase):
         self.assertEqual(action["execution"]["rea_baseline_evidence_id"], "ev_fixture")
         report_path.unlink()
 
+    def test_craft_before_evidence_enters_plan_and_hash_binds_acceptance_gates(self):
+        with tempfile.TemporaryDirectory() as directory:
+            evidence = Path(directory) / "craft-before.json"
+            evidence.write_text('{"summary":"triaged"}')
+            digest = hashlib.sha256(evidence.read_bytes()).hexdigest()
+            baseline = {
+                **self.baseline,
+                "identity": {
+                    **self.baseline["identity"],
+                    "analysis_engines": {
+                        "rea": {
+                            "engine": "rea",
+                            "status": "passed",
+                            "mode": "javascript-static-analysis",
+                            "version": "6.8.0",
+                            "input_sha256": "a" * 64,
+                        },
+                        "craft-anything": {
+                            "engine": "craft-anything",
+                            "status": "passed",
+                            "mode": "deep",
+                            "version": "0.6.0",
+                            "input_sha256": "b" * 64,
+                            "coverage": {"files": 1},
+                            "evidence": {"path": str(evidence), "sha256": digest},
+                        },
+                    },
+                },
+                "evidence": [*self.baseline["evidence"], str(evidence)],
+            }
+            default = recommendations.create_plan(
+                self.target, baseline, "plan-craft-default"
+            )
+            selected_only = recommendations.create_plan(
+                self.target,
+                baseline,
+                "plan-craft-rea-gate",
+                analysis_gates=["rea"],
+            )
+            default_action = next(
+                action for action in default["actions"] if action["engine"] == "bla"
+            )
+            selected_action = next(
+                action
+                for action in selected_only["actions"]
+                if action["engine"] == "bla"
+            )
+            self.assertEqual(
+                default["analysis_policy"]["engines"], ["rea", "craft-anything"]
+            )
+            self.assertEqual(
+                default["analysis_policy"]["acceptance_gates"],
+                ["rea", "craft-anything"],
+            )
+            self.assertIn("craft_analysis", default_action["verification"])
+            self.assertIn(
+                "craft-anything-before",
+                {item.get("kind") for item in default_action["evidence"]},
+            )
+            self.assertNotIn("craft_analysis", selected_action["verification"])
+            self.assertIn("craft-anything", selected_only["analysis_policy"]["engines"])
+            self.assertNotEqual(
+                workflow.record_hash(default), workflow.record_hash(selected_only)
+            )
+
     def test_no_supported_artifact_or_bad_ids_fail_without_creating_plan(self):
         baseline = {
             **self.baseline,

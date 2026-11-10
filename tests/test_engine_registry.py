@@ -22,6 +22,7 @@ class EngineRegistryTests(unittest.TestCase):
                 "bla",
                 "rea",
                 "e2e",
+                "craft-anything",
                 "source-map-candidate",
                 "flutter-android-build",
                 "wasm-compile-probe",
@@ -30,6 +31,18 @@ class EngineRegistryTests(unittest.TestCase):
         self.assertEqual(entries["bla"]["packages"]["bla-agents"]["version"], "1.6.3")
         self.assertEqual(entries["bla"]["operations"]["execute"]["status"], "partial")
         self.assertEqual(entries["rea"]["operations"]["plan"]["status"], "unavailable")
+        self.assertEqual(
+            entries["craft-anything"]["operations"]["execute"]["status"],
+            "unavailable",
+        )
+        self.assertEqual(
+            entries["craft-anything"]["packages"]["craft-anything-cli"]["version"],
+            "0.6.0",
+        )
+        self.assertIn(
+            "does not download",
+            entries["craft-anything"]["installation"]["method"],
+        )
         self.assertEqual(
             entries["e2e"]["supported_artifacts"],
             ["Owned fixture-compatible local web projects"],

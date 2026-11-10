@@ -4,9 +4,23 @@ The current pins were checked against the named upstream releases and package re
 
 ## Current adapter registry
 
-`anti-rea registry` emits a versioned JSON catalog for the BLA, REA, and e2e runtimes plus built-in source-map, Flutter Android build/readiness, and WASM compile-probe lanes. It checks each external package lock against the recorded hash and reports the pinned package versions, declared license, supported artifact scope, and status/scope for `probe`, `supports`, `plan`, `execute`, `verify`, `collect`, and `cleanup`. `partial` and `unavailable` entries are explicit; a pin or passing probe does not imply that the operation is generally supported. The Flutter lane builds a release APK or app bundle in the shared private baseline snapshot and hashes its output through the CLI or asynchronous MCP `start_flutter_android_baseline_async` tool. Its CLI/MCP preflight checks Flutter, Android SDK, license, and connected-device readiness without accepting licenses or installing tools; it does not verify app builds, signing, or runtime compatibility. The license field is the upstream declaration, not an independent legal review, and source/package equivalence remains unverified where the pin says so. This catalog does not yet register the other platform engines named in the product plan or provide a common runtime-dispatched adapter interface.
+Anti-REA registry lists BLA, REA, Craft Anything, and e2e plus built-in source-map, Flutter Android build/readiness, and WASM compile-probe lanes. npm package locks are hash-checked; Craft Anything is an installed system CLI pinned to release 0.6.0 and is never downloaded by Anti-REA. The catalog reports runtime identity, license declaration, supported artifact scope, and operation status/scope. Partial and unavailable operations are explicit; a pin or passing probe does not imply general support. The Flutter lane builds a release APK or app bundle in the shared private baseline snapshot and hashes its output through the CLI or asynchronous MCP start_flutter_android_baseline_async tool. Its CLI/MCP preflight checks Flutter, Android SDK, license, and connected-device readiness without accepting licenses or installing tools; it does not verify app builds, signing, or runtime compatibility. License fields are upstream declarations, not independent legal reviews, and source/package equivalence remains unverified where noted.
 
-The official REA releases list identifies `rea-agents` 6.8.0 as current and records its release commit. The official tester-army/e2e releases list identifies e2e 0.22.0 and its compatible web/mobile package releases. Keep source commits separate from published package identities; source/package equivalence is not verified. [REA releases](https://github.com/morluto/rea/releases), [tester-army/e2e releases](https://github.com/tester-army/e2e/releases)
+## Craft Anything read-only analysis
+
+Anti-REA accepts only the preinstalled craft-anything-cli version 0.6.0. It invokes exactly the read-only triage command below; it does not call rebuild, chat, allow-run, or builder tools.
+
+~~~sh
+craft-anything-cli --deep --project /private/anti-rea-state/run.cany --output-format json triage /private/anti-rea-state/baseline-snapshot
+~~~
+
+The CLI project ledger and JSON output stay outside the application tree. Anti-REA hashes each input before and after triage and records the engine version, mode, input identity, coverage when reported, status, and evidence.
+
+Baseline capture runs REA and Craft Anything concurrently when configured and compatible. AFTER analysis uses isolated BEFORE/AFTER snapshots; each engine keeps separate results and input hashes. Reports do not merge unlike engine scores. Craft Anything findings inform planning only: Anti-REA maps them to existing supported hardening actions and never treats Craft Anything rebuilding as protection. A missing, unsupported, failed, or partial engine remains visible; only engines listed in the plan's hash-bound acceptance_gates affect acceptance.
+
+Pass the executable with --craft-anything-cli to anti-rea baseline or execute-plan, or set ANTI_REA_CRAFT_ANYTHING_CLI. If omitted, Anti-REA looks for craft-anything-cli on PATH. A missing or mismatched CLI is recorded as unavailable, not as a passing analysis. The adapter is fixture-tested with fake executables; a live Craft Anything installation has not been verified in this checkout.
+
+The official REA releases list identifies rea-agents 6.8.0 as current and records its release commit. The Craft Anything registry pin refers to tag v0.6.0 at commit 899b4ebd24ca17d4a84af1e1b9ef9c0304de08ab; its CLI is used only for read-only triage. The official tester-army/e2e releases list identifies e2e 0.22.0 and compatible web/mobile packages. Keep source commits separate from published package identities; source/package equivalence is not verified. [REA releases](https://github.com/morluto/rea/releases), [Craft Anything releases](https://github.com/storytold/craft-anything/releases), [tester-army/e2e releases](https://github.com/tester-army/e2e/releases)
 
 ## Prepare an isolated runtime
 

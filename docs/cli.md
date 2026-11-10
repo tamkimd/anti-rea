@@ -11,7 +11,7 @@ The `anti-rea` CLI writes command results as JSON on standard output. Most comma
 
 An interactive Skill installation that the user declines returns `0` with `status: "cancelled"`; no installation was applied. MCP tools report outcomes in their structured responses and do not use these process exit codes.
 
-`anti-rea report RUN_ID STORE` and MCP `get_report` use the same core assembler. It checks linked record IDs and target, baseline, plan, decision, execution, verification, and acceptance relationships. Terminal acceptance is replayed through the shared semantic acceptance gate before reporting. During baseline capture, the baseline record may not exist yet and is omitted from the report. Reports include an `effectiveness_table` with one row for a normal run or one row per approved optimization candidate; it shows the BEFORE record hash, AFTER artifact hash when recorded, verification check statuses, and candidate outcome. Search-bound reports read persisted candidate states, so the table can show progress while a search is running. `--format markdown` prints this table for people; JSON remains the default for scripts. These checks do not authenticate the evidence producer or the local state-store owner.
+`anti-rea report RUN_ID STORE` and MCP `get_report` use the same core assembler. It checks linked record IDs and target, baseline, plan, decision, execution, verification, and acceptance relationships. Terminal acceptance is replayed through the shared semantic acceptance gate before reporting. During baseline capture, the baseline record may not exist yet and is omitted from the report. Reports include an `effectiveness_table` and a separate `analysis_table`; the latter shows each engine's BEFORE/AFTER status, input hashes, coverage when available, and evidence references without combining scores. Search-bound reports read persisted candidate states, so the effectiveness table can show progress while a search is running. `--format markdown` prints both tables for people; JSON remains the default for scripts. These checks do not authenticate the evidence producer or the local state-store owner.
 
 ```bash
 anti-rea report RUN_ID STORE --format markdown
@@ -37,7 +37,7 @@ Inspect the versioned catalog of implemented adapters and their operation scope:
 anti-rea registry
 ```
 
-The catalog currently covers pinned BLA, REA, and e2e runtimes plus built-in source-map, Flutter Android build/readiness, and WASM compile-probe lanes. It marks partial and unavailable operations explicitly; it does not provide a common runtime-dispatched adapter interface or cover every planned platform engine. See [upstream integrations](upstream-integrations.md).
+The catalog covers pinned BLA, REA, Craft Anything 0.6.0, and e2e plus built-in source-map, Flutter Android build/readiness, and WASM compile-probe lanes. Craft Anything is a preinstalled, read-only triage CLI; Anti-REA never downloads it or invokes its rebuilding tools. Partial and unavailable operations are explicit. See [upstream integrations](upstream-integrations.md).
 
 Check the local Flutter Android toolchain without building an application:
 
@@ -55,14 +55,17 @@ anti-rea baseline . --store /private/anti-rea-state --id before-1 --artifact dis
 
 The build command runs once by default. To measure build-time variability, pass `--build-time-trials 3`; the CLI and MCP baseline tools allow one to five trials. Each additional trial starts from a fresh private project copy, retains bounded output and artifact hashes, and reports min/median/max elapsed time plus whether selected artifacts matched. Additional trial copies are removed; the first build remains the canonical snapshot. Repeated build commands may cost more or trigger external side effects, so opt in only when that is acceptable. Snapshot file copies check cancellation between 64 KiB chunks and remove a partial destination; cancellation is also checked between files and before each build launch. Supported `node`, `npm`, and `npx` builds use the pinned offline Docker profile described above. Other host-run project commands execute code with the user's privileges; that copy is not an operating-system sandbox.
 
+Baseline capture also probes Craft Anything CLI 0.6.0 from PATH, or the executable passed with `--craft-anything-cli` / `ANTI_REA_CRAFT_ANYTHING_CLI`. It runs only read-only triage, stores the engine output outside the target, and records unavailable/partial/failure results. If a pinned REA runtime is passed, REA and Craft Anything analyze the same captured baseline concurrently. MCP `start_baseline` and `start_baseline_async` accept `craft_anything_cli`.
+
 Choose a recommendation starting profile after baseline capture:
 
 ```bash
 anti-rea recommend TARGET_ID BASELINE_ID PLAN_ID STATE --profile balanced
 anti-rea recommend TARGET_ID BASELINE_ID PLAN_ID STATE --profile custom --bla-intensity maximum
+anti-rea recommend TARGET_ID BASELINE_ID PLAN_ID STATE --profile balanced --analysis-gate rea --analysis-gate craft-anything
 ```
 
-`low-impact`, `balanced`, and `deep-protection` select BLA `stealth`, `balanced`, and `maximum` intensity for BLA JavaScript actions. `custom` requires `--bla-intensity` (`stealth`, `balanced`, `maximum`, or `bankrupt`). The plan records the profile and binds its intensity to each BLA action. These starting profiles only affect BLA JavaScript actions; they do not add platform recommendations or guarantee protection. If a compatible BLA action appears in the plan, ask the user explicitly whether to include it before execution; when no JavaScript action is eligible, report BLA as not applicable and do not ask an unusable choice. Review all actions and trade-offs, then bind the user's selected scope to the plan hash. MCP `create_plan` accepts the same `profile` and optional `bla_intensity` fields.
+`low-impact`, `balanced`, and `deep-protection` select BLA `stealth`, `balanced`, and `maximum` intensity for BLA JavaScript actions. `custom` requires `--bla-intensity` (`stealth`, `balanced`, `maximum`, or `bankrupt`). New JavaScript plans select compatible REA and Craft Anything analyses by default and use available engines as acceptance gates; partial or unavailable engines remain visible without becoming gates. Repeat `--analysis-gate` to select the exact required engines; the selected engines and gates are included in the approved plan hash. MCP `create_plan` accepts the same analysis_gates list. Review supported actions and trade-offs, then bind the user's selected scope to the plan hash.
 
 For a Flutter Android release artifact, use the dedicated baseline command:
 
