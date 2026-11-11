@@ -138,7 +138,6 @@ jobs:
     name: Publish to PyPI
     needs: [build, create-tag]
     runs-on: ubuntu-24.04
-    outputs:
     environment:
       name: pypi
       url: https://pypi.org/project/anti-rea/
