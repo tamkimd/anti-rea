@@ -51,6 +51,57 @@ class RecommendationTests(unittest.TestCase):
             "evidence": ["before.json", "/tmp/baseline-behavior.json"],
         }
 
+    def _baseline_with_craft_report(self, findings, *, status="partial"):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = Path(directory.name)
+        report_path = root / "baseline-base-r-craft-anything.json"
+        snapshot_path = self.baseline["identity"]["build_snapshot"]["path"]
+        coverage = {
+            "status": "complete" if status == "complete" else "partial",
+            "examined": 1,
+            "total": 1 if status == "complete" else 2,
+        }
+        report = {
+            "engine": "craft-anything",
+            "version": "0.6.0",
+            "mode": "deep",
+            "status": status,
+            "engine_status": status,
+            "input_path": str(Path(snapshot_path) / "dist/app.js"),
+            "input_sha256": "b" * 64,
+            "input_unchanged": True,
+            "coverage": coverage,
+            "evidence": {"result": findings},
+        }
+        raw = json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
+        report_path.write_bytes(raw)
+        craft = {
+            "engine": "craft-anything",
+            "source_path": "dist/app.js",
+            "artifact_sha256": "b" * 64,
+            "snapshot_path": snapshot_path,
+            "snapshot_tree_sha256": "2" * 64,
+            "report_path": str(report_path),
+            "report_sha256": hashlib.sha256(raw).hexdigest(),
+            "project_path": str(root / "baseline-base-r-craft-anything.cany"),
+            "version": "0.6.0",
+            "mode": "deep",
+            "status": status,
+            "engine_status": status,
+            "input_sha256": "b" * 64,
+            "input_unchanged": True,
+            "coverage": coverage,
+        }
+        return {
+            **self.baseline,
+            "identity": {
+                **self.baseline["identity"],
+                "craft_anything_analysis": craft,
+            },
+            "evidence": [*self.baseline["evidence"], str(report_path)],
+        }, craft
+
     def test_plan_contains_hash_supported_conditional_source_map_and_bla_actions(self):
         plan = recommendations.create_plan(self.target, self.baseline, "plan-r")
         self.assertEqual(
@@ -382,6 +433,26 @@ class RecommendationTests(unittest.TestCase):
             ],
         }
         plan = recommendations.create_plan(self.target, baseline, "plan-rea")
+        self.assertFalse(
+            any(
+                item.get("execution", {}).get("adapter") == "source-map-candidate"
+                for item in plan["actions"]
+            )
+        )
+        self.assertTrue(
+            any(
+                "cannot satisfy the selected REA acceptance gate" in item
+                for item in plan["blockers"]
+            )
+        )
+        self.assertEqual(
+            next(
+                item
+                for item in plan["finding_mappings"]
+                if item.get("candidate") == "dist/app.js.map"
+            )["status"],
+            "blocked",
+        )
         action = next(
             item
             for item in plan["actions"]
@@ -398,6 +469,132 @@ class RecommendationTests(unittest.TestCase):
         )
         self.assertEqual(action["execution"]["rea_baseline_evidence_id"], "ev_fixture")
         report_path.unlink()
+
+    def test_craft_findings_feed_supported_actions_without_claiming_verification(self):
+        baseline, craft = self._baseline_with_craft_report(
+            {
+                "summary": "Web app: endpoint and external source-map candidates.",
+                "endpoints": [{"url": "/api/v1/users"}],
+                "routes": [],
+                "ipc": [],
+                "source_maps": [
+                    {"present": True, "inline": False, "resolved": "app.js.map"}
+                ],
+            }
+        )
+
+        plan = recommendations.create_plan(self.target, baseline, "plan-craft")
+
+        js_action = next(item for item in plan["actions"] if item["engine"] == "bla")
+        map_action = next(
+            item
+            for item in plan["actions"]
+            if item["engine"] == "release packaging candidate"
+        )
+        evidence = {
+            "baseline_id": "base-r",
+            "path": craft["report_path"],
+            "sha256": craft["report_sha256"],
+            "kind": "craft-anything-before",
+        }
+        self.assertIn(evidence, js_action["evidence"])
+        self.assertEqual(js_action["analysis_findings"]["engine_status"], "partial")
+        self.assertEqual(
+            js_action["analysis_findings"]["candidate_counts"]["endpoints"], 1
+        )
+        self.assertIn(
+            "not independently confirmed",
+            js_action["analysis_findings"]["interpretation"],
+        )
+        self.assertIn(evidence, map_action["evidence"])
+        self.assertEqual(
+            map_action["analysis_findings"]["matched_source_map"], "dist/app.js.map"
+        )
+        mappings = plan["finding_mappings"]
+        self.assertIn(
+            {
+                "engine": "craft-anything",
+                "finding_type": "source_map",
+                "candidate": "dist/app.js.map",
+                "status": "mapped",
+                "action_id": map_action["id"],
+            },
+            mappings,
+        )
+        endpoint_mapping = next(
+            item for item in mappings if item["finding_type"] == "endpoint"
+        )
+        self.assertEqual(endpoint_mapping["status"], "blocked")
+        self.assertTrue(
+            any(
+                "no validated action for this finding type" in item
+                for item in plan["blockers"]
+            )
+        )
+        with self.assertRaisesRegex(workflow.WorkflowError, "finding mappings"):
+            workflow.validate_plan(
+                {**plan, "finding_mappings": [{**mappings[0], "action_id": "missing"}]}
+            )
+
+    def test_craft_analysis_gate_can_select_partial_before_and_default_is_ready_only(
+        self,
+    ):
+        partial, _ = self._baseline_with_craft_report(
+            {
+                "summary": "Partial scan",
+                "endpoints": [],
+                "routes": [],
+                "ipc": [],
+                "source_maps": [],
+            }
+        )
+        partial_plan = recommendations.create_plan(
+            self.target, partial, "plan-craft-partial"
+        )
+        self.assertNotIn("craft-anything", partial_plan.get("analysis_gates", []))
+        partial_gate_plan = recommendations.create_plan(
+            self.target,
+            partial,
+            "plan-craft-partial-gate",
+            analysis_gates=["craft-anything"],
+        )
+        self.assertEqual(partial_gate_plan["analysis_gates"], ["craft-anything"])
+
+        complete, _ = self._baseline_with_craft_report(
+            {
+                "summary": "Full scan",
+                "endpoints": [],
+                "routes": [],
+                "ipc": [],
+                "source_maps": [],
+            },
+            status="complete",
+        )
+        complete_plan = recommendations.create_plan(
+            self.target, complete, "plan-craft-complete"
+        )
+        self.assertIn("craft-anything", complete_plan["analysis_gates"])
+
+    def test_craft_inline_source_map_without_supported_action_becomes_blocker(self):
+        baseline, _ = self._baseline_with_craft_report(
+            {
+                "summary": "Web app: inline source-map candidate.",
+                "endpoints": [],
+                "routes": [],
+                "ipc": [],
+                "source_maps": [{"present": True, "inline": True}],
+            },
+            status="complete",
+        )
+
+        plan = recommendations.create_plan(self.target, baseline, "plan-craft-inline")
+
+        self.assertTrue(
+            any(
+                "without a matching captured .map artifact" in item
+                for item in plan["blockers"]
+            )
+        )
 
     def test_no_supported_artifact_or_bad_ids_fail_without_creating_plan(self):
         baseline = {

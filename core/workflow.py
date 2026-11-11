@@ -1034,6 +1034,81 @@ def validate_baseline(record: Any) -> dict[str, Any]:
             raise WorkflowError(
                 "Baseline REA identity must bind a JS artifact, private snapshot, report, bundle, and runtime"
             )
+    craft = value["identity"].get("craft_anything_analysis")
+    if craft is not None:
+        artifacts = value["identity"].get("artifacts")
+        snapshot = value["identity"].get("build_snapshot")
+        if (
+            not isinstance(craft, dict)
+            or craft.get("engine") != "craft-anything"
+            or not isinstance(craft.get("source_path"), str)
+            or not isinstance(artifacts, dict)
+            or craft["source_path"] not in artifacts
+            or (
+                craft.get("engine_status") != "unsupported"
+                and artifacts[craft["source_path"]].get("kind") != "directory"
+                and Path(craft["source_path"]).suffix.lower()
+                not in {".js", ".mjs", ".cjs", ".html", ".asar", ".zip"}
+            )
+            or craft.get("artifact_sha256")
+            != artifacts[craft["source_path"]].get("sha256")
+            or not isinstance(snapshot, dict)
+            or craft.get("snapshot_path") != snapshot.get("path")
+            or craft.get("snapshot_tree_sha256") != snapshot.get("tree_sha256")
+            or not isinstance(craft.get("report_path"), str)
+            or not Path(craft["report_path"]).is_absolute()
+            or Path(craft["report_path"]).name
+            != f"baseline-{value['id']}-craft-anything.json"
+            or not isinstance(craft.get("project_path"), str)
+            or not Path(craft["project_path"]).is_absolute()
+            or Path(craft["project_path"]).name
+            != f"baseline-{value['id']}-craft-anything.cany"
+            or Path(craft["project_path"]).parent != Path(craft["report_path"]).parent
+            or craft.get("status") not in {"complete", "partial"}
+            or craft.get("engine_status")
+            not in {
+                "complete",
+                "partial",
+                "unavailable",
+                "unsupported",
+                "failed",
+                "timeout",
+            }
+            or craft.get("mode") != "deep"
+            or not _SHA256.fullmatch(str(craft.get("artifact_sha256", "")))
+            or not _SHA256.fullmatch(str(craft.get("input_sha256", "")))
+            or not _SHA256.fullmatch(str(craft.get("report_sha256", "")))
+            or craft.get("input_unchanged") is not True
+            or not isinstance(craft.get("coverage"), dict)
+            or craft["report_path"] not in value["evidence"]
+        ):
+            raise WorkflowError(
+                "Baseline Craft Anything identity must bind a JS artifact, immutable snapshot, coverage, and hashed report"
+            )
+        report_raw = verify_evidence_file(
+            {"path": craft["report_path"], "sha256": craft["report_sha256"]}
+        )
+        try:
+            report = json.loads(report_raw)
+        except (json.JSONDecodeError, UnicodeDecodeError) as error:
+            raise WorkflowError(
+                "Baseline Craft Anything report is invalid JSON"
+            ) from error
+        if (
+            not isinstance(report, dict)
+            or report.get("engine") != "craft-anything"
+            or report.get("mode") != craft["mode"]
+            or report.get("status") != craft["status"]
+            or report.get("engine_status") != craft["engine_status"]
+            or report.get("input_sha256") != craft["input_sha256"]
+            or report.get("input_unchanged") is not True
+            or report.get("input_path")
+            != str(Path(craft["snapshot_path"]) / craft["source_path"])
+            or report.get("coverage") != craft["coverage"]
+        ):
+            raise WorkflowError(
+                "Baseline Craft Anything report does not match its identity"
+            )
     return value
 
 
@@ -1046,6 +1121,7 @@ def validate_baseline_target(
         raise WorkflowError("Baseline does not match its discovered target")
     e2e = captured_baseline["identity"].get("e2e_behavior")
     rea = captured_baseline["identity"].get("rea_analysis")
+    craft = captured_baseline["identity"].get("craft_anything_analysis")
     flutter_aot = captured_baseline["identity"].get("flutter_aot_inspection")
     source_root = discovered_target.get("source_root")
     build_snapshot = captured_baseline["identity"].get("build_snapshot")
@@ -1100,6 +1176,18 @@ def validate_baseline_target(
                 raise WorkflowError(
                     "Baseline REA snapshot, report, bundle, and runtime must remain outside the target tree"
                 )
+    if craft is not None and isinstance(source_root, str):
+        target_root = Path(source_root).resolve(strict=False)
+        for key in ("report_path", "project_path"):
+            path = Path(craft[key]).resolve(strict=False)
+            if (
+                path == target_root
+                or path in target_root.parents
+                or target_root in path.parents
+            ):
+                raise WorkflowError(
+                    "Baseline Craft Anything report and project must remain outside the target tree"
+                )
     if flutter_aot is not None and isinstance(source_root, str):
         target_root = Path(source_root).resolve(strict=False)
         for key in ("report_path", "runtime_manifest_path"):
@@ -1121,9 +1209,16 @@ def validate_plan(record: Any) -> dict[str, Any]:
     _reference_id(value.get("baseline_id"), "plan baseline_id")
     actions = value.get("actions")
     blockers = value.get("blockers", [])
+    analysis_gates = value.get("analysis_gates", [])
     if (
         not isinstance(actions, list)
         or not isinstance(blockers, list)
+        or not isinstance(analysis_gates, list)
+        or any(
+            not isinstance(item, str) or item not in {"rea", "craft-anything"}
+            for item in analysis_gates
+        )
+        or len(analysis_gates) != len(set(analysis_gates))
         or (not actions and not blockers)
         or any(not isinstance(item, str) or not item.strip() for item in blockers)
     ):
@@ -1168,6 +1263,49 @@ def validate_plan(record: Any) -> dict[str, Any]:
             raise WorkflowError("Invalid plan action id")
     if len({x["id"] for x in actions}) != len(actions):
         raise WorkflowError("Plan action ids must be unique")
+    finding_mappings = value.get("finding_mappings", [])
+    action_ids = {action["id"] for action in actions}
+    if not isinstance(finding_mappings, list) or any(
+        not isinstance(item, dict)
+        or item.get("engine") != "craft-anything"
+        or item.get("finding_type") not in {"endpoint", "route", "ipc", "source_map"}
+        or item.get("status") not in {"mapped", "blocked"}
+        or (
+            item.get("status") == "mapped"
+            and (
+                not isinstance(item.get("action_id"), str)
+                or item["action_id"] not in action_ids
+                or not isinstance(item.get("candidate"), str)
+                or not any(
+                    action.get("id") == item.get("action_id")
+                    and action.get("engine") == "release packaging candidate"
+                    and isinstance(action.get("execution"), dict)
+                    and action["execution"].get("adapter") == "source-map-candidate"
+                    and action["execution"].get("source_path") == item.get("candidate")
+                    for action in actions
+                )
+            )
+        )
+        or (
+            item.get("status") == "blocked"
+            and (
+                not isinstance(item.get("blocker"), str)
+                or not item["blocker"].strip()
+                or item["blocker"] not in blockers
+            )
+        )
+        or (
+            "candidate_count" in item
+            and (
+                isinstance(item["candidate_count"], bool)
+                or not isinstance(item["candidate_count"], int)
+                or item["candidate_count"] < 1
+            )
+        )
+        or ("candidate" in item and not isinstance(item["candidate"], str))
+        for item in finding_mappings
+    ):
+        raise WorkflowError("Craft Anything finding mappings are malformed")
     profile = value.get("profile")
     if profile is not None:
         if (
@@ -1968,6 +2106,11 @@ def accept_run(
         if action["id"] in choice["selected_action_ids"]
         for item in action["verification"]
     }
+    analysis_gates = approved_plan.get("analysis_gates", [])
+    if "rea" in analysis_gates:
+        required_checks.add("rea_comparison")
+    if "craft-anything" in analysis_gates:
+        required_checks.add("craft_anything_comparison")
     passed_ids = {check["id"] for check in checked["checks"]}
     if not required_checks <= passed_ids:
         raise WorkflowError(
@@ -1977,6 +2120,7 @@ def accept_run(
         "bla_invariants",
         "application_behavior",
         "rea_comparison",
+        "craft_anything_comparison",
         "e2e_behavior",
         "performance",
         "public_source_map_absent",
@@ -2103,6 +2247,14 @@ def accept_run(
                 plan,
                 captured,
                 discovered,
+                executed,
+                raw_checks,
+                check["evidence"],
+            )
+        elif check["id"] == "craft_anything_comparison":
+            _verify_craft_anything_check(
+                approved_plan,
+                captured,
                 executed,
                 raw_checks,
                 check["evidence"],
@@ -3642,6 +3794,11 @@ def _verify_rea_check(
     )
     config = selected.get("execution", {}) if selected else {}
     source_path = config.get("source_path")
+    if isinstance(execution.get("source_map_candidate"), dict):
+        _verify_rea_source_map_check(
+            plan, baseline, execution, evidence, references, source_path
+        )
+        return
     metadata = execution.get("rea_comparison")
     reports = [
         item
@@ -3777,6 +3934,327 @@ def _verify_rea_check(
     ) as error:
         raise WorkflowError(
             "REA comparison evidence is malformed or unreadable"
+        ) from error
+
+
+def _verify_rea_source_map_check(
+    plan: dict[str, Any],
+    baseline: dict[str, Any],
+    execution: dict[str, Any],
+    evidence: list[bytes],
+    references: list[dict[str, Any]],
+    source_path: Any,
+) -> None:
+    metadata = execution.get("rea_comparison")
+    candidate = execution.get("source_map_candidate")
+    reports = [
+        item
+        for item in execution.get("evidence", [])
+        if isinstance(item, dict) and item.get("kind") == "rea-comparison"
+    ]
+    if (
+        not isinstance(metadata, dict)
+        or not isinstance(candidate, dict)
+        or not isinstance(source_path, str)
+        or len(evidence) != 1
+        or len(references) != 1
+        or len(reports) != 1
+        or references[0] != reports[0]
+        or not _execution_evidence_matches(execution, reports[0])
+        or metadata.get("source_path") != source_path
+    ):
+        raise WorkflowError("REA source-map comparison is not bound to this execution")
+    try:
+        report = json.loads(evidence[0])
+        before = Path(metadata["before_snapshot"]).resolve(strict=True)
+        after = Path(metadata["after_snapshot"]).resolve(strict=True)
+        build_snapshot = baseline["identity"]["build_snapshot"]
+        rea_baseline = baseline["identity"].get("rea_analysis")
+        before_identity = _rea_snapshot_identity(before)
+        after_identity = _rea_snapshot_identity(after)
+        if (
+            before != Path(build_snapshot["path"]).resolve(strict=True)
+            or after != Path(candidate["candidate_path"]).resolve(strict=True)
+            or candidate.get("candidate_tree_sha256") != after_identity["tree_sha256"]
+            or build_snapshot.get("tree_sha256") != before_identity["tree_sha256"]
+            or metadata.get("before_tree_sha256") != before_identity["tree_sha256"]
+            or metadata.get("after_tree_sha256") != after_identity["tree_sha256"]
+            or metadata.get("source_sha256")
+            != baseline["identity"]["artifacts"].get(source_path, {}).get("sha256")
+            or metadata.get("candidate_sha256") != after_identity["tree_sha256"]
+            or not isinstance(rea_baseline, dict)
+            or metadata.get("runtime_manifest_sha256")
+            != rea_baseline.get("runtime_manifest_sha256")
+            or report.get("schema_version") != "1.0"
+            or report.get("record_type") != "rea_comparison"
+            or report.get("status") != "measured"
+            or report.get("before_tree_sha256") != before_identity["tree_sha256"]
+            or report.get("after_tree_sha256") != after_identity["tree_sha256"]
+            or report.get("file_scope_sha256") != before_identity["file_scope_sha256"]
+            or report.get("runtime_manifest_sha256")
+            != metadata.get("runtime_manifest_sha256")
+            or report.get("finding_delta")
+            != report.get("after", {}).get("findings")
+            - report.get("before", {}).get("findings")
+            or report.get("interpretation")
+            != "Static finding counts are measurements, not proof of protection or behavior preservation."
+        ):
+            raise WorkflowError(
+                "REA source-map comparison does not match its candidate"
+            )
+        for side, snapshot, identity in (
+            ("before", before, before_identity),
+            ("after", after, after_identity),
+        ):
+            result = report[side]
+            if (
+                Path(result["target"]).resolve(strict=True) != snapshot
+                or result.get("artifact_sha256") != identity["tree_sha256"]
+            ):
+                raise WorkflowError("REA source-map report target identity is invalid")
+            refs = {
+                item.get("kind"): item
+                for item in execution.get("evidence", [])
+                if isinstance(item, dict)
+                and item.get("kind") in {f"rea-{side}-report", f"rea-{side}-bundle"}
+            }
+            report_ref = refs.get(f"rea-{side}-report")
+            bundle_ref = refs.get(f"rea-{side}-bundle")
+            if (
+                not report_ref
+                or not bundle_ref
+                or len(refs) != 2
+                or report_ref.get("path") != result.get("report")
+                or report_ref.get("sha256") != result.get("report_sha256")
+                or bundle_ref.get("path") != result.get("evidence_bundle")
+                or bundle_ref.get("sha256") != result.get("evidence_bundle_sha256")
+            ):
+                raise WorkflowError(
+                    "REA source-map raw evidence is not execution-bound"
+                )
+            raw_lines = [
+                line
+                for line in verify_evidence_file(report_ref)
+                .decode("utf-8")
+                .splitlines()
+                if line.strip()
+            ]
+            summary = json.loads(raw_lines[-1])["summary"]
+            normalized = summary["normalized_result"]
+            coverage = normalized["coverage"]
+            stats = normalized["summary"]["statistics"]
+            if (
+                summary.get("operation") != "inspect_analysis_view"
+                or summary.get("predicate_type") != "rea.analysis-view"
+                or normalized.get("artifact", {}).get("path") != str(snapshot)
+                or normalized.get("artifact", {}).get("sha256")
+                != result.get("artifact_sha256")
+                or normalized.get("parent_evidence_id") != result.get("evidence_id")
+                or normalized.get("parent_digest") != result.get("parent_digest")
+                or stats.get("findings") != result.get("findings")
+                or coverage.get("status") != "complete-within-view"
+                or coverage.get("exhausted") is not True
+                or coverage.get("examined") != coverage.get("total")
+            ):
+                raise WorkflowError("REA source-map raw report is inconsistent")
+            verify_evidence_file(bundle_ref)
+    except WorkflowError:
+        raise
+    except (
+        OSError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        KeyError,
+        TypeError,
+        ValueError,
+    ) as error:
+        raise WorkflowError(
+            "REA source-map comparison evidence is malformed or unreadable"
+        ) from error
+
+
+def _verify_craft_anything_check(
+    plan: dict[str, Any],
+    baseline: dict[str, Any],
+    execution: dict[str, Any],
+    evidence: list[bytes],
+    references: list[dict[str, Any]],
+) -> None:
+    comparison = execution.get("craft_anything_comparison")
+    captured = baseline.get("identity", {}).get("craft_anything_analysis")
+    if not isinstance(comparison, dict):
+        raise WorkflowError("Craft Anything comparison is not complete")
+
+    def complete_coverage(value: Any) -> bool:
+        if not isinstance(value, dict) or value.get("status") != "complete":
+            return False
+        examined, total = value.get("examined"), value.get("total")
+        return (
+            isinstance(examined, int)
+            and not isinstance(examined, bool)
+            and isinstance(total, int)
+            and not isinstance(total, bool)
+            and total > 0
+            and examined == total
+        )
+
+    if (
+        comparison.get("status") != "complete"
+        or not isinstance(comparison.get("before"), dict)
+        or not isinstance(comparison.get("after"), dict)
+        or any(
+            side.get("status") != "complete"
+            or side.get("engine_status") != "complete"
+            or not complete_coverage(side.get("coverage"))
+            for side in (comparison["before"], comparison["after"])
+        )
+    ):
+        raise WorkflowError(
+            "Craft Anything gate requires complete BEFORE and AFTER analysis coverage"
+        )
+    reports = {
+        item.get("kind"): item
+        for item in execution.get("evidence", [])
+        if isinstance(item, dict)
+        and item.get("kind") in {"craft-anything-before", "craft-anything-after"}
+    }
+    if (
+        not isinstance(comparison, dict)
+        or not isinstance(captured, dict)
+        or len(evidence) != 2
+        or len(references) != 2
+        or set(reports) != {"craft-anything-before", "craft-anything-after"}
+        or comparison.get("engine") != "craft-anything"
+        or comparison.get("source_path") != captured.get("source_path")
+    ):
+        raise WorkflowError("Craft Anything comparison is not bound to this execution")
+    before_ref = reports["craft-anything-before"]
+    after_ref = reports["craft-anything-after"]
+    expected_refs = {
+        (before_ref.get("path"), before_ref.get("sha256")),
+        (after_ref.get("path"), after_ref.get("sha256")),
+    }
+    if (
+        not all(_execution_evidence_matches(execution, ref) for ref in reports.values())
+        or {(item.get("path"), item.get("sha256")) for item in references}
+        != expected_refs
+        or len(expected_refs) != 2
+        or before_ref.get("path") != captured.get("report_path")
+        or before_ref.get("sha256") != captured.get("report_sha256")
+    ):
+        raise WorkflowError("Craft Anything BEFORE/AFTER reports are not hash-bound")
+    try:
+        before_report, after_report = (json.loads(raw) for raw in evidence)
+        before = comparison["before"]
+        after = comparison["after"]
+        snapshot = baseline["identity"]["build_snapshot"]
+        before_snapshot = Path(comparison["before_snapshot"]).resolve(strict=True)
+        after_snapshot = Path(comparison["after_snapshot"]).resolve(strict=True)
+        source_map = execution.get("source_map_candidate")
+        snapshot_root_value = comparison.get("snapshot_root")
+        snapshot_root = (
+            Path(snapshot_root_value).resolve(strict=True)
+            if isinstance(snapshot_root_value, str)
+            else None
+        )
+        if (
+            before_ref.get("path") != before.get("path")
+            or before_ref.get("sha256") != before.get("sha256")
+            or after_ref.get("path") != after.get("path")
+            or after_ref.get("sha256") != after.get("sha256")
+            or (
+                snapshot_root is not None
+                and (
+                    before_snapshot != (snapshot_root / "before").resolve(strict=True)
+                    or after_snapshot != (snapshot_root / "after").resolve(strict=True)
+                )
+            )
+            or (
+                snapshot_root is None
+                and (
+                    not isinstance(source_map, dict)
+                    or before_snapshot != Path(snapshot["path"]).resolve(strict=True)
+                    or after_snapshot
+                    != Path(source_map["candidate_path"]).resolve(strict=True)
+                )
+            )
+            or before_snapshot == after_snapshot
+            or (
+                snapshot_root is not None
+                and snapshot_root.parent.name != "behavior-snapshots"
+            )
+            or before.get("input_sha256") != captured.get("input_sha256")
+            or before.get("version") != captured.get("version")
+            or before.get("coverage") != captured.get("coverage")
+            or before.get("status") != captured.get("status")
+            or before_report.get("input_sha256") != captured.get("input_sha256")
+            or before_report.get("input_path")
+            != str(Path(snapshot["path"]) / captured["source_path"])
+            or before_report.get("input_unchanged") is not True
+            or after_report.get("engine") != "craft-anything"
+            or after_report.get("input_path")
+            != str(after_snapshot / captured["source_path"])
+            or after_report.get("input_sha256") != after.get("input_sha256")
+            or after_report.get("input_sha256_after") != after.get("input_sha256")
+            or after_report.get("input_unchanged") is not True
+            or after.get("input_unchanged") is not True
+            or after_report.get("status") != after.get("status")
+            or after_report.get("engine_status") != after.get("engine_status")
+            or after_report.get("coverage") != after.get("coverage")
+            or _rea_snapshot_identity(before_snapshot).get("tree_sha256")
+            != comparison.get("before_tree_sha256")
+            or _rea_snapshot_identity(after_snapshot).get("tree_sha256")
+            != comparison.get("after_tree_sha256")
+        ):
+            raise WorkflowError("Craft Anything reports do not match saved snapshots")
+        from scripts import craft_anything_integration
+
+        if craft_anything_integration._hash_input(
+            before_snapshot / captured["source_path"]
+        ) != captured.get("input_sha256") or craft_anything_integration._hash_input(
+            after_snapshot / captured["source_path"]
+        ) != after.get("input_sha256"):
+            raise WorkflowError("Craft Anything analyzed input changed after capture")
+        after_artifact_sha = _hash_project_file(after_snapshot, captured["source_path"])
+        if isinstance(source_map, dict):
+            if (
+                source_map.get("candidate_path") != str(after_snapshot)
+                or source_map.get("candidate_tree_sha256")
+                != comparison.get("after_tree_sha256")
+                or after_artifact_sha
+                != baseline["identity"]["artifacts"][captured["source_path"]]["sha256"]
+            ):
+                raise WorkflowError(
+                    "Craft Anything AFTER report is not bound to the source-map candidate"
+                )
+        elif isinstance(execution.get("candidate_tree"), dict):
+            candidate = execution["candidate_tree"]
+            if Path(candidate["path"]).resolve(
+                strict=True
+            ) != after_snapshot or candidate.get("tree_sha256") != comparison.get(
+                "after_tree_sha256"
+            ):
+                raise WorkflowError(
+                    "Craft Anything AFTER report is not bound to the composite candidate"
+                )
+        else:
+            outputs = execution.get("outputs", [])
+            if len(outputs) != 1 or after_artifact_sha != outputs[0].get("sha256"):
+                raise WorkflowError(
+                    "Craft Anything AFTER report is not bound to the candidate output"
+                )
+    except WorkflowError:
+        raise
+    except (
+        OSError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        KeyError,
+        TypeError,
+        ValueError,
+    ) as error:
+        raise WorkflowError(
+            "Craft Anything comparison evidence is malformed or unreadable"
         ) from error
 
 
@@ -4359,6 +4837,17 @@ def validate_plan_baseline(
         raise WorkflowError("Plan does not match its saved target baseline")
     if approved_plan.get("blockers") and not approved_plan["actions"]:
         raise WorkflowError("Blocked plan cannot be submitted for a user decision")
+    analysis_gates = approved_plan.get("analysis_gates", [])
+    baseline_identity = captured_baseline["identity"]
+    if "rea" in analysis_gates and not isinstance(
+        baseline_identity.get("rea_analysis"), dict
+    ):
+        raise WorkflowError("REA analysis gate has no compatible BEFORE evidence")
+    craft = baseline_identity.get("craft_anything_analysis")
+    if "craft-anything" in analysis_gates and not isinstance(craft, dict):
+        raise WorkflowError(
+            "Craft Anything analysis gate requires captured BEFORE evidence"
+        )
     for action in approved_plan["actions"]:
         config = action.get("execution")
         if (
@@ -5112,6 +5601,74 @@ def assemble_run_report(records_dir: str | Path, run_record: Any) -> dict[str, A
     ):
         if value is not None:
             report[kind] = value
+    if execution_record is not None:
+        comparisons = {}
+        rea = execution_record.get("rea_comparison")
+        craft = execution_record.get("craft_anything_comparison")
+        if isinstance(rea, dict) and isinstance(rea.get("path"), str):
+            rea_result = json.loads(
+                verify_evidence_file(
+                    {"path": rea["path"], "sha256": rea["sha256"]}, execution_record
+                )
+            )
+            comparisons["rea"] = {
+                "status": rea_result.get("status", "partial"),
+                "before": {
+                    "findings": rea_result.get("before", {}).get("findings"),
+                },
+                "after": {
+                    "findings": rea_result.get("after", {}).get("findings"),
+                },
+                "finding_delta": rea_result.get("finding_delta"),
+                "before_tree_sha256": rea.get("before_tree_sha256"),
+                "after_tree_sha256": rea.get("after_tree_sha256"),
+                "report": {"path": rea.get("path"), "sha256": rea.get("sha256")},
+                "interpretation": rea_result.get("interpretation"),
+            }
+        if isinstance(craft, dict):
+            side_reports = {}
+            for side in ("before", "after"):
+                reference = craft[side]
+                document = json.loads(
+                    verify_evidence_file(
+                        {"path": reference["path"], "sha256": reference["sha256"]},
+                        execution_record,
+                    )
+                )
+                raw_evidence = document.get("evidence")
+                result = (
+                    raw_evidence.get("result")
+                    if isinstance(raw_evidence, dict)
+                    else None
+                )
+                result = result if isinstance(result, dict) else {}
+                side_reports[side] = {
+                    "status": reference.get("status"),
+                    "engine_status": reference.get("engine_status"),
+                    "coverage": reference.get("coverage"),
+                    "input_sha256": reference.get("input_sha256"),
+                    "candidate_counts": {
+                        key: len(result.get(field, []))
+                        for key, field in (
+                            ("endpoints", "endpoints"),
+                            ("routes", "routes"),
+                            ("ipc_channels", "ipc"),
+                            ("source_maps", "source_maps"),
+                        )
+                        if isinstance(result.get(field), list)
+                    },
+                    "report": {
+                        "path": reference.get("path"),
+                        "sha256": reference.get("sha256"),
+                    },
+                }
+            comparisons["craft-anything"] = {
+                "status": craft.get("status", "partial"),
+                **side_reports,
+                "input_unchanged": craft.get("after", {}).get("input_unchanged"),
+            }
+        if comparisons:
+            report["analysis_comparisons"] = comparisons
     report["rollbacks"] = []
     for path in records.glob("rollback-*.json"):
         rollback = validate_evidence_record(read_record(path, "rollback"), "rollback")

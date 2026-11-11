@@ -302,6 +302,13 @@ def main(argv=None):
         "--rea-runtime",
         help="capture BEFORE REA analysis using a prepared pinned runtime",
     )
+    baseline.add_argument(
+        "--craft-anything-cli",
+        default=None,
+        help="installed Craft Anything CLI (auto-detected from PATH by default)",
+    )
+    baseline.add_argument("--craft-anything-version", default=None)
+    baseline.add_argument("--craft-anything-timeout", type=float, default=60)
     flutter_baseline = commands.add_parser(
         "flutter-android-baseline",
         help="build and hash a Flutter Android release artifact in a private snapshot",
@@ -417,6 +424,18 @@ def main(argv=None):
         help="starting profile; applies only to BLA JavaScript actions",
     )
     recommend.add_argument(
+        "--analysis-gate",
+        action="append",
+        choices=("rea", "craft-anything"),
+        default=None,
+        help="require this analyzer's complete BEFORE/AFTER comparison for acceptance; repeat as needed",
+    )
+    recommend.add_argument(
+        "--no-analysis-gates",
+        action="store_true",
+        help="keep REA and Craft Anything comparisons out of acceptance requirements",
+    )
+    recommend.add_argument(
         "--bla-intensity",
         choices=["stealth", "balanced", "maximum", "bankrupt"],
         help="BLA intensity required with --profile custom",
@@ -460,6 +479,17 @@ def main(argv=None):
         "--e2e-runtime",
         default=None,
         help="pinned e2e runtime (or ANTI_REA_E2E_RUNTIME)",
+    )
+    execute_plan.add_argument(
+        "--craft-anything-cli",
+        default=None,
+        help="installed Craft Anything CLI (or ANTI_REA_CRAFT_ANYTHING_CLI; auto-detected from PATH)",
+    )
+    execute_plan.add_argument(
+        "--craft-anything-timeout",
+        type=float,
+        default=60,
+        help="Craft Anything analysis timeout in seconds",
     )
     resume = commands.add_parser(
         "resume",
@@ -994,6 +1024,9 @@ def main(argv=None):
                 e2e_config = "e2e.config.mjs"
                 e2e_test_file = "tests/behavior.e2e.ts"
                 rea_runtime = None
+                craft_anything_cli = None
+                craft_anything_version = None
+                craft_anything_timeout = 60
             else:
                 artifacts = args.artifact
                 timeout = args.timeout
@@ -1007,6 +1040,11 @@ def main(argv=None):
                 e2e_config = args.e2e_config
                 e2e_test_file = args.e2e_test_file
                 rea_runtime = args.rea_runtime or os.environ.get("ANTI_REA_REA_RUNTIME")
+                craft_anything_cli = args.craft_anything_cli or os.environ.get(
+                    "ANTI_REA_CRAFT_ANYTHING_CLI"
+                )
+                craft_anything_version = args.craft_anything_version
+                craft_anything_timeout = args.craft_anything_timeout
             cancel_event = threading.Event()
             previous_handlers = {}
             for signum in (signal.SIGINT, signal.SIGTERM):
@@ -1027,6 +1065,9 @@ def main(argv=None):
                     rea_runtime,
                     cancel_event,
                     build_time_trials=build_time_trials,
+                    craft_anything_executable=craft_anything_cli,
+                    craft_anything_expected_version=craft_anything_version,
+                    craft_anything_timeout=craft_anything_timeout,
                 )
             except workflow.WorkflowError:
                 if cancel_event.is_set():
@@ -1060,6 +1101,33 @@ def main(argv=None):
                     "rea_evidence": record["identity"]
                     .get("rea_analysis", {})
                     .get("report_path"),
+                    "craft_anything_evidence": record["identity"]
+                    .get("craft_anything_analysis", {})
+                    .get("report_path"),
+                    "craft_anything_status": record["identity"]
+                    .get("craft_anything_analysis", {})
+                    .get("status"),
+                    "craft_anything_engine_status": record["identity"]
+                    .get("craft_anything_analysis", {})
+                    .get("engine_status"),
+                    "craft_anything_analysis": (
+                        {
+                            key: record["identity"]["craft_anything_analysis"].get(key)
+                            for key in (
+                                "version",
+                                "mode",
+                                "status",
+                                "engine_status",
+                                "input_sha256",
+                                "coverage",
+                                "report_sha256",
+                            )
+                        }
+                        if isinstance(
+                            record["identity"].get("craft_anything_analysis"), dict
+                        )
+                        else None
+                    ),
                 }
             )
         elif args.command == "validate":
@@ -1138,6 +1206,10 @@ def main(argv=None):
                 if args.behavior_command_json
                 else None
             )
+            if args.no_analysis_gates and args.analysis_gate:
+                raise workflow.WorkflowError(
+                    "Choose --analysis-gate or --no-analysis-gates, not both"
+                )
             plan = recommendations.create_plan(
                 target,
                 baseline,
@@ -1152,6 +1224,7 @@ def main(argv=None):
                     "max_candidate_bytes": args.performance_max_bytes,
                     "max_journey_regression_pct": args.performance_max_journey_regression_percent,
                 },
+                analysis_gates=[] if args.no_analysis_gates else args.analysis_gate,
             )
             path = workflow.write_record(records, plan)
             emit(
@@ -1161,6 +1234,7 @@ def main(argv=None):
                     "baseline_id": plan["baseline_id"],
                     "plan_sha256": workflow.record_hash(plan),
                     "profile": plan["profile"],
+                    "analysis_gates": plan.get("analysis_gates", []),
                     "actions": plan["actions"],
                     "blockers": plan.get("blockers", []),
                     "record": str(path),
@@ -1170,6 +1244,9 @@ def main(argv=None):
             runtime = args.bla_runtime or os.environ.get("ANTI_REA_BLA_RUNTIME")
             rea_runtime = args.rea_runtime or os.environ.get("ANTI_REA_REA_RUNTIME")
             e2e_runtime = args.e2e_runtime or os.environ.get("ANTI_REA_E2E_RUNTIME")
+            craft_anything_cli = args.craft_anything_cli or os.environ.get(
+                "ANTI_REA_CRAFT_ANYTHING_CLI"
+            )
             emit(
                 execution.execute_bla_action(
                     args.store,
@@ -1178,6 +1255,8 @@ def main(argv=None):
                     runtime,
                     rea_runtime=rea_runtime,
                     e2e_runtime=e2e_runtime,
+                    craft_anything_executable=craft_anything_cli,
+                    craft_anything_timeout=args.craft_anything_timeout,
                 )
             )
         elif args.command == "resume":

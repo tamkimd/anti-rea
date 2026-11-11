@@ -4,7 +4,7 @@ This release flow runs from GitHub Actions. It tests the selected `main` commit,
 
 ## One-time setup
 
-Anti-REA 0.1.32 is already registered on PyPI. In [PyPI project settings](https://pypi.org/manage/project/anti-rea/settings/publishing/), add a GitHub Trusted Publisher with:
+Anti-REA is registered on PyPI. In [PyPI project settings](https://pypi.org/manage/project/anti-rea/settings/publishing/), add a GitHub Trusted Publisher with:
 
 | Setting | Value |
 |---|---|

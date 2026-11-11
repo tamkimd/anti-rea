@@ -6,12 +6,16 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import tomllib
 import unittest
 import venv
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+PROJECT_VERSION = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"][
+    "version"
+]
 
 
 class WheelPayloadTests(unittest.TestCase):
@@ -982,7 +986,7 @@ class WheelPayloadTests(unittest.TestCase):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
-            wheel = next(wheel_dir.glob("anti_rea-0.1.32-*.whl"))
+            wheel = next(wheel_dir.glob(f"anti_rea-{PROJECT_VERSION}-*.whl"))
             environment = root / "venv"
             venv.EnvBuilder(with_pip=True, system_site_packages=True).create(
                 environment
@@ -1101,7 +1105,7 @@ class WheelPayloadTests(unittest.TestCase):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
-            wheel = next(Path(directory).glob("anti_rea-0.1.32-*.whl"))
+            wheel = next(Path(directory).glob(f"anti_rea-{PROJECT_VERSION}-*.whl"))
             with zipfile.ZipFile(wheel) as archive:
                 names = set(archive.namelist())
 

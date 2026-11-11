@@ -88,6 +88,98 @@ class WorkflowContractTests(unittest.TestCase):
     def tearDown(self):
         self.evidence_temp.cleanup()
 
+    def test_craft_anything_gate_rejects_tampered_partial_or_invalid_analysis(self):
+        complete_side = {
+            "status": "complete",
+            "engine_status": "complete",
+            "coverage": {"status": "complete", "examined": 2, "total": 2},
+        }
+        cases = [
+            (
+                "partial comparison",
+                {"status": "partial", "before": complete_side, "after": complete_side},
+            ),
+            (
+                "unavailable before",
+                {
+                    "status": "complete",
+                    "before": {
+                        **complete_side,
+                        "status": "unavailable",
+                        "engine_status": "unavailable",
+                    },
+                    "after": complete_side,
+                },
+            ),
+            (
+                "partial after coverage",
+                {
+                    "status": "complete",
+                    "before": complete_side,
+                    "after": {
+                        **complete_side,
+                        "coverage": {
+                            "status": "partial",
+                            "examined": 1,
+                            "total": 2,
+                        },
+                    },
+                },
+            ),
+            (
+                "invalid boolean count",
+                {
+                    "status": "complete",
+                    "before": complete_side,
+                    "after": {
+                        **complete_side,
+                        "coverage": {
+                            "status": "complete",
+                            "examined": True,
+                            "total": 1,
+                        },
+                    },
+                },
+            ),
+            (
+                "incomplete complete count",
+                {
+                    "status": "complete",
+                    "before": complete_side,
+                    "after": {
+                        **complete_side,
+                        "coverage": {
+                            "status": "complete",
+                            "examined": 1,
+                            "total": 2,
+                        },
+                    },
+                },
+            ),
+        ]
+        baseline = {
+            "identity": {
+                "craft_anything_analysis": {
+                    "source_path": "app.js",
+                    "status": "complete",
+                    "engine_status": "complete",
+                    "coverage": complete_side["coverage"],
+                }
+            }
+        }
+        for label, comparison in cases:
+            with self.subTest(label=label):
+                with self.assertRaisesRegex(
+                    w.WorkflowError, "requires complete BEFORE and AFTER"
+                ):
+                    w._verify_craft_anything_check(
+                        {},
+                        baseline,
+                        {"craft_anything_comparison": comparison},
+                        [],
+                        [],
+                    )
+
     def test_baseline_behavior_shape_matches_the_json_schema(self):
         schema = json.loads(
             (Path(__file__).parents[1] / "schemas/workflow-v2.schema.json").read_text()

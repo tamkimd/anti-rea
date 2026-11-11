@@ -862,6 +862,53 @@
               },
               "additionalProperties": true
             },
+            "craft_anything_analysis": {
+              "type": "object",
+              "required": [
+                "engine",
+                "source_path",
+                "artifact_sha256",
+                "snapshot_path",
+                "snapshot_tree_sha256",
+                "report_path",
+                "report_sha256",
+                "project_path",
+                "version",
+                "mode",
+                "status",
+                "engine_status",
+                "input_sha256",
+                "input_unchanged",
+                "coverage"
+              ],
+              "properties": {
+                "engine": {"const": "craft-anything"},
+                "source_path": {"type": "string", "minLength": 1},
+                "artifact_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                "snapshot_path": {"type": "string", "minLength": 1},
+                "snapshot_tree_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                "report_path": {"type": "string", "minLength": 1},
+                "report_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                "project_path": {"type": "string", "minLength": 1},
+                "version": {"type": ["string", "null"]},
+                "mode": {"const": "deep"},
+                "status": {"enum": ["complete", "partial"]},
+                "engine_status": {"enum": ["complete", "partial", "unavailable", "unsupported", "failed", "timeout"]},
+                "input_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                "input_unchanged": {"const": true},
+                "coverage": {
+                  "type": "object",
+                  "required": ["status"],
+                  "properties": {
+                    "status": {"enum": ["complete", "partial", "page", "unavailable"]},
+                    "examined": {"type": "integer", "minimum": 0},
+                    "total": {"type": "integer", "minimum": 0}
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "additionalProperties": false
+            },
             "build_snapshot": {
               "type": "object",
               "required": [
@@ -1114,6 +1161,32 @@
         "blockers": {
           "type": "array",
           "items": {"type": "string", "minLength": 1}
+        },
+        "analysis_gates": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["rea", "craft-anything"]}
+        },
+        "finding_mappings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["engine", "finding_type", "status"],
+            "properties": {
+              "engine": {"const": "craft-anything"},
+              "finding_type": {"enum": ["endpoint", "route", "ipc", "source_map"]},
+              "candidate": {"type": "string"},
+              "candidate_count": {"type": "integer", "minimum": 1},
+              "status": {"enum": ["mapped", "blocked"]},
+              "action_id": {"type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$"},
+              "blocker": {"type": "string", "minLength": 1}
+            },
+            "oneOf": [
+              {"properties": {"status": {"const": "mapped"}}, "required": ["action_id"]},
+              {"properties": {"status": {"const": "blocked"}}, "required": ["blocker"]}
+            ],
+            "additionalProperties": false
+          }
         },
         "budgets": {
           "type": "object",

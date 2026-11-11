@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
+from pathlib import Path
 
 from core import workflow
 
@@ -18,6 +20,7 @@ def create_plan(
     performance_budget: dict | None = None,
     profile: str = "balanced",
     bla_intensity: str | None = None,
+    analysis_gates: list[str] | None = None,
 ) -> dict:
     """Create limited evidence-derived recommendations and a BLA starting profile."""
     workflow._reference_id(plan_id, "plan id")
@@ -100,6 +103,143 @@ def create_plan(
         if hashlib.sha256(rea_report).hexdigest() != baseline_rea["report_sha256"]:
             raise workflow.WorkflowError(
                 "Baseline REA report changed before recommendation generation"
+            )
+    baseline_craft = captured["identity"].get("craft_anything_analysis")
+    default_gates = []
+    if isinstance(baseline_rea, dict):
+        default_gates.append("rea")
+    if (
+        isinstance(baseline_craft, dict)
+        and baseline_craft.get("status") == "complete"
+        and baseline_craft.get("coverage", {}).get("status") == "complete"
+    ):
+        default_gates.append("craft-anything")
+    selected_gates = default_gates if analysis_gates is None else analysis_gates
+    if (
+        not isinstance(selected_gates, list)
+        or any(not isinstance(item, str) for item in selected_gates)
+        or len(selected_gates) != len(set(selected_gates))
+        or any(item not in {"rea", "craft-anything"} for item in selected_gates)
+        or ("rea" in selected_gates and not isinstance(baseline_rea, dict))
+        or ("craft-anything" in selected_gates and not isinstance(baseline_craft, dict))
+    ):
+        raise workflow.WorkflowError(
+            "Analysis gates must select engines with captured BEFORE evidence"
+        )
+    craft_report = None
+    craft_findings = {}
+    craft_map_paths = set()
+    unmapped_craft_map_findings = 0
+    finding_mappings = []
+    if isinstance(baseline_craft, dict):
+        craft_raw = workflow.verify_evidence_file(
+            {
+                "path": baseline_craft["report_path"],
+                "sha256": baseline_craft["report_sha256"],
+            }
+        )
+        if hashlib.sha256(craft_raw).hexdigest() != baseline_craft["report_sha256"]:
+            raise workflow.WorkflowError(
+                "Baseline Craft Anything report changed before recommendation generation"
+            )
+        try:
+            craft_report = json.loads(craft_raw)
+        except (json.JSONDecodeError, UnicodeDecodeError) as error:
+            raise workflow.WorkflowError(
+                "Baseline Craft Anything report is invalid JSON"
+            ) from error
+        engine_report = craft_report.get("evidence")
+        result = (
+            engine_report.get("result") if isinstance(engine_report, dict) else None
+        )
+        result = result if isinstance(result, dict) else {}
+        craft_findings = {
+            "engine": "craft-anything",
+            "version": baseline_craft.get("version"),
+            "status": baseline_craft["status"],
+            "engine_status": baseline_craft.get("engine_status"),
+            "coverage": baseline_craft["coverage"],
+            "summary": result.get("summary"),
+            "candidate_counts": {
+                key: len(result.get(field, []))
+                for key, field in (
+                    ("endpoints", "endpoints"),
+                    ("routes", "routes"),
+                    ("ipc_channels", "ipc"),
+                )
+                if isinstance(result.get(field), list)
+            },
+            "interpretation": "Static-analysis candidates only; not independently confirmed application behavior.",
+        }
+        for source_map in result.get("source_maps", []):
+            if (
+                not isinstance(source_map, dict)
+                or source_map.get("present") is not True
+            ):
+                continue
+            resolved_map = source_map.get("resolved")
+            if source_map.get("inline") is False and isinstance(resolved_map, str):
+                map_path = (
+                    Path(baseline_craft["source_path"]).parent / resolved_map
+                ).as_posix()
+                if map_path in artifact_records and map_path.lower().endswith(".map"):
+                    craft_map_paths.add(map_path)
+                else:
+                    unmapped_craft_map_findings += 1
+            else:
+                unmapped_craft_map_findings += 1
+        for map_path in sorted(craft_map_paths):
+            finding_mappings.append(
+                {
+                    "engine": "craft-anything",
+                    "finding_type": "source_map",
+                    "candidate": map_path,
+                    "status": "mapped",
+                    "action_id": "source-map-"
+                    + hashlib.sha256(map_path.encode()).hexdigest()[:12],
+                }
+            )
+        for finding_type, field in (
+            ("endpoint", "endpoints"),
+            ("route", "routes"),
+            ("ipc", "ipc"),
+        ):
+            items = result.get(field)
+            count = len(items) if isinstance(items, list) else 0
+            if count:
+                reason = (
+                    f"Craft Anything reported {count} {finding_type} candidate(s), "
+                    "but Anti-REA has no validated action for this finding type."
+                )
+                finding_mappings.append(
+                    {
+                        "engine": "craft-anything",
+                        "finding_type": finding_type,
+                        "candidate_count": count,
+                        "status": "blocked",
+                        "blocker": reason,
+                    }
+                )
+                blockers.append(reason)
+        if unmapped_craft_map_findings:
+            reason = (
+                f"Craft Anything reported {unmapped_craft_map_findings} source-map "
+                "candidate(s) without a matching captured .map artifact that the "
+                "source-map adapter can remove."
+            )
+            finding_mappings.append(
+                {
+                    "engine": "craft-anything",
+                    "finding_type": "source_map",
+                    "candidate_count": unmapped_craft_map_findings,
+                    "status": "blocked",
+                    "blocker": reason,
+                }
+            )
+            blockers.append(reason)
+        if baseline_craft.get("engine_status") in {"complete", "partial"}:
+            craft_findings["candidate_counts"]["source_maps"] = (
+                len(craft_map_paths) + unmapped_craft_map_findings
             )
     for path, identity in sorted(artifact_records.items()):
         if not isinstance(path, str):
@@ -238,7 +378,9 @@ def create_plan(
                 "Adapter accepts one JavaScript file up to 1 MiB.",
                 "Retain the original and verify application behavior before acceptance.",
             ],
-            "verification": ["bla_invariants", "rea_comparison", "performance"]
+            "verification": ["bla_invariants"]
+            + (["rea_comparison"] if "rea" in selected_gates else [])
+            + ["performance"]
             + (
                 ["application_behavior"]
                 if behavior_command is not None
@@ -260,73 +402,117 @@ def create_plan(
             ),
             "rollback": f"Discard the isolated candidate and restore the original artifact: {path}",
         }
-        if path.lower().endswith(".map"):
-            executable = isinstance(captured["identity"].get("build_snapshot"), dict)
-            actions.append(
+        craft_matches_path = isinstance(baseline_craft, dict) and (
+            baseline_craft["source_path"] == path or path in craft_map_paths
+        )
+        if craft_matches_path:
+            common["evidence"].append(
                 {
-                    **common,
-                    "id": "source-map-"
-                    + hashlib.sha256(path.encode()).hexdigest()[:12],
-                    "finding_or_asset": f"Captured source-map artifact: {path}",
-                    "change": (
-                        "Create a private release-tree candidate omitting this map; use it as packaging input only after review."
-                        if executable
-                        else "Review whether this map is included in the public release and exclude it if needed."
-                    ),
-                    "mechanism": (
-                        "Copy the captured build tree and omit only this map while preserving the private baseline."
-                        if executable
-                        else "Review the project's release packaging or deployment configuration."
-                    ),
-                    "engine": "release packaging candidate"
-                    if executable
-                    else "release packaging configuration (manual review)",
-                    **(
-                        {
-                            "execution": {
-                                "adapter": "source-map-candidate",
-                                "source_path": path,
-                            }
-                        }
-                        if executable
-                        else {}
-                    ),
-                    "expected_benefit": "Reduce direct disclosure of authored source when this map would otherwise be public.",
-                    "cost": "Build and review time; a downstream packaging or deployment step must consume the candidate tree.",
-                    "tradeoffs": [
-                        "Private source maps remain available for debugging.",
-                        "The candidate does not change deployment settings or verify the served release.",
-                    ],
-                    "dependencies": (
-                        [
-                            "No additional engine; uses the private captured build snapshot."
-                        ]
-                        if executable
-                        else ["Review the project build or deployment configuration."]
-                    ),
-                    "compatibility": (
-                        [
-                            "Candidate-tree omission does not change deployment configuration."
-                        ]
-                        if executable
-                        else [
-                            "Confirm target deployment and error-reporting workflow before changing publication."
-                        ]
-                    ),
-                    "verification": ["public_source_map_absent"]
-                    if executable
-                    else ["manual_release_review"],
-                    "limitations": [
-                        "Candidate-tree exclusion does not prove that a deployed release omits the map.",
-                        "This does not prevent inspection or reconstruction of shipped runtime code.",
-                    ],
-                    "rollback": (
-                        f"Discard the private candidate and retain the original build tree: {path}"
-                        if executable
-                        else f"Restore the prior map publication rule and redeploy the matching release: {path}"
-                    ),
+                    "baseline_id": captured["id"],
+                    "path": baseline_craft["report_path"],
+                    "sha256": baseline_craft["report_sha256"],
+                    "kind": "craft-anything-before",
                 }
             )
+        if path.lower().endswith(".map"):
+            if "rea" in selected_gates:
+                blocker = (
+                    "REA requires identical BEFORE/AFTER file scopes; removing a "
+                    "source map changes that scope, so this action cannot satisfy "
+                    "the selected REA acceptance gate. Create a plan without the "
+                    "REA gate or select a compatible action."
+                )
+                blockers.append(blocker)
+                mapping = next(
+                    (
+                        item
+                        for item in finding_mappings
+                        if item.get("finding_type") == "source_map"
+                        and item.get("candidate") == path
+                    ),
+                    None,
+                )
+                if mapping is None:
+                    mapping = {
+                        "engine": "craft-anything",
+                        "finding_type": "source_map",
+                        "candidate": path,
+                    }
+                    finding_mappings.append(mapping)
+                mapping.update({"status": "blocked", "blocker": blocker})
+                mapping.pop("action_id", None)
+                continue
+            executable = isinstance(captured["identity"].get("build_snapshot"), dict)
+            action = {
+                **common,
+                "id": "source-map-" + hashlib.sha256(path.encode()).hexdigest()[:12],
+                "finding_or_asset": (
+                    f"Craft Anything matched this external source-map candidate: {path}"
+                    if craft_matches_path
+                    else f"Captured source-map artifact: {path}"
+                ),
+                "change": (
+                    "Create a private release-tree candidate omitting this map; use it as packaging input only after review."
+                    if executable
+                    else "Review whether this map is included in the public release and exclude it if needed."
+                ),
+                "mechanism": (
+                    "Copy the captured build tree and omit only this map while preserving the private baseline."
+                    if executable
+                    else "Review the project's release packaging or deployment configuration."
+                ),
+                "engine": "release packaging candidate"
+                if executable
+                else "release packaging configuration (manual review)",
+                **(
+                    {
+                        "execution": {
+                            "adapter": "source-map-candidate",
+                            "source_path": path,
+                        }
+                    }
+                    if executable
+                    else {}
+                ),
+                "expected_benefit": "Reduce direct disclosure of authored source when this map would otherwise be public.",
+                "cost": "Build and review time; a downstream packaging or deployment step must consume the candidate tree.",
+                "tradeoffs": [
+                    "Private source maps remain available for debugging.",
+                    "The candidate does not change deployment settings or verify the served release.",
+                ],
+                "dependencies": (
+                    ["No additional engine; uses the private captured build snapshot."]
+                    if executable
+                    else ["Review the project build or deployment configuration."]
+                ),
+                "compatibility": (
+                    [
+                        "Candidate-tree omission does not change deployment configuration."
+                    ]
+                    if executable
+                    else [
+                        "Confirm target deployment and error-reporting workflow before changing publication."
+                    ]
+                ),
+                "verification": ["public_source_map_absent"]
+                if executable
+                else ["manual_release_review"],
+                "limitations": [
+                    "Candidate-tree exclusion does not prove that a deployed release omits the map.",
+                    "This does not prevent inspection or reconstruction of shipped runtime code.",
+                ],
+                "rollback": (
+                    f"Discard the private candidate and retain the original build tree: {path}"
+                    if executable
+                    else f"Restore the prior map publication rule and redeploy the matching release: {path}"
+                ),
+            }
+            if craft_matches_path:
+                action["analysis_findings"] = {
+                    **craft_findings,
+                    "matched_source_map": path,
+                }
+            actions.append(action)
         else:
             if not isinstance(captured["identity"].get("build_snapshot"), dict):
                 continue
@@ -357,18 +543,50 @@ def create_plan(
                         ],
                     }
                 )
-            actions.append(
-                {
-                    "id": "bla-js-" + hashlib.sha256(path.encode()).hexdigest()[:12],
-                    "finding_or_asset": f"Captured JavaScript artifact: {path}",
-                    "change": "Create a BLA-protected candidate while preserving the original artifact.",
-                    "mechanism": "Apply the pinned BLA JavaScript transformation to an isolated copy and run BLA's invariant verifier.",
-                    "engine": "bla",
-                    "execution": execution,
-                    "expected_benefit": "Increase the effort required to read the transformed JavaScript; measure rather than assume protection.",
-                    **common,
-                }
-            )
+            action = {
+                "id": "bla-js-" + hashlib.sha256(path.encode()).hexdigest()[:12],
+                "finding_or_asset": f"Captured JavaScript artifact: {path}",
+                "change": "Create a BLA-protected candidate while preserving the original artifact.",
+                "mechanism": "Apply the pinned BLA JavaScript transformation to an isolated copy and run BLA's invariant verifier.",
+                "engine": "bla",
+                "execution": execution,
+                "expected_benefit": "Increase the effort required to read the transformed JavaScript; measure rather than assume protection.",
+                **common,
+            }
+            if (
+                isinstance(baseline_craft, dict)
+                and baseline_craft["source_path"] == path
+            ):
+                action["analysis_findings"] = craft_findings
+                coverage = baseline_craft["coverage"]
+                if baseline_craft.get("engine_status") in {
+                    "unavailable",
+                    "unsupported",
+                    "failed",
+                    "timeout",
+                }:
+                    finding_label = (
+                        "Craft Anything analysis "
+                        f"{baseline_craft['engine_status']} (no findings available)"
+                    )
+                else:
+                    counts = craft_findings["candidate_counts"]
+                    candidates = ", ".join(
+                        f"{counts.get(name, 0)} {name.replace('_', ' ')}"
+                        for name in (
+                            "endpoints",
+                            "routes",
+                            "ipc_channels",
+                            "source_maps",
+                        )
+                    )
+                    finding_label = (
+                        f"Craft Anything static analysis ({coverage['status']} coverage, "
+                        f"{coverage.get('examined', 0)}/{coverage.get('total', 0)} files; "
+                        f"{candidates} candidates)"
+                    )
+                action["analysis_findings"]["display_summary"] = finding_label
+            actions.append(action)
     if not actions:
         if blockers:
             return workflow.validate_plan(
@@ -380,6 +598,11 @@ def create_plan(
                     "baseline_id": captured["id"],
                     "actions": [],
                     "blockers": blockers,
+                    **(
+                        {"finding_mappings": finding_mappings}
+                        if finding_mappings
+                        else {}
+                    ),
                     "budgets": budgets or {"runtime_ms": 60000},
                     "profile": {
                         "name": profile,
@@ -411,6 +634,12 @@ def create_plan(
         "target_id": discovered["id"],
         "baseline_id": captured["id"],
         "actions": actions,
+        **({"finding_mappings": finding_mappings} if finding_mappings else {}),
+        **(
+            {"analysis_gates": selected_gates}
+            if selected_gates or analysis_gates is not None
+            else {}
+        ),
         "profile": {
             "name": profile,
             "bla_intensity": selected_intensity,

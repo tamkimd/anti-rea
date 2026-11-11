@@ -1438,5 +1438,341 @@ class DockerBaselineSandboxTests(unittest.TestCase):
         self.assertNotEqual(inspected.returncode, 0)
 
 
+@patch.dict(os.environ, {"ANTI_REA_NODE_SANDBOX": "host"})
+class CraftAnythingBaselineTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.base = Path(self.temp.name)
+        self.project = self.base / "web"
+        self.project.mkdir()
+        (self.project / "pyproject.toml").write_text("[project]\nname='web-fixture'\n")
+        (self.project / "build.py").write_text(
+            "from pathlib import Path\nPath('dist.js').write_text('window.app = true;')\n"
+        )
+        self.store = self.base / "state"
+        path_probe = patch("core.baseline.shutil.which", return_value=None)
+        path_probe.start()
+        self.addCleanup(path_probe.stop)
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def test_selected_unavailable_engine_is_saved_as_partial(self):
+        record, _ = baseline.capture(
+            self.project,
+            self.store,
+            [sys.executable, "build.py"],
+            ["dist.js"],
+            "craft-missing",
+            craft_anything_executable=self.base / "missing-craft-anything",
+            craft_anything_expected_version="0.6.0",
+        )
+        captured = record["identity"]["craft_anything_analysis"]
+        self.assertEqual(captured["status"], "partial")
+        self.assertIsNone(captured["version"])
+        self.assertEqual(captured["coverage"]["status"], "unavailable")
+        self.assertEqual(
+            record["identity"]["engine_availability"]["rea"]["status"],
+            "unavailable",
+        )
+        self.assertEqual(
+            record["identity"]["engine_availability"]["craft_anything"]["status"],
+            "unavailable",
+        )
+        self.assertTrue(captured["input_unchanged"])
+        self.assertEqual(
+            captured["artifact_sha256"],
+            record["identity"]["artifacts"]["dist.js"]["sha256"],
+        )
+        self.assertIn(captured["report_path"], record["evidence"])
+        self.assertEqual(workflow.validate_baseline(record), record)
+
+    def test_installed_craft_cli_is_discovered_from_path(self):
+        from core import execution
+
+        executable = self.base / "craft-anything-cli"
+
+        def capture_craft(root, state, artifacts, baseline_id, *_args):
+            source_path = "dist.js"
+            input_sha = artifacts[source_path]["sha256"]
+            tree = execution._snapshot_tree_identity(root)
+            report_path = (
+                state / "evidence" / f"baseline-{baseline_id}-craft-anything.json"
+            )
+            report_path.parent.mkdir(parents=True, exist_ok=True)
+            project_path = report_path.with_suffix(".cany")
+            coverage = {"status": "unavailable"}
+            report = {
+                "engine": "craft-anything",
+                "mode": "deep",
+                "status": "partial",
+                "engine_status": "unavailable",
+                "input_path": str(root / source_path),
+                "input_sha256": input_sha,
+                "input_unchanged": True,
+                "coverage": coverage,
+            }
+            raw = json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
+            report_path.write_bytes(raw)
+            return (
+                {
+                    "engine": "craft-anything",
+                    "source_path": source_path,
+                    "artifact_sha256": input_sha,
+                    "snapshot_path": str(root),
+                    "snapshot_tree_sha256": tree["tree_sha256"],
+                    "report_path": str(report_path),
+                    "report_sha256": hashlib.sha256(raw).hexdigest(),
+                    "project_path": str(project_path),
+                    "version": None,
+                    "mode": "deep",
+                    "status": "partial",
+                    "engine_status": "unavailable",
+                    "input_sha256": input_sha,
+                    "input_unchanged": True,
+                    "coverage": coverage,
+                },
+                report_path,
+            )
+
+        with (
+            patch("core.baseline.shutil.which", return_value=str(executable)),
+            patch.object(
+                baseline,
+                "_capture_craft_anything",
+                side_effect=capture_craft,
+            ) as capture,
+        ):
+            record, _ = baseline.capture(
+                self.project,
+                self.store,
+                [sys.executable, "build.py"],
+                ["dist.js"],
+                "craft-auto-detected",
+            )
+        self.assertEqual(Path(capture.call_args.args[4]), executable)
+        self.assertEqual(
+            record["identity"]["engine_availability"]["craft_anything"]["status"],
+            "unavailable",
+        )
+        self.assertEqual(
+            record["identity"]["craft_anything_analysis"]["status"], "partial"
+        )
+
+    def test_unsupported_artifact_has_hash_bound_unavailable_record(self):
+        (self.project / "build.py").write_text(
+            "from pathlib import Path\nPath('dist.bin').write_bytes(b'raw')\n"
+        )
+        record, _ = baseline.capture(
+            self.project,
+            self.store,
+            [sys.executable, "build.py"],
+            ["dist.bin"],
+            "craft-unsupported",
+            craft_anything_executable=self.base / "missing-craft-anything",
+        )
+        captured = record["identity"]["craft_anything_analysis"]
+        self.assertEqual(captured["status"], "partial")
+        self.assertEqual(captured["engine_status"], "unsupported")
+        self.assertEqual(captured["source_path"], "dist.bin")
+        self.assertEqual(captured["coverage"]["status"], "unavailable")
+        self.assertTrue(captured["input_unchanged"])
+        self.assertEqual(workflow.validate_baseline(record), record)
+
+    def test_engine_exception_is_retained_as_partial(self):
+        from scripts import craft_anything_integration
+
+        with patch.object(
+            craft_anything_integration,
+            "analyze",
+            side_effect=RuntimeError("fake CLI crash"),
+        ):
+            record, _ = baseline.capture(
+                self.project,
+                self.store,
+                [sys.executable, "build.py"],
+                ["dist.js"],
+                "craft-crash",
+                craft_anything_executable="craft-anything-cli",
+            )
+        captured = record["identity"]["craft_anything_analysis"]
+        self.assertEqual(captured["status"], "partial")
+        self.assertEqual(captured["engine_status"], "failed")
+        self.assertTrue(captured["input_unchanged"])
+        self.assertEqual(workflow.validate_baseline(record), record)
+
+    def test_rea_and_craft_run_in_parallel_on_same_immutable_snapshot(self):
+        from core import execution
+        from scripts import craft_anything_integration
+
+        barrier = threading.Barrier(2)
+        seen = {}
+        rea_hash = "a" * 64
+
+        def fake_rea(root, state, target, artifacts, baseline_id, runtime, *args):
+            barrier.wait(timeout=5)
+            seen["rea_root"] = root
+            tree = execution._snapshot_tree_identity(root)
+            identity = {
+                "source_path": "dist.js",
+                "artifact_sha256": artifacts["dist.js"]["sha256"],
+                "snapshot_path": str(
+                    state / "evidence" / f"baseline-{baseline_id}-rea" / "snapshot"
+                ),
+                **tree,
+                "report_path": str(
+                    state / "evidence" / f"baseline-{baseline_id}-rea" / "report.jsonl"
+                ),
+                "report_sha256": rea_hash,
+                "bundle_path": str(
+                    state / "evidence" / f"baseline-{baseline_id}-rea" / "bundle.json"
+                ),
+                "bundle_sha256": rea_hash,
+                "runtime_path": str(self.base / "rea-runtime"),
+                "runtime_manifest_sha256": rea_hash,
+                "evidence_id": "ev_test",
+                "parent_digest": rea_hash,
+                "statistics": {},
+                "coverage": {},
+            }
+            return (
+                identity,
+                Path(identity["report_path"]),
+                Path(identity["bundle_path"]),
+            )
+
+        def fake_analyze(input_path, **kwargs):
+            barrier.wait(timeout=5)
+            input_path = Path(input_path)
+            seen["craft_root"] = input_path.parent
+            return {
+                "engine": "craft-anything",
+                "status": "complete",
+                "version": "0.6.0",
+                "mode": "deep",
+                "input_path": str(input_path),
+                "input_sha256": craft_anything_integration._hash_input(input_path),
+                "input_unchanged": True,
+                "coverage": {"status": "complete", "examined": 1, "total": 1},
+                "evidence": {"operation": "js_app_map"},
+            }
+
+        with (
+            patch.object(baseline, "_capture_rea", side_effect=fake_rea),
+            patch.object(
+                craft_anything_integration, "analyze", side_effect=fake_analyze
+            ),
+        ):
+            record, _ = baseline.capture(
+                self.project,
+                self.store,
+                [sys.executable, "build.py"],
+                ["dist.js"],
+                "craft-paired",
+                rea_runtime=self.base / "rea-runtime",
+                craft_anything_executable="craft-anything-cli",
+                craft_anything_expected_version="0.6.0",
+            )
+
+        self.assertEqual(seen["rea_root"], seen["craft_root"])
+        build_snapshot = Path(record["identity"]["build_snapshot"]["path"])
+        self.assertEqual(seen["rea_root"], build_snapshot)
+        self.assertEqual(record["identity"]["rea_analysis"]["source_path"], "dist.js")
+        craft = record["identity"]["craft_anything_analysis"]
+        self.assertEqual(craft["status"], "complete")
+        self.assertEqual(craft["snapshot_path"], str(build_snapshot))
+        self.assertEqual(
+            craft["artifact_sha256"],
+            record["identity"]["artifacts"]["dist.js"]["sha256"],
+        )
+        self.assertEqual(craft["coverage"]["examined"], 1)
+        self.assertTrue(craft["input_unchanged"])
+        self.assertEqual(workflow.validate_baseline(record), record)
+
+    def test_rea_failure_does_not_discard_craft_result(self):
+        from scripts import craft_anything_integration
+
+        def fake_analyze(input_path, **kwargs):
+            input_path = Path(input_path)
+            return {
+                "engine": "craft-anything",
+                "status": "complete",
+                "version": "0.6.0",
+                "mode": "deep",
+                "input_path": str(input_path),
+                "input_sha256": craft_anything_integration._hash_input(input_path),
+                "input_unchanged": True,
+                "coverage": {"status": "complete", "examined": 1, "total": 1},
+                "evidence": {"operation": "js_app_map"},
+            }
+
+        with (
+            patch.object(
+                baseline, "_capture_rea", side_effect=RuntimeError("REA unavailable")
+            ),
+            patch.object(
+                craft_anything_integration, "analyze", side_effect=fake_analyze
+            ),
+        ):
+            record, _ = baseline.capture(
+                self.project,
+                self.store,
+                [sys.executable, "build.py"],
+                ["dist.js"],
+                "rea-failure-isolated",
+                rea_runtime=self.base / "rea-runtime",
+                craft_anything_executable="craft-anything-cli",
+            )
+        self.assertEqual(
+            record["identity"]["craft_anything_analysis"]["status"], "complete"
+        )
+        self.assertEqual(
+            record["identity"]["engine_availability"]["rea"]["status"], "failed"
+        )
+        self.assertIn(
+            "REA unavailable",
+            record["identity"]["engine_availability"]["rea"]["reason"],
+        )
+
+    def test_single_rea_failure_is_saved_as_partial_availability(self):
+        with patch.object(
+            baseline,
+            "_capture_rea",
+            side_effect=RuntimeError("REA probe failed"),
+        ):
+            record, _ = baseline.capture(
+                self.project,
+                self.store,
+                [sys.executable, "build.py"],
+                ["dist.js"],
+                "rea-only-failure",
+                rea_runtime=self.base / "rea-runtime",
+            )
+        rea = record["identity"]["engine_availability"]["rea"]
+        self.assertEqual(rea["status"], "failed")
+        self.assertEqual(rea["reason"], "REA probe failed")
+        self.assertNotIn("rea_analysis", record["identity"])
+        self.assertEqual(workflow.validate_baseline(record), record)
+
+    def test_engine_cancellation_is_not_downgraded_to_unavailable(self):
+        cancel_event = threading.Event()
+
+        def cancel(*_args):
+            cancel_event.set()
+            raise workflow.WorkflowError("Command cancelled")
+
+        with patch.object(baseline, "_capture_rea", side_effect=cancel):
+            with self.assertRaisesRegex(workflow.WorkflowError, "Command cancelled"):
+                baseline.capture(
+                    self.project,
+                    self.store,
+                    [sys.executable, "build.py"],
+                    ["dist.js"],
+                    "rea-cancelled",
+                    rea_runtime=self.base / "rea-runtime",
+                    cancel_event=cancel_event,
+                )
+
+
 if __name__ == "__main__":
     unittest.main()

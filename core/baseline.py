@@ -15,6 +15,7 @@ import sys
 import tempfile
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from core import discovery, workflow
@@ -40,6 +41,9 @@ def capture(
     cancel_event=None,
     on_process=None,
     build_time_trials: int = 1,
+    craft_anything_executable: str | Path | None = None,
+    craft_anything_expected_version: str | None = None,
+    craft_anything_timeout: float = 60,
 ) -> tuple[dict, Path]:
     """Run an explicit baseline command, retaining bounded output and artifact hashes.
 
@@ -98,6 +102,21 @@ def capture(
         raise workflow.WorkflowError(
             "Baseline REA requires at least one JavaScript artifact"
         )
+    if (
+        isinstance(craft_anything_timeout, bool)
+        or not isinstance(craft_anything_timeout, (int, float))
+        or not 0 < craft_anything_timeout <= 300
+    ):
+        raise workflow.WorkflowError(
+            "Craft Anything timeout must be greater than 0 and at most 300 seconds"
+        )
+    if craft_anything_expected_version is not None and (
+        not isinstance(craft_anything_expected_version, str)
+        or not craft_anything_expected_version
+    ):
+        raise workflow.WorkflowError("Craft Anything expected version is invalid")
+    if craft_anything_executable is None:
+        craft_anything_executable = shutil.which("craft-anything-cli")
     if (
         isinstance(timeout, bool)
         or not isinstance(timeout, (int, float))
@@ -334,6 +353,8 @@ def capture(
     behavior_identity = None
     e2e_identity = None
     rea_identity = None
+    craft_anything_identity = None
+    engine_availability = {}
     evidence_paths = [str(output_path), *(str(path) for path in trial_output_paths)]
     if behavior_command is not None:
         relative = javascript_artifacts[0]
@@ -429,18 +450,100 @@ def capture(
             on_process,
         )
         evidence_paths.append(str(report_path))
-    if rea_runtime is not None:
-        rea_identity, rea_report, rea_bundle = _capture_rea(
-            build_snapshot,
-            state,
-            target,
-            identities,
-            baseline_id,
-            rea_runtime,
-            cancel_event,
-            on_process,
-        )
-        evidence_paths.extend((str(rea_report), str(rea_bundle)))
+    if rea_runtime is not None and craft_anything_executable is not None:
+        with ThreadPoolExecutor(max_workers=2) as engines:
+            rea_future = engines.submit(
+                _capture_rea,
+                build_snapshot,
+                state,
+                target,
+                identities,
+                baseline_id,
+                rea_runtime,
+                cancel_event,
+                on_process,
+            )
+            craft_future = engines.submit(
+                _capture_craft_anything,
+                build_snapshot,
+                state,
+                identities,
+                baseline_id,
+                craft_anything_executable,
+                craft_anything_expected_version,
+                craft_anything_timeout,
+            )
+            try:
+                rea_identity, rea_report, rea_bundle = rea_future.result()
+                evidence_paths.extend((str(rea_report), str(rea_bundle)))
+                engine_availability["rea"] = {"status": "available"}
+            except Exception as error:
+                if cancel_event is not None and cancel_event.is_set():
+                    raise
+                engine_availability["rea"] = {
+                    "status": "failed",
+                    "reason": str(error)[:300],
+                }
+            try:
+                craft_anything_identity, craft_report = craft_future.result()
+                evidence_paths.append(str(craft_report))
+                engine_availability["craft_anything"] = {
+                    "status": craft_anything_identity.get("engine_status", "available")
+                }
+            except Exception as error:
+                if cancel_event is not None and cancel_event.is_set():
+                    raise
+                engine_availability["craft_anything"] = {
+                    "status": "failed",
+                    "reason": str(error)[:300],
+                }
+    elif rea_runtime is not None:
+        try:
+            rea_identity, rea_report, rea_bundle = _capture_rea(
+                build_snapshot,
+                state,
+                target,
+                identities,
+                baseline_id,
+                rea_runtime,
+                cancel_event,
+                on_process,
+            )
+            evidence_paths.extend((str(rea_report), str(rea_bundle)))
+            engine_availability["rea"] = {"status": "available"}
+        except Exception as error:
+            if cancel_event is not None and cancel_event.is_set():
+                raise
+            engine_availability["rea"] = {
+                "status": "failed",
+                "reason": str(error)[:300],
+            }
+    elif craft_anything_executable is not None:
+        try:
+            craft_anything_identity, craft_report = _capture_craft_anything(
+                build_snapshot,
+                state,
+                identities,
+                baseline_id,
+                craft_anything_executable,
+                craft_anything_expected_version,
+                craft_anything_timeout,
+            )
+            evidence_paths.append(str(craft_report))
+            engine_availability["craft_anything"] = {
+                "status": craft_anything_identity.get("engine_status", "available")
+            }
+        except Exception as error:
+            if cancel_event is not None and cancel_event.is_set():
+                raise
+            engine_availability["craft_anything"] = {
+                "status": "failed",
+                "reason": str(error)[:300],
+            }
+    if rea_runtime is None:
+        engine_availability["rea"] = {"status": "unavailable"}
+    if craft_anything_executable is None:
+        engine_availability["craft_anything"] = {"status": "unavailable"}
     flutter_lock = None
     flutter_toolchain = None
     if any(
@@ -486,6 +589,12 @@ def capture(
             **({"behavior": behavior_identity} if behavior_identity else {}),
             **({"e2e_behavior": e2e_identity} if e2e_identity else {}),
             **({"rea_analysis": rea_identity} if rea_identity else {}),
+            "engine_availability": engine_availability,
+            **(
+                {"craft_anything_analysis": craft_anything_identity}
+                if craft_anything_identity
+                else {}
+            ),
         },
         "evidence": evidence_paths,
     }
@@ -656,6 +765,117 @@ def _capture_e2e(
             "config": config,
             "test_file": test_file,
             "cleanup": result["cleanup"],
+        },
+        report_path,
+    )
+
+
+def _capture_craft_anything(
+    root: Path,
+    state: Path,
+    artifacts: dict,
+    baseline_id: str,
+    executable: str | Path,
+    expected_version: str | None,
+    timeout: float,
+) -> tuple[dict, Path]:
+    """Run read-only Craft Anything analysis on the retained build snapshot."""
+    from core import execution
+    from scripts import craft_anything_integration
+
+    source_path = next(
+        (
+            path
+            for path in artifacts
+            if Path(path).suffix.lower() in {".js", ".mjs", ".cjs"}
+        ),
+        next(iter(artifacts)),
+    )
+    artifact = artifacts[source_path]
+    snapshot_identity = execution._snapshot_tree_identity(root)
+    if _hash_artifact(root, source_path) != artifact:
+        raise workflow.WorkflowError(
+            "Craft Anything baseline artifact changed after capture"
+        )
+
+    evidence_root = state / "evidence"
+    report_path = evidence_root / f"baseline-{baseline_id}-craft-anything.json"
+    project_path = evidence_root / f"baseline-{baseline_id}-craft-anything.cany"
+    if any(path.exists() or path.is_symlink() for path in (report_path, project_path)):
+        raise workflow.WorkflowError(
+            "Craft Anything baseline evidence path already exists"
+        )
+
+    try:
+        result = craft_anything_integration.analyze(
+            root / source_path,
+            executable=executable,
+            expected_version=expected_version,
+            timeout=timeout,
+            project_path=project_path,
+        )
+    except Exception as error:
+        result = {
+            "engine": "craft-anything",
+            "status": "partial",
+            "engine_status": "failed",
+            "mode": "deep",
+            "input_path": str((root / source_path).resolve()),
+            "coverage": {"status": "unavailable"},
+            "reason": f"Craft Anything analysis failed: {error}"[:500],
+        }
+    engine_input_sha256 = result.get("input_sha256")
+    if not isinstance(engine_input_sha256, str):
+        engine_input_sha256 = craft_anything_integration._hash_input(root / source_path)
+    result["input_sha256"] = engine_input_sha256
+    input_after = _hash_artifact(root, source_path)
+    tree_after = execution._snapshot_tree_identity(root)
+    input_unchanged = input_after == artifact and tree_after == snapshot_identity
+    engine_status = result.get("engine_status", result.get("status", "failed"))
+    result["engine_status"] = engine_status
+    if result.get("status") != "complete":
+        result["status"] = "partial"
+        result["engine_status"] = engine_status
+    if not input_unchanged:
+        result["status"] = "partial"
+        result["engine_status"] = "failed"
+        result["reason"] = (
+            "Craft Anything analysis changed the immutable baseline snapshot"
+        )
+    result["coverage"] = result.get("coverage", {"status": "unavailable"})
+    result["input_sha256_after"] = (
+        result.get("input_sha256_after") or input_after["sha256"]
+    )
+    result["input_unchanged"] = input_unchanged
+
+    report_bytes = json.dumps(result, sort_keys=True, separators=(",", ":")).encode()
+    try:
+        with report_path.open("xb") as stream:
+            stream.write(report_bytes)
+        if os.name != "nt":
+            report_path.chmod(0o600)
+    except OSError as error:
+        raise workflow.WorkflowError(
+            f"Could not retain Craft Anything baseline evidence: {error}"
+        ) from error
+
+    return (
+        {
+            "engine": "craft-anything",
+            "source_path": source_path,
+            "artifact_sha256": artifact["sha256"],
+            "snapshot_path": str(root),
+            "snapshot_tree_sha256": snapshot_identity["tree_sha256"],
+            "report_path": str(report_path),
+            "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
+            "project_path": str(project_path),
+            "version": result.get("version"),
+            "mode": result.get("mode", "deep"),
+            "status": result.get("status", "partial"),
+            "engine_status": result.get("engine_status", "complete"),
+            "input_sha256": engine_input_sha256,
+            "input_unchanged": input_unchanged,
+            "coverage": result.get("coverage", {"status": "unavailable"}),
         },
         report_path,
     )

@@ -77,6 +77,261 @@ class CompositeExecutionTests(unittest.TestCase):
                 self.plan, [self.second["id"], self.action["id"]]
             )
 
+    def test_craft_after_analysis_preserves_candidate_and_partial_status(self):
+        from scripts import craft_anything_integration
+
+        candidate = self.root / "after"
+        candidate.mkdir()
+        source = candidate / "dist/app.js"
+        source.parent.mkdir()
+        source.write_text("candidate-js")
+        evidence = self.root / "evidence"
+        evidence.mkdir()
+        baseline_identity = {
+            "craft_anything_analysis": {
+                "source_path": "dist/app.js",
+                "report_path": str(evidence / "before.json"),
+                "report_sha256": "a" * 64,
+                "version": "0.6.0",
+                "status": "complete",
+                "engine_status": "complete",
+                "input_sha256": "b" * 64,
+                "coverage": {"status": "complete"},
+            }
+        }
+        with patch.object(
+            craft_anything_integration,
+            "analyze",
+            return_value={
+                "status": "partial",
+                "engine_status": "partial",
+                "version": "0.6.0",
+                "coverage": {"status": "partial"},
+            },
+        ) as analyze:
+            comparison = execution._capture_craft_anything_after(
+                {"identity": baseline_identity},
+                candidate,
+                evidence,
+                "fixture",
+                "craft-anything-cli",
+            )
+
+        analyze.assert_called_once()
+        self.assertEqual(comparison["status"], "partial")
+        self.assertTrue(comparison["after"]["input_unchanged"])
+        self.assertEqual(source.read_text(), "candidate-js")
+        self.assertEqual(
+            comparison["after"]["input_sha256"],
+            craft_anything_integration._hash_input(source),
+        )
+
+    def test_craft_gate_passes_only_complete_unchanged_comparisons(self):
+        comparison = {
+            "status": "complete",
+            "before": {
+                "path": "/evidence/before.json",
+                "sha256": "a" * 64,
+                "coverage": {"status": "complete"},
+            },
+            "after": {
+                "path": "/evidence/after.json",
+                "sha256": "b" * 64,
+                "coverage": {"status": "complete"},
+                "input_unchanged": True,
+            },
+        }
+
+        plan = {"analysis_gates": ["craft-anything"]}
+        passed = execution._craft_anything_gate_check(plan, comparison)
+        self.assertEqual(passed["status"], "passed")
+        self.assertEqual(
+            [item["kind"] for item in passed["evidence"]],
+            ["craft-anything-before", "craft-anything-after"],
+        )
+
+        comparison["after"]["input_unchanged"] = False
+        self.assertEqual(
+            execution._craft_anything_gate_check(plan, comparison)["status"],
+            "failed",
+        )
+        unavailable = execution._craft_anything_gate_check(plan, None)
+        self.assertEqual(unavailable["status"], "failed")
+        self.assertEqual(
+            unavailable["evidence"],
+            ["not-run: Craft Anything comparison unavailable"],
+        )
+
+    def test_report_only_runs_captured_analyzers_without_gate_checks(self):
+        baseline = {
+            "identity": {
+                "rea_analysis": {"runtime_path": "/opt/rea"},
+                "craft_anything_analysis": {
+                    "source_path": "dist/app.js",
+                    "report_path": "/evidence/before.json",
+                    "report_sha256": "a" * 64,
+                    "version": "0.6.0",
+                    "status": "complete",
+                    "engine_status": "complete",
+                    "input_sha256": "b" * 64,
+                    "coverage": {"status": "complete"},
+                },
+            }
+        }
+        rea_comparison = {"status": "measured", "path": "/evidence/rea.json"}
+        craft_comparison = {
+            "status": "complete",
+            "before": {
+                "path": "/evidence/before.json",
+                "sha256": "a" * 64,
+                "coverage": {"status": "complete"},
+            },
+            "after": {
+                "path": "/evidence/after.json",
+                "sha256": "c" * 64,
+                "coverage": {"status": "complete"},
+                "input_unchanged": True,
+            },
+        }
+        with (
+            patch.object(
+                execution,
+                "_run_rea_comparison",
+                return_value=(rea_comparison, ["rea-compare"]),
+            ) as run_rea,
+            patch.object(
+                execution,
+                "_capture_craft_anything_after",
+                return_value=craft_comparison,
+            ) as run_craft,
+        ):
+            rea, command, craft = execution._analyze_candidate_after(
+                baseline,
+                self.root / "before",
+                self.root / "after",
+                self.root,
+                "report-only",
+                Path("/opt/rea"),
+                "craft-anything-cli",
+                60,
+                None,
+                None,
+                {
+                    "before_tree_sha256": "d" * 64,
+                    "after_tree_sha256": "e" * 64,
+                },
+                "dist/app.js",
+                "b" * 64,
+                "c" * 64,
+                self.root / "snapshots",
+                rea_requested=False,
+            )
+
+        run_rea.assert_called_once()
+        run_craft.assert_called_once()
+        self.assertIs(rea, rea_comparison)
+        self.assertEqual(command, ["rea-compare"])
+        self.assertIs(craft, craft_comparison)
+        self.assertIsNone(
+            execution._craft_anything_gate_check({"analysis_gates": []}, craft)
+        )
+        self.assertEqual(
+            execution._craft_anything_gate_check(
+                {"analysis_gates": ["craft-anything"]}, craft
+            )["status"],
+            "passed",
+        )
+
+    def test_craft_after_reuses_reported_input_hash(self):
+        from scripts import craft_anything_integration
+
+        candidate = self.root / "after-hash"
+        candidate.mkdir()
+        source = candidate / "dist/app.js"
+        source.parent.mkdir()
+        source.write_text("candidate-js")
+        evidence = self.root / "evidence-hash"
+        evidence.mkdir()
+        identity = {
+            "craft_anything_analysis": {
+                "source_path": "dist/app.js",
+                "report_path": str(evidence / "before.json"),
+                "report_sha256": "a" * 64,
+                "version": "0.6.0",
+                "status": "complete",
+                "engine_status": "complete",
+                "input_sha256": "b" * 64,
+                "coverage": {"status": "complete"},
+            }
+        }
+        with (
+            patch.object(
+                craft_anything_integration,
+                "analyze",
+                return_value={
+                    "status": "complete",
+                    "engine_status": "complete",
+                    "version": "0.6.0",
+                    "input_sha256": "c" * 64,
+                    "coverage": {"status": "complete"},
+                    "input_unchanged": True,
+                },
+            ),
+            patch.object(
+                craft_anything_integration,
+                "_hash_input",
+                side_effect=AssertionError("reported hash should be reused"),
+            ) as hash_input,
+        ):
+            comparison = execution._capture_craft_anything_after(
+                {"identity": identity},
+                candidate,
+                evidence,
+                "fixture-hash",
+                "craft-anything-cli",
+            )
+
+        self.assertEqual(comparison["after"]["input_sha256"], "c" * 64)
+        hash_input.assert_not_called()
+
+    def test_rea_comparison_error_is_saved_as_partial_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            before = root / "before"
+            after = root / "after"
+            before.mkdir()
+            after.mkdir()
+            evidence = root / "evidence"
+            evidence.mkdir()
+            with patch.object(
+                execution,
+                "_compare_rea_snapshots",
+                side_effect=workflow.WorkflowError(
+                    "REA BEFORE/AFTER file scope differs"
+                ),
+            ):
+                comparison, command = execution._run_rea_comparison(
+                    root / "rea-runtime",
+                    before,
+                    after,
+                    evidence / "rea-run",
+                    None,
+                    None,
+                    {
+                        "before_tree_sha256": "a" * 64,
+                        "after_tree_sha256": "b" * 64,
+                    },
+                    "dist/app.js.map",
+                    "c" * 64,
+                    "d" * 64,
+                )
+
+            report = json.loads(Path(comparison["path"]).read_text())
+            self.assertEqual(comparison["status"], "partial")
+            self.assertEqual(report["status"], "partial")
+            self.assertIn("file scope differs", report["reason"])
+            self.assertEqual(command[0], "rea-compare")
+
     def test_composite_rejects_duplicate_overlapping_mixed_and_incompatible_actions(
         self,
     ):

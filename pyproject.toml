@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "anti-rea"
-version = "0.1.32"
+version = "0.1.33"
 description = "Evidence-driven application hardening against AI reverse engineering"
 readme = "README.md"
 keywords = ["application-hardening", "anti-reverse-engineering", "reverse-engineering", "software-protection", "AI-security", "BLA", "REA", "obfuscation", "MCP", "agent-skills"]
