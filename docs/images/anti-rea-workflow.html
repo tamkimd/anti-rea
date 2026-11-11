@@ -39,11 +39,11 @@
   <main>
     <p class="eyebrow">Anti-REA · Evidence-led hardening</p>
     <h1>Anti-REA hardening workflow</h1>
-    <p class="intro">Review a concrete plan, harden an isolated candidate, then keep or revise it based on measured checks.</p>
+    <p class="intro">Analyze one fixed baseline, approve a concrete plan, harden once, then accept or revise from measured AFTER evidence.</p>
     <div class="canvas">
-      <svg viewBox="0 0 1600 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="anti-rea-workflow-title anti-rea-workflow-desc">
+      <svg viewBox="0 0 1600 1020" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="anti-rea-workflow-title anti-rea-workflow-desc">
         <title id="anti-rea-workflow-title">Anti-REA hardening workflow</title>
-        <desc id="anti-rea-workflow-desc">Capture one original baseline, review and approve a plan, harden an isolated candidate, verify behavior and integrity against the same baseline, then accept with a report or reject, roll back, and revise the plan for another candidate.</desc>
+        <desc id="anti-rea-workflow-desc">Capture one immutable BEFORE baseline, run REA and Craft Anything analysis in parallel, plan supported hardening actions, wait for approval, harden one isolated candidate, run AFTER analysis and required build, behavior, and integrity checks against the same baseline, then accept or report rejection or partial evidence. A retry requires a new plan and approval.</desc>
         <defs>
           <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#456779"/></marker>
           <marker id="arrow-coral" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#bf4520"/></marker>
@@ -51,71 +51,65 @@
           <marker id="arrow-muted" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#7692a0"/></marker>
         </defs>
 
-        <text class="title" x="64" y="48" style="font-size:32px;letter-spacing:-.03em">One baseline. A controlled improvement loop.</text>
-        <text class="body" x="64" y="78">Approve a plan, verify isolated candidates, and accept or revise based on evidence.</text>
+        <text class="title" x="64" y="48" style="font-size:32px;letter-spacing:-.03em">One baseline. Analyze, improve, measure.</text>
+        <text class="body" x="64" y="78">Parallel evidence informs one approved hardening pass and a comparable AFTER result.</text>
         <g transform="translate(0 60)">
-        <!-- The baseline is captured once and remains the comparison reference for every pass. -->
-        <rect class="baseline" x="64" y="92" width="1472" height="112" rx="12"/>
-        <text class="step" x="96" y="128">START HERE · INSPECT &amp; CAPTURE ONCE</text>
-        <text class="title" x="96" y="164">Original release baseline</text>
-        <text class="body" x="474" y="164">Build identity · behavior · REA results · artifact hashes</text>
-        <text class="label" x="1288" y="150">FIXED REFERENCE</text>
+        <rect class="baseline" x="64" y="92" width="1472" height="96" rx="12"/>
+        <text class="step" x="96" y="126">01 · CAPTURE BEFORE ONCE</text>
+        <text class="title" x="96" y="161">Fixed release baseline</text>
+        <text class="body" x="435" y="161">Artifact identity · hashes · configured behavior</text>
+        <text class="label" x="1288" y="148">UNCHANGED REFERENCE</text>
 
-        <!-- Main path: plan → approval → isolated candidate → comparable verification. -->
-        <path class="flow" d="M288 394H348"/>
-        <path class="flow" d="M572 394H632"/>
-        <path class="flow" d="M856 394H916"/>
-        <path class="flow" d="M1140 394H1194"/>
-        <path class="compare" d="M136 204V294"/>
-        <path class="compare" d="M136 294H1028V320"/>
-        <text class="label" x="580" y="278" text-anchor="middle">COMPARE EVERY CANDIDATE TO THE SAME BEFORE</text>
+        <path class="flow" d="M800 188V218H430V244"/>
+        <path class="flow" d="M800 218H1170V244"/>
+        <rect class="node" x="270" y="244" width="320" height="88" rx="10"/>
+        <text class="step" x="294" y="273">02A · ANALYZE BEFORE</text>
+        <text class="title" x="294" y="306">REA</text>
+        <text class="body" x="378" y="306">Version · coverage · findings</text>
+        <rect class="node" x="1010" y="244" width="320" height="88" rx="10"/>
+        <text class="step" x="1034" y="273">02B · ANALYZE BEFORE</text>
+        <text class="title" x="1034" y="306">Craft Anything</text>
+        <text class="body" x="1195" y="306">Evidence · findings</text>
 
-        <rect class="node" x="64" y="320" width="224" height="148" rx="10"/>
-        <text class="step" x="88" y="352">01 · PLAN</text>
-        <text class="title" x="88" y="390">Review &amp; plan</text>
-        <text class="body" x="88" y="421">Compare compatible actions,</text>
-        <text class="body" x="88" y="444">trade-offs and checks.</text>
+        <path class="flow" d="M430 332V362H800V384"/>
+        <path class="flow" d="M1170 332V362H800V384"/>
+        <rect class="node" x="626" y="384" width="348" height="104" rx="10"/>
+        <text class="step" x="652" y="414">03 · PLAN IMPROVEMENT</text>
+        <text class="title" x="652" y="446" style="font-size:18px">Map findings to supported actions</text>
+        <text class="body" x="652" y="472">Benefit · trade-offs · checks · rollback</text>
 
-        <rect class="node approval" x="348" y="320" width="224" height="148" rx="10"/>
-        <text class="step" x="372" y="352">02 · USER GATE</text>
-        <text class="title" x="372" y="390">Approve the plan</text>
-        <text class="body" x="372" y="421">User selects actions</text>
-        <text class="body" x="372" y="444">before any changes.</text>
+        <path class="flow" d="M800 488V512"/>
+        <rect class="node approval" x="626" y="512" width="348" height="76" rx="10"/>
+        <text class="step" x="652" y="540">04 · USER APPROVAL</text>
+        <text class="title" x="652" y="570">Approve exact plan hash</text>
 
-        <rect class="node" x="632" y="320" width="224" height="148" rx="10"/>
-        <text class="step" x="656" y="352">03 · CANDIDATE</text>
-        <text class="title" x="656" y="390">Harden in isolation</text>
-        <text class="body" x="656" y="421">Keep the original source</text>
-        <text class="body" x="656" y="444">and candidate separate.</text>
+        <path class="flow" d="M800 588V612"/>
+        <rect class="node" x="626" y="612" width="348" height="88" rx="10"/>
+        <text class="step" x="652" y="640">05 · HARDEN ONCE</text>
+        <text class="title" x="652" y="672">Isolated candidate</text>
+        <text class="body" x="652" y="692">Original remains unchanged</text>
 
-        <rect class="node" x="916" y="320" width="224" height="148" rx="10"/>
-        <text class="step" x="940" y="352">04 · VERIFY</text>
-        <text class="title" x="940" y="390">Run required checks</text>
-        <text class="body" x="940" y="421">Behavior · integrity</text>
-        <text class="body" x="940" y="444">· REA comparison</text>
+        <path class="flow" d="M974 656H1052"/>
+        <rect class="node" x="1052" y="612" width="290" height="88" rx="10"/>
+        <text class="step" x="1076" y="640">06 · MEASURE AFTER</text>
+        <text class="body" x="1076" y="668">REA · Craft Anything</text>
+        <text class="body" x="1076" y="692">Build · behavior · integrity</text>
 
-        <path class="decision" d="M1260 318 1328 394 1260 470 1192 394Z"/>
-        <text class="title" x="1260" y="386" text-anchor="middle" style="font-size:16px">All required</text>
-        <text class="title" x="1260" y="408" text-anchor="middle" style="font-size:16px">gates pass?</text>
+        <path class="compare" d="M64 140H42V656H626"/>
+        <text class="label" x="52" y="420" transform="rotate(-90 52 420)" text-anchor="middle">SAME BEFORE REFERENCE</text>
 
-        <path d="M1328 394H1384" fill="none" stroke="#087f68" stroke-width="2.5" marker-end="url(#arrow-green)"/>
-        <text class="label-green" x="1354" y="374" text-anchor="middle">YES</text>
-        <rect class="accept" x="1384" y="342" width="152" height="104" rx="10"/>
-        <text class="step" x="1406" y="372" style="fill:#087f68">ACCEPT</text>
-        <text class="title" x="1406" y="402" style="font-size:18px">Evidence</text>
-        <text class="body" x="1406" y="424">report</text>
+        <path class="flow" d="M1342 656H1394"/>
+        <path class="decision" d="M1430 612 1470 656 1430 700 1390 656Z"/>
+        <text class="title" x="1430" y="652" text-anchor="middle" style="font-size:13px">Gates</text>
+        <text class="title" x="1430" y="668" text-anchor="middle" style="font-size:13px">pass?</text>
 
-        <path class="loop" d="M1260 470V550"/>
-        <text class="label-coral" x="1280" y="518">NO</text>
-        <rect class="revise" x="916" y="550" width="344" height="88" rx="10"/>
-        <text class="step" x="944" y="580" style="fill:#a13a1e">REJECT · PRESERVE EVIDENCE</text>
-        <text class="title" x="944" y="612" style="font-size:18px">Rollback, revise, try next candidate</text>
-        <path class="loop" d="M916 594H176Q136 594 136 554V468"/>
-        <rect x="384" y="574" width="286" height="34" rx="17" fill="#f7f9fa"/>
-        <text class="label-coral" x="527" y="596" text-anchor="middle">REVIEW PLAN · SAME BASELINE</text>
+        <path d="M1430 612V550H1510" fill="none" stroke="#087f68" stroke-width="2.5" marker-end="url(#arrow-green)"/>
+        <text class="label-green" x="1460" y="540">YES</text>
+        <text class="label-green" x="1492" y="530">ACCEPT</text>
+        <path class="loop" d="M1430 700V752H800V700"/>
+        <text class="label-coral" x="1030" y="744">NO · REJECTED / PARTIAL · NEW PLAN REQUIRED TO RETRY</text>
 
-        <text class="caption" x="64" y="668">A successful build alone is not evidence of protection.</text>
-        <text class="caption" x="1536" y="668" text-anchor="end">Results apply to the tested artifact and checks.</text>
+        <text class="caption" x="64" y="790">Keep engine results separate. A successful build alone is not proof of protection.</text>
         </g>
       </svg>
     </div>

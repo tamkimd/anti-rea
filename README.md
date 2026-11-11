@@ -1,6 +1,8 @@
 # Anti-REA: Harden apps against AI reverse engineering
 
-**Assess software exposure to AI reverse engineering, apply compatible defenses, and measure the results.** Anti-REA helps teams compare release artifacts before and after changes using [REA (reverse-engineering agent)](https://github.com/morluto/rea) analysis and behavior checks.
+**Repository:** [github.com/tamkimd/anti-rea](https://github.com/tamkimd/anti-rea)
+
+**Assess software exposure to AI reverse engineering, apply compatible defenses, and measure the results.** Anti-REA compares a release artifact before and after hardening with available analysis engines, including [REA](https://github.com/morluto/rea) and [Craft Anything](https://github.com/storytold/craft-anything), plus applicable build, integrity, and behavior checks.
 
 Use it with an AI assistant through the portable Skill or MCP server, or run the same workflows from the terminal. Anti-REA shows applicable options and trade-offs before execution, keeps the original project intact, and reports evidence from the candidate.
 
@@ -23,24 +25,29 @@ These examples show specific workflow results. They do not prove that an app is 
 
 ## How Anti-REA works
 
-![Anti-REA hardening workflow: capture one fixed baseline, approve a plan, verify isolated candidates against the same baseline, and accept or revise with rollback evidence](docs/images/anti-rea-workflow.png)
+![Anti-REA workflow loop: capture a fixed BEFORE baseline, analyze it with REA and Craft Anything in parallel, map findings to supported actions, get approval, harden one isolated candidate, then run AFTER analysis and verification before accepting or returning with evidence](docs/images/anti-rea-workflow.png)
 
-1. Inspect the target and capture a BEFORE release baseline.
-2. Present compatible defenses, expected benefits, trade-offs, and verification requirements.
-3. Wait for the user to choose actions in a plan bound to its exact hash.
-4. Apply the selected actions to an isolated candidate.
-5. Compare the candidate with the unchanged baseline. Accept only if required checks pass; otherwise reject and retain rollback evidence.
+1. **Capture BEFORE once.** Anti-REA records the release artifact identity, hashes, and configured behavior evidence.
+2. **Analyze in parallel.** REA and Craft Anything analyze the same snapshot when installed and compatible. Their versions, coverage, findings, and evidence are reported separately; an unavailable or failed engine remains visible.
+3. **Plan an improvement.** Anti-REA maps findings to hardening actions its adapters support, with expected benefit, trade-offs, required checks, and rollback details. Unsupported findings are reported without inventing a fix.
+4. **Approve the exact plan.** The user's decision is bound to the plan hash. No candidate changes happen before approval.
+5. **Harden once in isolation.** Anti-REA applies the selected actions to a separate candidate; it does not automatically loop or add actions after approval.
+6. **Measure AFTER.** Run the selected analysis engines and required build, integrity, and behavior checks against the candidate, comparing it with the same unchanged BEFORE baseline.
+7. **Accept or revise.** Accept only when selected gates pass. Otherwise report rejected or partial evidence; another attempt requires a new plan and approval.
 
-Reports show artifact identities, check results, and candidate outcomes. A successful build alone is not evidence of protection.
+The report shows per-engine BEFORE/AFTER results without merging different scoring scales. A successful build alone is not evidence of protection.
 
 ## What Anti-REA does
 
 | Workflow | What it does | Evidence boundary |
 |---|---|---|
-| Assess | Inspect a project, identify release artifacts, and capture a BEFORE baseline. | Discovery is bounded and does not infer a complete build graph or runtime behavior. |
-| Plan | Compare available hardening options, trade-offs, checks, and rollback steps. | A user must approve the exact plan before execution. |
-| Evaluate | Build an isolated candidate and compare it with the same baseline. | Applicable actions and checks depend on the target and verified adapters. |
-| Report | Show BEFORE/AFTER identities, verification results, and acceptance status. | Evidence applies to the tested artifact, environment, and behavior scope only. |
+| Assess | Capture one immutable BEFORE snapshot and run selected analysis engines against it. | Engines run in parallel when installed and compatible. Each has its own status and evidence; unavailable or failed engines stay visible. |
+| Plan | Combine engine findings and map them to hardening actions Anti-REA can verify. Show expected benefit, trade-offs, gates, and rollback. | Unsupported findings remain blockers or observations; Anti-REA does not invent an action or claim an unverified improvement. |
+| Approve | Bind the user's decision to the exact plan hash. | Only the approved actions are applied, once, to an isolated candidate. A different attempt requires a new plan and decision. |
+| Evaluate | Run required build, integrity, behavior, and selected engine checks against the candidate and unchanged BEFORE baseline. | Engine scores remain separate; only checks selected as acceptance gates affect acceptance. |
+| Report | Show per-engine BEFORE/AFTER findings and evidence, check outcomes, and accepted, rejected, or partial status. | Evidence applies only to the tested artifact, environment, engine versions, and behavior scope. |
+
+Craft Anything contributes analysis evidence; its app reconstruction feature is not treated as hardening of the original artifact. REA and Craft Anything may use different measures, so reports keep their results separate instead of combining scores.
 
 The repository currently includes selected adapters for JavaScript, Flutter Android, WebAssembly, browser behavior, and Python dependency workflows. This is today's implementation set, not the limit of the product's intended platform coverage. See the [adapter guide](docs/cli.md) and [acceptance audit](AUDIT.md) for exact status and open blockers.
 
