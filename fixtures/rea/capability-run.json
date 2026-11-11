@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "kind": "local_upstream_smoke_evidence",
+  "observed_at": "2026-11-01",
+  "runtime": {
+    "path": "<private-runtime>",
+    "node": "24.22.1",
+    "rea": "6.8.0",
+    "package_lock_sha256": "b6cb714948a7ec224fa6f676f0e9b6f570bbabf3518a1a187be571ac8ddfe232",
+    "package_tree_sha256": "2faad76ce0c1b5f8c5da1774224179cb6b052978fbf917f651bfb82b2ffb6c76"
+  },
+  "doctor": {
+    "status": "incomplete",
+    "exit_code": 1,
+    "evidence": "<private-runtime>/evidence/doctor.json",
+    "sha256": "f27e504bd5a419bc295f0e5bcde8e97e38dc1ab07c5f94e1dcac9b78190f132e",
+    "healthy_provider_count": 0,
+    "missing_providers": [
+      "hopper",
+      "ghidra",
+      "ida",
+      "jadx",
+      "kuna"
+    ],
+    "missing_client_registrations": [
+      "antigravity",
+      "claude_code",
+      "codex",
+      "copilot_cli",
+      "gemini_cli",
+      "vscode"
+    ]
+  },
+  "cli_analysis": {
+    "target": "fixtures/e2e/web (owned synthetic fixture)",
+    "status": "passed",
+    "operation": "analyze_javascript_application",
+    "evidence_id": "ev_55e521996d394051806b08f7eda3a325c03a2f06c70e7a1d40c58434b8b66441",
+    "raw_output": "<private-runtime>/evidence/js-analysis-raw.jsonl",
+    "raw_output_sha256": "eaf5be406aa9aa6fd6b2fd49be9706dd865f0613c4fe8337b2f83ef586d5c8a5",
+    "evidence_bundle": "<private-runtime>/evidence/js-analysis-bundle.json",
+    "evidence_bundle_sha256": "0184b3bea0364c5d5c99f78b0f2ef417add5b5c9a2b02861de6251f2bdf53dcb"
+  },
+  "mcp_analysis": {
+    "target": "fixtures/e2e/web (owned synthetic fixture)",
+    "status": "passed",
+    "server": "rea 6.8.0",
+    "advertised_tool_count": 229,
+    "operation": "analyze_javascript_application",
+    "evidence_id": "ev_b3fb8e3052b56792e8ff734d8f708a60ec607bd0a96af503222b391b802c12aa",
+    "raw_evidence": "<private-runtime>/evidence/js-analysis-mcp.json",
+    "raw_evidence_sha256": "abe8fa61be9e2d457c59e5b067cc8e464b018fc185fb473c013f8c023df4099b"
+  },
+  "claim_limit": "Upstream tool readiness and static analysis are verified only on an owned fixture; no application protection or provider readiness is established."
+}

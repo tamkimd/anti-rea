@@ -660,9 +660,6 @@ def build_command(
         raise workflow.WorkflowError("Flutter Android target must be apk or appbundle")
     if not isinstance(obfuscate, bool):
         raise workflow.WorkflowError("Flutter obfuscation selection must be a boolean")
-    executable = shutil.which(flutter)
-    if executable is None:
-        raise workflow.WorkflowError(f"Flutter executable is unavailable: {flutter}")
     debug_info = None
     if split_debug_info is not None:
         debug_info = Path(split_debug_info).expanduser().resolve()
@@ -676,6 +673,9 @@ def build_command(
         raise workflow.WorkflowError(
             "Flutter obfuscation requires a private split-debug-info path"
         )
+    executable = shutil.which(flutter)
+    if executable is None:
+        raise workflow.WorkflowError(f"Flutter executable is unavailable: {flutter}")
     command = [executable, "build", target, "--release"]
     if obfuscate:
         command.extend(["--obfuscate", f"--split-debug-info={debug_info}"])

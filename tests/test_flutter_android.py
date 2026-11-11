@@ -136,7 +136,10 @@ class FlutterAndroidCommandTests(unittest.TestCase):
                 workflow.WorkflowError, "executable is unavailable"
             ):
                 flutter_android.build_command(
-                    self.root, "apk", Path(self.temp.name) / "debug"
+                    self.root,
+                    "apk",
+                    Path(self.temp.name) / "debug",
+                    obfuscate=True,
                 )
 
     @staticmethod

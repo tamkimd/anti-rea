@@ -23,8 +23,8 @@
     "fixture_run": {
       "cli_analysis_evidence_id": "ev_55e521996d394051806b08f7eda3a325c03a2f06c70e7a1d40c58434b8b66441",
       "mcp_analysis_evidence_id": "ev_b3fb8e3052b56792e8ff734d8f708a60ec607bd0a96af503222b391b802c12aa",
-      "path": "evidence/rea/run.json",
-      "sha256": "0697f2077650454048837a2c46e8ef9d10bfcd0de3d752f1906d077da980b764",
+      "path": "fixtures/rea/capability-run.json",
+      "sha256": "e051cfc4861cc629a827c18d04a1742c1cdf89a2547422314d87a3b3fe6cb829",
       "target": "owned synthetic JavaScript fixture"
     },
     "node_version": "24.22.1",

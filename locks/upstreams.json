@@ -21,7 +21,7 @@
       "runtime_prompt_contracts": "locks/rea-runtime-prompt-contracts.json",
       "runtime_prompt_contracts_sha256": "93b01c423790be7867ef927b971127e1184235d907c0cc6c66aee288cc6298b1",
       "capability_readiness_ledger": "locks/rea-capability-readiness.json",
-      "capability_readiness_ledger_sha256": "173beef816f5552771cfa2b2988d4cfc6cbc1176681e599130ac5d217a0a7237"
+      "capability_readiness_ledger_sha256": "cc931c40e5fc7d5a6a55084e9ab2845c9af9434d2616c749c797f81a31a3ce32"
     },
     "e2e": {
       "repository": "https://github.com/tester-army/e2e.git",
