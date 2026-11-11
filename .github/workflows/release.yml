@@ -200,11 +200,17 @@ jobs:
               output.write(f"publish={'true' if publish else 'false'}\n")
           PY
 
+      - name: Stage distributions for PyPI
+        if: steps.pypi.outputs.publish == 'true'
+        run: |
+          mkdir -p dist/pypi-upload
+          cp dist/*.whl dist/*.tar.gz dist/pypi-upload/
+
       - name: Publish distributions
         if: steps.pypi.outputs.publish == 'true'
         uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
         with:
-          packages-dir: dist/
+          packages-dir: dist/pypi-upload/
           skip-existing: true
           print-hash: true
 
