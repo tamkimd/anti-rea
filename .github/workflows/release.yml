@@ -154,6 +154,7 @@ jobs:
           import json
           import os
           from pathlib import Path
+          from time import sleep
           from urllib.error import HTTPError
           from urllib.request import urlopen
 
@@ -167,13 +168,17 @@ jobs:
           if len(expected) != 2:
               raise SystemExit("Expected exactly one wheel and one source distribution")
 
-          try:
-              with urlopen(f"{base}/{version}/json", timeout=20) as response:
-                  release = json.load(response)
-          except HTTPError as error:
-              if error.code != 404:
-                  raise
-              release = None
+          release = None
+          for attempt in range(12):
+              try:
+                  with urlopen(f"{base}/{version}/json", timeout=20) as response:
+                      release = json.load(response)
+                  break
+              except HTTPError as error:
+                  if error.code != 404:
+                      raise
+                  if attempt < 11:
+                      sleep(5)
 
           if release is None:
               try:
@@ -188,13 +193,21 @@ jobs:
               publish = True
           else:
               existing = {file["filename"]: file for file in release["urls"]}
-              for name, digest in expected.items():
+              for name in expected:
                   remote = existing.get(name)
-                  if remote and remote["digests"]["sha256"] != digest:
-                      raise SystemExit(f"PyPI already has different bytes for {name}; refusing to continue")
                   if remote and remote["yanked"]:
                       raise SystemExit(f"PyPI file {name} is yanked; refusing to continue")
-              publish = any(name not in existing for name in expected)
+              if existing.keys() >= expected.keys():
+                  for path in Path("dist").iterdir():
+                      if path.name not in expected:
+                          continue
+                      remote = existing[path.name]
+                      if remote["digests"]["sha256"] != expected[path.name]:
+                          with urlopen(remote["url"], timeout=60) as response:
+                              path.write_bytes(response.read())
+                  publish = False
+              else:
+                  publish = True
 
           with open(os.environ["GITHUB_OUTPUT"], "a") as output:
               output.write(f"publish={'true' if publish else 'false'}\n")
@@ -221,11 +234,24 @@ jobs:
           import json
           import os
           from pathlib import Path
+          from time import sleep
+          from urllib.error import HTTPError
           from urllib.request import urlopen
 
           version = os.environ["RELEASE_VERSION"]
-          with urlopen(f"https://pypi.org/pypi/anti-rea/{version}/json", timeout=20) as response:
-              release = json.load(response)
+          release = None
+          for attempt in range(12):
+              try:
+                  with urlopen(f"https://pypi.org/pypi/anti-rea/{version}/json", timeout=20) as response:
+                      release = json.load(response)
+                  break
+              except HTTPError as error:
+                  if error.code != 404:
+                      raise
+                  if attempt < 11:
+                      sleep(5)
+          if release is None:
+              raise SystemExit(f"PyPI did not publish metadata for {version} within 60 seconds")
           existing = {file["filename"]: file for file in release["urls"]}
           for path in Path("dist").iterdir():
               if path.suffix != ".whl" and not path.name.endswith(".tar.gz"):
