@@ -112,6 +112,11 @@ jobs:
             exit 1
           fi
 
+          if gh release view "$release_tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $release_tag already exists; preserving its published tag and assets."
+            exit 0
+          fi
+
           if git show-ref --verify --quiet "refs/tags/$release_tag"; then
             tagged_commit="$(git rev-list -n 1 "$release_tag")"
             if [ "$tagged_commit" != "$GITHUB_SHA" ]; then
